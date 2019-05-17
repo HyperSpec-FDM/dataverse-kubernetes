@@ -31,12 +31,17 @@ For quick and easy demo purposes, you can use one of the examples:
 * [Quick demo with Minikube](https://github.com/IQSS/dataverse-kubernetes/blob/master/docs/minikube.md)
 
 For production usage, you should make yourself familiar with a series of
-documentation articles:
+documentation articles, linked below:
 
+* [Container images](https://github.com/IQSS/dataverse-kubernetes/blob/master/docs/images.md)
 * [Detailed insight into inner workings](https://github.com/IQSS/dataverse-kubernetes/blob/master/docs/how-it-works.md)
 * [Using Kubernetes descriptors from this project](https://github.com/IQSS/dataverse-kubernetes/blob/master/docs/reuse.md)
 * [Configuration of Dataverse](https://github.com/IQSS/dataverse-kubernetes/blob/master/docs/config.md)
 * [Secrets usage](https://github.com/IQSS/dataverse-kubernetes/blob/master/docs/secrets.md)
+
+Please be aware that this project currently only offers images and support
+for basic usage. Integrations are not yet part of this, but may be added as needed.
+See also relevant docs within Dataverse guides and upstream projects.
 
 A number of utilities have been added for your convienience:
 have a look at [Little Helpers](https://github.com/IQSS/dataverse-kubernetes/blob/master/docs/little-helpers.md).
