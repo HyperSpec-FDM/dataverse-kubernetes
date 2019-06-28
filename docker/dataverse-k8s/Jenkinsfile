@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 void setBuildStatus(String message, String state) {
   step([
       $class: "GitHubCommitStatusSetter",
@@ -103,5 +104,16 @@ pipeline {
     failure {
         setBuildStatus("Image build or push failed", "FAILURE");
     }
+=======
+node {
+  def image
+
+  stage('Clone repository') {
+    checkout scm
+  }
+
+  stage('Build image') {
+    image = docker.build("iqss/dataverse-k8s:${env.BUILD_ID}", "-f ${dockerfile} ${context}")
+>>>>>>> 6ff13af (First simple Jenkinsfile for building iqss/dataverse-k8s. See #22)
   }
 }
