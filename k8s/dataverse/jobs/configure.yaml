@@ -3,7 +3,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   generateName: configure-dataverse-
-  namespace: dv-test
   labels:
     app.kubernetes.io/name: configure
     app.kubernetes.io/version: "1.1"
@@ -19,17 +18,14 @@ spec:
     spec:
       containers:
         - name: configure
-          image: iqss/dataverse-k8s:6.0
+          image: iqss/dataverse-k8s
           command: ["scripts/config-job.sh"]
           envFrom:
             - configMapRef:
                 name: dataverse
           volumeMounts:
             - name: api-secret
-              mountPath: "/secrets/api"
-              readOnly: true
-            - name: provider-secrets
-              mountPath: "/secrets/providers"
+              mountPath: "/opt/dataverse/secrets/api"
               readOnly: true
       initContainers:
         - name: check-dataverse-ready
@@ -41,9 +37,5 @@ spec:
         - name: api-secret
           secret:
             secretName: dataverse-api
-        - name: provider-secrets
-          secret:
-            secretName: dataverse-providers
-            optional: true
       restartPolicy: Never
   backoffLimit: 4
