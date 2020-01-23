@@ -5,8 +5,7 @@ metadata:
   name: dataverse
   labels:
     app.kubernetes.io/name: dataverse
-    app.kubernetes.io/version: "5.14"
-#    app.kubernetes.io/version: "6.0"
+    app.kubernetes.io/version: "4.17"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -27,8 +26,7 @@ spec:
     spec:
       containers:
         - name: dataverse
-          image: iqss/dataverse-k8s:6.0
-          imagePullPolicy: Always
+          image: iqss/dataverse-k8s
           resources:
             requests:
               memory: "2Gi"
@@ -36,7 +34,6 @@ spec:
               memory: "4Gi"
           ports:
             - containerPort: 8080
-            - containerPort: 4848
           envFrom:
             - configMapRef:
                 name: dataverse
@@ -47,93 +44,46 @@ spec:
                   name: dataverse-postgresql
                   key: username
                   optional: true
-            - name: PGUSER #POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: dataverse-postgresql
-                  key: username
             - name: POSTGRES_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: dataverse-postgresql
                   key: database
                   optional: true
-            - name: PGPASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: dataverse-postgresql
-                  key: password
-            - name: POSTGRES_DB #PGDATABASE
-              valueFrom:
-                secretKeyRef:
-                  name: dataverse-postgresql
-                  key: database
-#            - name: POSTGRES_SERVER
-#              value: postgresql
-#            - name: DB_HOST
-#              value: postgresql
-#            - name: DB_HOSTNAME
-#              value: postgresql
           volumeMounts:
             - name: files
               mountPath: /data
             - name: docroot
-              mountPath: /opt/docroot
-#            - name: logos
-#              mountPath: /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos
-            - name: heapdumps
-              mountPath: /dumps
+              mountPath: /docroot
             - name: db-secret
               mountPath: "/secrets/db"
               readOnly: true
             - name: doi-secret
               mountPath: "/secrets/doi"
               readOnly: true
-            - name: api-secret
-              mountPath: "/secrets/api"
-              readOnly: true
-            - name: asadmin-secret
-              mountPath: "/secrets/asadmin"
-              readOnly: true
-            # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
-            - name: primefaces-upload
-              mountPath: /opt/dataverse/appserver/glassfish/domains/domain1/generated/jsp/dataverse
           readinessProbe:
             httpGet:
               path: /robots.txt
               port: 8080
-            initialDelaySeconds: 60 #5
-            failureThreshold: 100
-            periodSeconds: 5
-#      imagePullSecrets:
-#        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools
-          imagePullPolicy: IfNotPresent
-          command: ["sh", "-c", "chown -c 1000:1000 /data /docroot /uploads"]
+          command: ["sh", "-c", "chown -c 1000:1000 /data /docroot"]
           volumeMounts:
             - name: files
               mountPath: /data
             - name: docroot
               mountPath: /docroot
-            # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
-            - name: primefaces-upload
-              mountPath: /uploads
         - name: check-db-ready
-          image: postgres:13.11 #9.6
-          imagePullPolicy: IfNotPresent
+          image: postgres:9.6
           command: ['sh', '-c',
             'until pg_isready -h "${POSTGRESQL_SERVICE_HOST}" -p "${POSTGRESQL_SERVICE_PORT}";
             do echo waiting for database; sleep 3; done;']
         - name: check-solr-ready
           image: giantswarm/tiny-tools
-          imagePullPolicy: IfNotPresent
-#          command: [ "/bin/sh", "-c", 'until curl -sS -f "http://192.168.100.11:30000/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
-#                       do echo waiting for solr; sleep 3; done;' ]
-          command: [ "/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
-                      do echo waiting for solr; sleep 3; done;' ]
-       
+          command: ['sh', '-c',
+            'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/collection1/admin/ping" 2>&1 | grep "status.:.OK";
+            do echo waiting for solr; sleep 3; done;']
       volumes:
         - name: files
           persistentVolumeClaim:
@@ -141,24 +91,9 @@ spec:
         - name: docroot
           persistentVolumeClaim:
             claimName: dataverse-docroot
-#        - name: logos
-#          persistentVolumeClaim:
-#            claimName: dataverse-logos
-        - name: api-secret
-          secret:
-            secretName: dataverse-api
         - name: db-secret
           secret:
             secretName: dataverse-postgresql
         - name: doi-secret
           secret:
             secretName: dataverse-doi
-        - name: asadmin-secret
-          secret:
-            secretName: dataverse-asadmin
-        - name: heapdumps
-          emptyDir: {}
-        # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
-        - name: primefaces-upload
-          emptyDir: {}
-
