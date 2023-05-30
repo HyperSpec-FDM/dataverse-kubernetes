@@ -1,0 +1,47 @@
+changes
+
+move bases into resources in kustomization files
+changed path in bootstrap.yaml for windows hosts
+changed POSTGRES_USER to PGUSER
+changed username to postgres
+added secrets dataverse-s3 and dataverse-certificate in personas/demo/secrets.yaml
+changed image dataverse version from v4.20 to 4.20 (v4.20 was not existing) in kustomaization.yaml
+added command to postgres deployment to initialize user and database
+added "--no-check-certificate" in docker file to enable docker build (glassfish dockerfile)
+added port 4848 to dataverse deployment
+
+
+commands:
+kubectl apply -f personas/demo/secrets.yaml
+kubectl apply -k personas\prod-skel\envs\env1
+run when deployment is done:
+kubectl create -f k8s/dataverse/jobs/bootstrap.yaml
+
+
+kubectl delete -f k8s/dataverse/jobs/bootstrap.yaml
+kubectl delete -k personas\prod-skel\envs\env1
+kubectl delete -f personas/demo/secrets.yaml
+
+
+testing to get dataverse to work:
+kubectl apply -f k8s/dataverse/deployment.yaml
+kubectl port-forward service/dataverse -n dv-test 8080:8080
+kubectl port-forward service/dataverse -n dv-test 4848:4848
+
+kubectl apply -f k8s/dataverse/ingress.yaml
+kubectl delete -f k8s/dataverse/ingress.yaml
+
+
+testing to get postgresql to work:
+kubectl apply -f personas/demo/secrets.yaml
+kubectl apply -f personas/demo/postgresql/pvc.yaml
+kubectl apply -f personas/demo/postgresql/deployment.yaml
+
+kubectl delete -f personas/demo/postgresql/deployment.yaml
+kubectl delete -f personas/demo/postgresql/pvc.yaml
+kubectl delete -f personas/demo/secrets.yaml
+
+
+
+Docker build commands:
+docker build -t iqss/dataverse-k8s:tt -f docker/dataverse-k8s/payara/Dockerfile .

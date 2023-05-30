@@ -1,0 +1,5 @@
+# show settings and enable api endpoints
+psql
+SELECT * FROM setting;
+DELETE FROM setting
+WHERE name=':BlockedApiEndpoints';
