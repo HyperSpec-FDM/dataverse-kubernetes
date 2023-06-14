@@ -7,7 +7,8 @@ kind: Kustomization
 
 images:
   - name: iqss/dataverse-k8s
-    newTag: "4.20-payara" #"4.20"
+    newTag: "tt"
+#    newTag: "4.20-payara"
 
 patchesStrategicMerge:
   - patch-pvc.yaml

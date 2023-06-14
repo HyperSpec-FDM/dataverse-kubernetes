@@ -5,7 +5,8 @@ metadata:
   name: dataverse
   labels:
     app.kubernetes.io/name: dataverse
-    app.kubernetes.io/version: "4.20-payara" #"4.20"
+    app.kubernetes.io/version: "tt"
+#    app.kubernetes.io/version: "4.20-payara"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -61,6 +62,12 @@ spec:
                 secretKeyRef:
                   name: dataverse-postgresql
                   key: database
+#            - name: POSTGRES_SERVER
+#              value: postgresql
+#            - name: DB_HOST
+#              value: postgresql
+#            - name: DB_HOSTNAME
+#              value: postgresql
           volumeMounts:
             - name: files
               mountPath: /data

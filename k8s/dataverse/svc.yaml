@@ -13,9 +13,10 @@ spec:
   ports:
     - port: 8080
       name: http
+      targetPort: 8080
     - port: 4848
       name: admin
-      targetPort: 8080
+      targetPort: 4848
       protocol: TCP
     - port: 8009
       name: ajp
