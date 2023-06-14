@@ -5,11 +5,24 @@ metadata:
   name: dataverse
   labels:
     app: dataverse
+    app.kubernetes.io/name: configmap
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/component: configmap
+    app.kubernetes.io/part-of: dataverse
+    app.kubernetes.io/managed-by: kubectl
 data:
   ### GENERAL SETTINGS
   dataverse_fqdn: data-test.example.org
   dataverse_siteUrl: https://data-test.example.org
-  POSTGRES_DATABASE: dataverse
+
+  ### database
+  POSTGRES_ONLY: "true"
+  POSTGRES_SERVER: postgresql
+  POSTGRES_PORT: "5432"
+  POSTGRES_DATABASE: mydataverse
+  POSTGRES_USER: dataverse
+  POSTGRES_PASSWORD: changeme
+  POSTGRES_ADMIN_PASSWORD: changeme
 
   ### CONTACT SETTINGS
   CONTACT_MAIL: rdm@example.org
@@ -17,12 +30,7 @@ data:
   db_SystemEmail: Research Data Management Unit Example.org <rdm@example.org>
 
   ### DOI SETTINGS
-  doi_baseurlstring: https://mds.test.datacite.org
-  doi_username: EXAMPLE.ORG
-  db_DoiProvider: DataCite
-  db_Protocol: doi
-  db_Authority: "10.9999999999"
-  db_Shoulder: EXAMPLE-ORG-TEST/
+  db_DoiProvider: FAKE
 
   ### FILE STORAGE
   dataverse_files_directory: /data

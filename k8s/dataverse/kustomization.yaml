@@ -5,7 +5,9 @@ resources:
   - deployment.yaml
   - pvc.yaml
   - svc.yaml
+#  - ing.yaml
 
 images:
   - name: iqss/dataverse-k8s
-    newTag: "4.20-payara" #"4.20"
+    newTag: "tt"
+#    newTag: "4.20-payara"

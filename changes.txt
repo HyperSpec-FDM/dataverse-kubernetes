@@ -44,4 +44,7 @@ kubectl delete -f personas/demo/secrets.yaml
 
 
 Docker build commands:
-docker build -t iqss/dataverse-k8s:tt -f docker/dataverse-k8s/payara/Dockerfile .
+docker build --no-cache -t iqss/dataverse-k8s:tt -f docker/dataverse-k8s/payara/Dockerfile .
+
+Payara admin console:
+kubectl port-forward -n dv-test service/dataverse 4848:4848
