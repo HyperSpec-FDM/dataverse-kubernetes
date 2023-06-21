@@ -10,4 +10,5 @@ resources:
 images:
   - name: iqss/dataverse-k8s
     newTag: "tt"
+#    newTag: "5.13"
 #    newTag: "4.20-payara"

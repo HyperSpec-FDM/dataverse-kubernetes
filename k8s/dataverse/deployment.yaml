@@ -6,6 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: dataverse
     app.kubernetes.io/version: "tt"
+#    app.kubernetes.io/version: "5.13"
 #    app.kubernetes.io/version: "4.20-payara"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
@@ -84,6 +85,9 @@ spec:
             - name: api-secret
               mountPath: "/secrets/api"
               readOnly: true
+            - name: asadmin-secret
+              mountPath: "/secrets/asadmin"
+              readOnly: true
             # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
             - name: primefaces-upload
               mountPath: /opt/dataverse/appserver/glassfish/domains/domain1/generated/jsp/dataverse
@@ -107,7 +111,7 @@ spec:
             - name: primefaces-upload
               mountPath: /uploads
         - name: check-db-ready
-          image: postgres:9.6
+          image: postgres:13.11 #9.6
           command: ['sh', '-c',
             'until pg_isready -h "${POSTGRESQL_SERVICE_HOST}" -p "${POSTGRESQL_SERVICE_PORT}";
             do echo waiting for database; sleep 3; done;']
@@ -132,6 +136,9 @@ spec:
         - name: doi-secret
           secret:
             secretName: dataverse-doi
+        - name: asadmin-secret
+          secret:
+            secretName: dataverse-asadmin
         - name: heapdumps
           emptyDir: {}
         # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178

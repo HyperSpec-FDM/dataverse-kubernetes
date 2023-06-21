@@ -12,19 +12,6 @@
 # Fail on any error
 set -e
 
-## test to wait for the env postgres-service-host to be set
-## Define the delay between each attempt (in seconds)
-#DELAY=5
-## Wait until POSTGRESQL_SERVICE_HOST is set
-#while [ -z "${POSTGRESQL_SERVICE_HOST}" ]; do
-#  # Sleep for the specified delay before the next attempt
-#  sleep "${DELAY}"
-#done
-#echo "POSTGRESQL_SERVICE_HOST has been set to ${POSTGRESQL_SERVICE_HOST}"
-#export POSTGRES_SERVER=${POSTGRESQL_SERVICE_HOST}
-#echo "POSTGRES_SERVER has been set to ${POSTGRES_SERVER}"
-## test to wait for the env postgres-service-host to be set
-
 # Include some sane defaults
 . ${SCRIPT_DIR}/default.config
 
@@ -99,7 +86,6 @@ echo "create-javamail-resource --mailhost=${MAIL_SERVER} --mailuser=dataversenot
 
 echo "INFO: defining miscellaneous configuration options."
 
-
 # Timer data source
 echo "set configs.config.server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/__TimerPool" >> ${DV_POSTBOOT}
 #echo "set configs.config.server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/VDCNetDS" >> ${DV_POSTBOOT}
@@ -130,16 +116,28 @@ env -0 | grep -z -Ee "^(dataverse|doi)_" | while IFS='=' read -r -d '' k v; do
     echo "create-system-properties ${KEY}=${v}" >> ${DV_POSTBOOT}
 done
 
-# test add commands for system properties
+# add commands for system properties see dataverse release note 5.3
 echo "create-system-properties dataverse.db.user=${POSTGRES_USER}" >> ${DV_POSTBOOT}
 echo "create-system-properties dataverse.db.host=${POSTGRES_SERVER}" >> ${DV_POSTBOOT}
 echo "create-system-properties dataverse.db.port=${POSTGRES_PORT}" >> ${DV_POSTBOOT}
 echo "create-system-properties dataverse.db.name=${POSTGRES_DB}" >> ${DV_POSTBOOT}
 echo "create-system-properties dataverse.db.password=${POSTGRES_PASSWORD}" >> ${DV_POSTBOOT}
-#echo "AS_ADMIN_ALIASPASSWORD=${DB_PASS}" > /tmp/password.txt
-#<payara install path>/bin/asadmin create-password-alias --passwordfile /tmp/password.txt dataverse.db.password
-#rm /tmp/password.txt
-# test add commands for system properties
+# add commands for system properties see dataverse release note 5.3
+
+# add commands for system properties see dataverse release note 5.13
+echo "create-system-properties dataverse.solr.host=${SOLR_PORT_8983_TCP_ADDR}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.solr.port=${SOLR_SERVICE_PORT}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.solr.core=collection1" >> ${DV_POSTBOOT}
+#echo "create-system-properties dataverse.solr.protocol=${SOLR_PORT_8983_TCP_PROTO}" >> ${DV_POSTBOOT}
+#echo "create-system-properties dataverse.solr.path=${POSTGRES_PASSWORD}" >> ${DV_POSTBOOT}
+# add commands for system properties see dataverse release note 5.13
+
+## set storage default to local
+#echo "create-jvm-options -Ddataverse.files.file.label=file" >> ${DV_POSTBOOT}
+#echo "create-jvm-options -Ddataverse.files.file.type=file" >> ${DV_POSTBOOT}
+#echo "create-jvm-options -Ddataverse.files.file.directory=/data" >> ${DV_POSTBOOT}
+#echo "create-jvm-options -Ddataverse.files.storage-driver-id=file" >> ${DV_POSTBOOT}
+## set storage default to local
 
 # 4. Add the commands to the existing postboot file, but insert BEFORE deployment
 echo "$(cat ${DV_POSTBOOT} | cat - ${POSTBOOT_COMMANDS} )" > ${POSTBOOT_COMMANDS}

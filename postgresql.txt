@@ -3,3 +3,5 @@ psql
 SELECT * FROM setting;
 DELETE FROM setting
 WHERE name=':BlockedApiEndpoints';
+
+dataverseproject_logo.png

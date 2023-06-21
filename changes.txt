@@ -9,6 +9,10 @@ changed image dataverse version from v4.20 to 4.20 (v4.20 was not existing) in k
 added command to postgres deployment to initialize user and database
 added "--no-check-certificate" in docker file to enable docker build (glassfish dockerfile)
 added port 4848 to dataverse deployment
+postgres version to 13.11
+solr version to 8.11.1
+dataverse version to 5.13
+major changes in bash scripts for dataverse
 
 
 commands:
@@ -22,29 +26,17 @@ kubectl delete -f k8s/dataverse/jobs/bootstrap.yaml
 kubectl delete -k personas\prod-skel\envs\env1
 kubectl delete -f personas/demo/secrets.yaml
 
+kubectl apply -f prod-skel/bases/minio-standalone/pvc.yaml
+kubectl apply -f prod-skel/bases/minio-standalone/svc.yaml
+kubectl apply -f prod-skel/bases/minio-standalone/deployment.yaml
 
-testing to get dataverse to work:
-kubectl apply -f k8s/dataverse/deployment.yaml
-kubectl port-forward service/dataverse -n dv-test 8080:8080
-kubectl port-forward service/dataverse -n dv-test 4848:4848
-
-kubectl apply -f k8s/dataverse/ingress.yaml
-kubectl delete -f k8s/dataverse/ingress.yaml
-
-
-testing to get postgresql to work:
-kubectl apply -f personas/demo/secrets.yaml
-kubectl apply -f personas/demo/postgresql/pvc.yaml
-kubectl apply -f personas/demo/postgresql/deployment.yaml
-
-kubectl delete -f personas/demo/postgresql/deployment.yaml
-kubectl delete -f personas/demo/postgresql/pvc.yaml
-kubectl delete -f personas/demo/secrets.yaml
-
-
+kubectl delete -f prod-skel/bases/minio-standalone/deployment.yaml
+kubectl delete -f prod-skel/bases/minio-standalone/svc.yaml
+kubectl delete -f prod-skel/bases/minio-standalone/pvc.yaml
 
 Docker build commands:
-docker build --no-cache -t iqss/dataverse-k8s:tt -f docker/dataverse-k8s/payara/Dockerfile .
+docker build --no-cache -t iqss/dataverse-k8s:5.13 -f docker/dataverse-k8s/payara/Dockerfile .
+docker build --no-cache -t iqss/dataverse-k8s:8.11.1 -f docker/solr-k8s/Dockerfile .
 
 Payara admin console:
 kubectl port-forward -n dv-test service/dataverse 4848:4848
