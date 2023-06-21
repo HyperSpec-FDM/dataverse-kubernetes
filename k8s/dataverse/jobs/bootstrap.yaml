@@ -76,7 +76,7 @@ spec:
               readOnly: true
       initContainers:
         - name: check-db-ready
-          image: postgres:9.6
+          image: postgres:13.11 #9.6
           command: ['sh', '-c',
             'until pg_isready -h "${POSTGRESQL_SERVICE_HOST}" -p "${POSTGRESQL_SERVICE_PORT}";
             do echo waiting for database; sleep 3; done;']

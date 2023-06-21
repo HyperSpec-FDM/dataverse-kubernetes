@@ -2,6 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: minio
+  namespace: dv-test
   labels:
     app.kubernetes.io/name: minio
     app.kubernetes.io/version: "latest"
@@ -28,7 +29,7 @@ spec:
       containers:
         - name: minio
           image: minio/minio
-          args: ["server", "/data"]
+          args: ["server", "/data", "--console-address", ":9010"]
           resources:
             requests:
               memory: "2Gi"
@@ -42,9 +43,9 @@ spec:
           env:
             # MinIO access key and secret key
             - name: MINIO_ACCESS_KEY_FILE
-              value: minio/access-key
+              value: "5IMXGis0YjH6620GIH16"
             - name: MINIO_SECRET_KEY_FILE
-              value: minio/secret-key
+              value: "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
           volumeMounts:
             - name: data
               mountPath: /data
@@ -54,6 +55,8 @@ spec:
           ports:
             - containerPort: 9000
               name: service
+            - containerPort: 9010
+              name: console
           readinessProbe:
             httpGet:
               path: /minio/health/ready
@@ -77,8 +80,18 @@ spec:
             - sh
             - -c
             - |
-              mkdir -p /data/dataverse /data/mdclogs;
-              chown -c 1000:1000 /data /data/dataverse /data/mdclogs
+              mkdir -p /data/hsma;
+              chown -c 1000:1000 /data /data/hsma
+        - name: set-public
+          image: minio/mc
+          securityContext:
+            runAsUser: 0
+          command:
+            - sh
+            - -c
+            - |
+              mc admin add data $MINIO_ACCESS_KEY_FILE $MINIO_SECRET_KEY_FILE
+              mc anonymous set public data/hsma
           volumeMounts:
             - name: data
               mountPath: /data

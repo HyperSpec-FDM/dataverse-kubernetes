@@ -38,7 +38,7 @@ if pod_name:
     print(f"The pod name created by deployment '{deployment_name}' is '{pod_name}'.")
 
     # unblock api
-    osCommand = f"kubectl exec -n {namespace} pod/ {pod_name} -- psql -c \"{containerCommand}\""
+    osCommand = f"kubectl exec -n {namespace} pod/{pod_name} -- psql -c \"{containerCommand}\""
     print(osCommand)
     os.system(osCommand)
 else:

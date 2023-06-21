@@ -32,13 +32,19 @@ data:
   ### DOI SETTINGS
   db_DoiProvider: FAKE
 
-  ### FILE STORAGE
-  dataverse_files_directory: /data
-  dataverse_files_storage__driver__id: "s3"
-  dataverse_files_s3__custom__endpoint__url: http://minio:9000
-  dataverse_files_s3__bucket__name: dataverse
-  # required for Minio!
-  dataverse_files_s3__path__style__access: "true"
+  ### FILE STORAGE Local
+#  dataverse_files_file_label: file
+#  dataverse_files_file_type: file
+#  dataverse_files_file_directory: /data
+#  dataverse_files_storage__driver__id: file
+
+  ## FILE STORAGE S3
+#  dataverse_files_hsma_label: hsma
+#  dataverse_files_hsma_type: s3
+#  dataverse_files_hsma__custom__endpoint__url: http://minio:9000
+#  dataverse_files_hsma__bucket__name: dataverse
+#  # required for Minio!
+#  dataverse_files_hsma__path__style__access: "true"
 
   ### INGEST
   # deactivate ingest for tabular files

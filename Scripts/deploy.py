@@ -15,6 +15,11 @@ os.system("kubectl apply -f prod-skel\secrets")
 os.system("kubectl apply -k prod-skel\envs\env1")
 os.system("kubectl create -f k8s/dataverse/jobs/bootstrap.yaml")
 
+
+# deploy s3
+os.system("kubectl apply -f prod-skel\\bases\minio-standalone")
+
+
 # # check if dataverse is running
 # while status != 200:
 #     try:
