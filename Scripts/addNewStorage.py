@@ -117,6 +117,8 @@ for command in variables:
 
     # Update the environment variable in each container
     for container in deployment.spec.template.spec.containers:
+        if container.env is None:
+            container.env = []
         container.env.append(client.V1EnvVar(name=env, value=value))
 
 # Patch the deployment to apply the changes

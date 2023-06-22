@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-setup
+  namespace: dv-test
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: minio-config
+          persistentVolumeClaim:
+            claimName: minio
+      containers:
+        - name: add-alias-and-user
+          image: minio/mc
+          command:
+            - sh
+            - -c
+            - |
+              until curl -I -m 5 http://minio:9010 >/dev/null 2>&1; do
+                echo "Waiting for Minio console to become ready..."
+                sleep 5
+              done
+              echo "Minio is up and running"
+              mc mb data/hsma
+              mc alias set minio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+              mc anonymous set public minio/hsma
+              mc admin user add minio ttt ttt-password
+              mc admin user svcacct add minio ttt --access-key "5IMXGis0YjH6620GIH16" --secret-key "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
+              echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:ListAllMyBuckets"], "Resource": ["arn:aws:s3:::*"]} ]}' > /tmp/readwrite.json
+              mc admin policy create minio readwrite /tmp/readwrite.json
+              mc admin policy attach minio readwrite --user ttt
+          volumeMounts:
+            - name: minio-config
+              mountPath: /root/.mc
+          env:
+            - name: MINIO_ACCESS_KEY
+              value: "dataverse"
+            - name: MINIO_SECRET_KEY
+              value: "changeme"
+  backoffLimit: 4
