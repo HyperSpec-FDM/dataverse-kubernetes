@@ -41,17 +41,33 @@ spec:
             runAsUser: 1000
             runAsGroup: 1000
           env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-s3
+                  key: access-key
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-s3
+                  key: secret-key
             # MinIO access key and secret key
-            - name: MINIO_ACCESS_KEY_FILE
-              value: "5IMXGis0YjH6620GIH16"
-            - name: MINIO_SECRET_KEY_FILE
-              value: "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
+#            - name: MINIO_ACCESS_KEY
+#              value: "5IMXGis0YjH6620GIH16"
+#            - name: MINIO_SECRET_KEY
+#              value: "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
+#            - name: MINIO_BROWSER_ACCESS_KEY
+#              value: "5IMXGis0YjH6620GIH16"
+#            - name: MINIO_BROWSER_SECRET_KEY
+#              value: "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
           volumeMounts:
             - name: data
               mountPath: /data
             - name: minio-secrets
               mountPath: "/run/secrets/minio"
               readOnly: true
+            - name: minio-config
+              mountPath: /root/.mc
           ports:
             - containerPort: 9000
               name: service
@@ -76,22 +92,12 @@ spec:
           image: giantswarm/tiny-tools
           securityContext:
             runAsUser: 0
-          command:
-            - sh
-            - -c
-            - |
-              mkdir -p /data/hsma;
-              chown -c 1000:1000 /data /data/hsma
-        - name: set-public
-          image: minio/mc
-          securityContext:
-            runAsUser: 0
-          command:
-            - sh
-            - -c
-            - |
-              mc admin add data $MINIO_ACCESS_KEY_FILE $MINIO_SECRET_KEY_FILE
-              mc anonymous set public data/hsma
+#          command:
+#            - sh
+#            - -c
+#            - |
+#              mkdir -p /data/hsma;
+#              chown -c 1000:1000 /data /data/hsma
           volumeMounts:
             - name: data
               mountPath: /data
@@ -102,3 +108,5 @@ spec:
         - name: minio-secrets
           secret:
             secretName: dataverse-s3
+        - name: minio-config
+          emptyDir: {}
