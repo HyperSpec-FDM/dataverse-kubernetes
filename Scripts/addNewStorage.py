@@ -200,7 +200,7 @@ output = pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_
 
 # Split the text into rows
 headers = output.strip().split("\n")[0:1]  # get header line
-lines = output.strip().split("\n")[2:-1] # get remaining lines without the last on (rows:x)
+lines = output.strip().split("\n")[2:-1]  # get remaining lines without the last on (rows:x)
 
 # Extract column names from the header row
 headers = [name.strip() for name in headers[0].split("|")]
