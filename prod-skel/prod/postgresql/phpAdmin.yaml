@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phppgadmin
+  namespace: dv-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phppgadmin
+  template:
+    metadata:
+      labels:
+        app: phppgadmin
+    spec:
+      containers:
+        - name: phppgadmin
+          image: bitnami/phppgadmin:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phppgadmin-service
+  namespace: dv-test
+spec:
+  selector:
+    app: phppgadmin
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 8080
+  type: LoadBalancer

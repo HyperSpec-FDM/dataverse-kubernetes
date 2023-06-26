@@ -92,12 +92,12 @@ spec:
           image: giantswarm/tiny-tools
           securityContext:
             runAsUser: 0
-#          command:
-#            - sh
-#            - -c
-#            - |
-#              mkdir -p /data/hsma;
-#              chown -c 1000:1000 /data /data/hsma
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /data/hsma;
+              chown -c 1000:1000 /data /data/hsma
           volumeMounts:
             - name: data
               mountPath: /data

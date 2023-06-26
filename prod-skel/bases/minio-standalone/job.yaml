@@ -19,18 +19,45 @@ spec:
             - -c
             - |
               until curl -I -m 5 http://minio:9010 >/dev/null 2>&1; do
-                echo "Waiting for Minio console to become ready..."
+                echo "Waiting for Minio to become ready..."
                 sleep 5
               done
               echo "Minio is up and running"
-              mc mb data/hsma
-              mc alias set minio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
-              mc anonymous set public minio/hsma
-              mc admin user add minio ttt ttt-password
-              mc admin user svcacct add minio ttt --access-key "5IMXGis0YjH6620GIH16" --secret-key "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
-              echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:ListAllMyBuckets"], "Resource": ["arn:aws:s3:::*"]} ]}' > /tmp/readwrite.json
-              mc admin policy create minio readwrite /tmp/readwrite.json
-              mc admin policy attach minio readwrite --user ttt
+              mc mb data/$bucket_name
+              
+              # Check if the bucket is created
+              while ! mc ls data/$bucket_name >/dev/null 2>&1; do
+                echo "Waiting for bucket $bucket_name to be created..."
+                sleep 5
+              done 
+              
+              mc alias set data http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY
+              mc anonymous set public data/$bucket_name
+              mc admin user add data $user $password
+              
+              mc admin user svcacct add data $user --access-key $user_access_key --secret-key $user_secret_key
+              # echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:ListAllMyBuckets"], "Resource": ["arn:aws:s3:::*"]} ]}' > /tmp/readwrite.json
+              # mc admin policy create data readwrite /tmp/readwrite.json
+              mc admin policy attach data readwrite --user $user
+              
+              # echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:GetBucketLocation", "s3:ListBucket"], "Resource": ["arn:aws:s3:::*"]},{"Effect": "Allow", "Action": ["s3:GetObject", "s3:GetObjectAcl", "s3:GetObjectVersion", "s3:GetObjectTagging"],"Resource": ["arn:aws:s3:::*/*"]}]}' > /tmp/readonly.json
+              # mc admin policy create data readonly /tmp/readonly.json
+              mc admin policy attach data readonly --user $user
+              
+              # echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:GetBucketLocation", "s3:ListBucket", "s3:PutObject", "s3:PutObjectAcl", "s3:PutObjectTagging"],"Resource": ["arn:aws:s3:::*"]}]}' > /tmp/writeonly.json
+              # mc admin policy create data writeonly /tmp/readonly.json
+              mc admin policy attach data writeonly --user $user
+              
+              # echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:GetBucketLocation", "s3:ListBucket", "s3:GetBucketAcl", "s3:GetBucketPolicy", "s3:GetBucketTagging", "s3:GetBucketLogging", "s3:GetBucketNotification", "s3:GetBucketVersioning", "s3:GetBucketWebsite", "s3:GetBucketCors", "s3:GetLifecycleConfiguration", "s3:GetBucketRequestPayment", "s3:GetBucketEncryption", "s3:GetReplicationConfiguration", "s3:GetAnalyticsConfiguration", "s3:GetMetricsConfiguration", "s3:GetInventoryConfiguration", "s3:GetBucketMetricsConfiguration", "s3:GetBucketAnalyticsConfiguration", "s3:GetBucketInventoryConfiguration", "s3:GetIntelligentTieringConfiguration", "s3:GetBucketIntelligentTieringConfiguration", "s3:GetJobTagging", "s3:GetStorageLensConfiguration", "s3:GetAccessPoint", "s3:GetAccessPointPolicy", "s3:GetAccessPointPolicyStatus", "s3:GetAccessPointPolicyStatusForObjectLambda", "s3:GetAccessPointForObjectLambda", "s3:ListAccessPoints", "s3:ListAllMyBuckets"],"Resource": ["arn:aws:s3:::*"]}]}' > /tmp/consoleadmin.json
+              # mc admin policy create data consoleadmin /tmp/consoleadmin.json
+              mc admin policy attach data consoleadmin --user $user
+              
+              # echo '{"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": ["s3:GetBucketLocation", "s3:ListBucket", "s3:ListBucketMultipartUploads", "s3:ListBucketVersions", "s3:GetObject", "s3:GetObjectAcl", "s3:GetObjectTagging", "s3:GetObjectTorrent", "s3:Get"],"Resource": ["arn:aws:s3:::*","arn:aws:s3:::*/*"]}]}' > /tmp/diagnostics.json
+              # mc admin policy create data diagnostics /tmp/diagnostics.json
+              mc admin policy attach data diagnostics --user $user
+
+
+
           volumeMounts:
             - name: minio-config
               mountPath: /root/.mc
@@ -39,4 +66,29 @@ spec:
               value: "dataverse"
             - name: MINIO_SECRET_KEY
               value: "changeme"
+            - name: bucket_name
+              valueFrom:
+                configMapKeyRef:
+                  key: s3_bucket_name
+                  name: minio
+            - name: user
+              valueFrom:
+                configMapKeyRef:
+                  key: s3_user
+                  name: minio
+            - name: password
+              valueFrom:
+                configMapKeyRef:
+                  key: s3_password
+                  name: minio
+            - name: user_access_key
+              valueFrom:
+                configMapKeyRef:
+                  key: s3_access_key
+                  name: minio
+            - name: user_secret_key
+              valueFrom:
+                configMapKeyRef:
+                  key: s3_secret_key
+                  name: minio
   backoffLimit: 4
