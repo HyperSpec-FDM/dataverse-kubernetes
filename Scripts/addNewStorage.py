@@ -136,6 +136,31 @@ config.load_kube_config()
 api = client.CoreV1Api()
 api_patch = client.AppsV1Api()
 
+# Get the pod name for the PostgreSQL deployment
+postgresql_pod_name = get_pod_name_by_deployment("postgresql", namespace)
+
+# Define the SQL command to fetch users and their superuser status
+sql_command = "SELECT * FROM public.authenticateduser;"
+
+# Execute the SQL command in the PostgreSQL pod and capture the output
+output = pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api, capture_output=True)
+
+# Split the text into rows
+headers = output.strip().split("\n")[0:1]  # get header line
+lines = output.strip().split("\n")[2:-1]  # get remaining lines without the last on (rows:x)
+
+# Extract column names from the header row
+headers = [name.strip() for name in headers[0].split("|")]
+
+users = []
+
+for line in output.strip().split("\n")[2:-1]:
+    lineList = line.split("|")
+    lineList = [item.replace(" ", "") for item in lineList]
+    merged = dict(zip(headers, lineList))
+    users.append(merged)
+
+
 # Get pod name from deployment
 pod_name = get_pod_name_by_deployment(deployment_name, namespace)
 old_pod_name = pod_name
@@ -189,36 +214,11 @@ while status != 200:
     status = resp.status_code
     time.sleep(5)
 
-# Get the pod name for the PostgreSQL deployment
-postgresql_pod_name = get_pod_name_by_deployment("postgresql", namespace)
-
-# Define the SQL command to fetch users and their superuser status
-sql_command = "SELECT * FROM public.authenticateduser;"
-
-# Execute the SQL command in the PostgreSQL pod and capture the output
-output = pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api, capture_output=True)
-
-# Split the text into rows
-headers = output.strip().split("\n")[0:1]  # get header line
-lines = output.strip().split("\n")[2:-1]  # get remaining lines without the last on (rows:x)
-
-# Extract column names from the header row
-headers = [name.strip() for name in headers[0].split("|")]
-
-users = []
-
-for line in output.strip().split("\n")[2:-1]:
-    lineList = line.split("|")
-    lineList = [item.replace(" ", "") for item in lineList]
-    merged = dict(zip(headers, lineList))
-    users.append(merged)
-
-
-# Update the superuser attribute
 for user in users:
-    sql_command = f"""UPDATE public.authenticateduser
-                      SET "superuser" = TRUE
-                      WHERE "useridentifier" = '{user["useridentifier"]}';"""
+    if user["superuser"] == "t":
+        sql_command = f"""UPDATE public.authenticateduser
+                          SET "superuser" = TRUE
+                          WHERE "useridentifier" = '{user["useridentifier"]}';"""
 
-    # Execute the SQL command in the PostgreSQL pod and capture the output
-    pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api,)
+        # Execute the SQL command in the PostgreSQL pod and capture the output
+        pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api,)
