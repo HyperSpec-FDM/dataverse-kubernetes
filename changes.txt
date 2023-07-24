@@ -14,6 +14,15 @@ solr version to 8.11.1
 dataverse version to 5.13
 major changes in bash scripts for dataverse
 
+changed solr ready probe in dataverse deployment and bootstrapjob and lifeness and readinessprobe in solr deployment
+from:
+command: ['sh', '-c',
+          'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/collection1/admin/ping" 2>&1 | grep "status.:.OK";
+           do echo waiting for solr; sleep 3; done;']
+to:
+command: ["/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
+           do echo waiting for solr; sleep 3; done;']
+added custom entrypoint for solr which starts solr in foreground and creates required collection collection1
 
 commands:
 kubectl apply -f personas/demo/secrets.yaml
@@ -38,7 +47,7 @@ kubectl delete -f prod-skel/bases/minio-standalone/pvc.yaml
 
 Docker build commands:
 docker build --no-cache -t iqss/dataverse-k8s:5.13 -f docker/dataverse-k8s/payara/Dockerfile .
-docker build --no-cache -t iqss/dataverse-k8s:8.11.1 -f docker/solr-k8s/Dockerfile .
+docker build --no-cache -t iqss/solr-k8s:8.11.1 -f docker/solr-k8s/Dockerfile .
 
 Payara admin console:
 kubectl port-forward -n dv-test service/dataverse 4848:4848

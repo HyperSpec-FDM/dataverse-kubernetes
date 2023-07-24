@@ -92,3 +92,4 @@ spec:
         - name: postgresql-persistent-storage
           persistentVolumeClaim:
             claimName: postgresql
+

@@ -10,9 +10,11 @@ until curl -sS -f "http://localhost:8080/robots.txt" -m 2 2>&1 > /dev/null;
  echo "---Updating reference_data.sql--" >> /tmp/status.log;
  sleep 20;
 
-if [ -s "${HOME_DIR}/dvinstall/reference_data.sql" ]; then
-  psql -U ${POSTGRES_USER} -h ${POSTGRES_SERVER} -d ${POSTGRES_DATABASE} -f ${HOME_DIR}/dvinstall/reference_data.sql
-fi
+# removed due to release note 5.2
+#if [ -s "${HOME_DIR}/dvinstall/reference_data.sql" ]; then
+#  psql -U ${POSTGRES_USER} -h ${POSTGRES_SERVER} -d ${POSTGRES_DATABASE} -f ${HOME_DIR}/dvinstall/reference_data.sql
+#fi
+# removed due to release note 5.2
 
 DV_SU_PASSWORD="admin"
 
@@ -54,11 +56,25 @@ else
 	bash ${HOME_DIR}/dvinstall/setup-all.sh
 
 
-	echo "Setting up the admin user (and as superuser)" >> /tmp/status.log
-	adminResp=$(curl -s -H "Content-type:application/json" -X POST -d @data/user-admin.json "$SERVER/builtin-users?password=$DV_SU_PASSWORD&key=burrito")
-	echo $adminResp
-	curl -X POST "$SERVER/admin/superuser/dataverseAdmin"
-	echo
+
+# Check if admin user already exists
+existingUser=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_SERVER} -d ${POSTGRES_DATABASE} --password-file=${POSTGRES_PASSWORD_FILE} -tAc "SELECT COUNT(*) FROM authenticateduser WHERE useridentifier = 'dataverseAdmin'")
+echo "Existing user value: '$existingUser'"
+if [ "$existingUser" -eq 0 ]; then
+  echo "Setting up the admin user (and as superuser)" >> /tmp/status.log
+  adminResp=$(curl -s -H "Content-type:application/json" -X POST -d @data/user-admin.json "$SERVER/builtin-users?password=$DV_SU_PASSWORD&key=burrito")
+  echo "$adminResp" >> /tmp/status.log
+  curl -X POST "$SERVER/admin/superuser/dataverseAdmin"
+  echo >> /tmp/status.log
+else
+  echo "Admin user already exists. Skipping creation." >> /tmp/status.log
+fi
+
+#	echo "Setting up the admin user (and as superuser)" >> /tmp/status.log
+#	adminResp=$(curl -s -H "Content-type:application/json" -X POST -d @data/user-admin.json "$SERVER/builtin-users?password=$DV_SU_PASSWORD&key=burrito")
+#	echo $adminResp
+#	curl -X POST "$SERVER/admin/superuser/dataverseAdmin"
+#	echo
 
 	echo "Setting up the root dataverse" >> /tmp/status.log
 	adminKey=$(echo $adminResp | jq .data.apiToken | tr -d \")

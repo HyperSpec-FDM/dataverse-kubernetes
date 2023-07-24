@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: solr
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent #Always
       initContainers:
         - name: schema-init
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent #Always
