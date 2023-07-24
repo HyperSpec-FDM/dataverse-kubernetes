@@ -81,8 +81,8 @@ RUN chmod +x ${SCRIPT_DIR}/*
 COPY --chown=payara:payara docker/dataverse-k8s/bin/*.config ${SCRIPT_DIR}/
 COPY --chown=payara:payara docker/dataverse-k8s/payara/*.config /opt/payara/dvinstall/default.config
 
-# Copy reference_data
-COPY --chown=payara:payara docker/dataverse-k8s/payara/*.sql /opt/payara/dvinstall/reference_data.sql
+## Copy reference_data
+#COPY --chown=payara:payara docker/dataverse-k8s/payara/reference_data.sql /opt/payara/dvinstall/reference_data.sql
 
 # Copy logging.properties
 COPY --chown=payara:payara docker/dataverse-k8s/payara/logging.properties ${PAYARA_DIR}/glassfish/domains/${DOMAIN_NAME}/config/logging.properties

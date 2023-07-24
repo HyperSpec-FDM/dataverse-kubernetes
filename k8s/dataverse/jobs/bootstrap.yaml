@@ -82,9 +82,8 @@ spec:
             do echo waiting for database; sleep 3; done;']
         - name: check-solr-ready
           image: giantswarm/tiny-tools
-          command: ['sh', '-c',
-            'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/collection1/admin/ping" 2>&1 | grep "status.:.OK";
-            do echo waiting for solr; sleep 3; done;']
+          command: [ "/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
+                     do echo waiting for solr; sleep 3; done;' ]
         - name: check-dataverse-ready
           image: giantswarm/tiny-tools
           command: ['sh', '-c',

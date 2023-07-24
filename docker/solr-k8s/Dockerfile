@@ -12,6 +12,7 @@ LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"
 ARG WEBHOOK_VERSION=2.6.11
 ARG TINI_VERSION=v0.18.0
 ARG VERSION=5.13
+ARG SOLR_VERSION=8.11.1
 ARG COLLECTION=collection1
 ENV SOLR_OPTS="-Dsolr.jetty.request.header.size=102400"\
     COLLECTION_DIR=/opt/solr/server/solr/${COLLECTION}\
@@ -19,6 +20,11 @@ ENV SOLR_OPTS="-Dsolr.jetty.request.header.size=102400"\
     SCRIPT_DIR=/scripts\
     DATAVERSE_PKG=https://github.com/IQSS/dataverse/releases/download/v${VERSION}/dvinstall.zip
 ENV SCHEMA_SCRIPT_DIR=${SCRIPT_DIR}/schema
+
+
+# Install necessary utilities
+USER root
+RUN apt-get update && apt-get install -y ed bc sed gawk
 
 # Create schema store and scripts folder if not present, change permissions
 USER root
@@ -46,7 +52,12 @@ USER ${SOLR_USER}
 
 # Copy the _default configset and create core.properties
 RUN cp -a ${COLLECTION_DIR}/../configsets/_default/conf ${COLLECTION_DIR} && \
-    echo "name=${COLLECTION}" > ${COLLECTION_DIR}/core.properties
+    echo "name=${COLLECTION}" > ${COLLECTION_DIR}/core.properties && \
+    echo "instanceDir=${COLLECTION_DIR}" >> ${COLLECTION_DIR}/core.properties && \
+    echo "dataDir=${COLLECTION_DIR}/data" >> ${COLLECTION_DIR}/core.properties && \
+    echo "config=${COLLECTION_DIR}/conf/solrconfig.xml" >> ${COLLECTION_DIR}/core.properties && \
+    echo "schema=${COLLECTION_DIR}/conf/schema.xml" >> ${COLLECTION_DIR}/core.properties
+
 # Download dvinstall.zip, extract, copy schema and config, remove install files
 # Copy script for schema creation.
 #RUN wget --no-verbose -O dvinstall.zip ${DATAVERSE_PKG} && \
@@ -63,7 +74,10 @@ RUN wget --no-verbose -O dvinstall.zip ${DATAVERSE_PKG} && \
     mkdir -p ${COLLECTION_DIR}/conf && \
     mv dvinstall/solrconfig.xml ${COLLECTION_DIR}/conf/solrconfig.xml && \
     mv dvinstall/schema*.xml ${COLLECTION_DIR}/conf/ && \
+    mv dvinstall/update-fields.sh ${SCHEMA_SCRIPT_DIR}/ && \
     rm -rf dvinstall dvinstall.zip
+
+#mv dvinstall/schema*.xml ${COLLECTION_DIR}/conf/ && \
 # removed due to release note 5.8
 # mv dvinstall/updateSchemaMDB.sh ${SCHEMA_SCRIPT_DIR}/ && \
 # removed due to release note 5.8
@@ -82,6 +96,15 @@ RUN wget --no-verbose -O webhook.tar.gz https://github.com/adnanh/webhook/releas
     tar -xzf webhook.tar.gz --strip-components=1 -C ${SCHEMA_SCRIPT_DIR} && \
     chmod +x ${SCHEMA_SCRIPT_DIR}/webhook && \
     rm webhook.tar.gz
+
 #COPY --chown=solr:solr schema/ ${SCHEMA_SCRIPT_DIR}
 COPY --chown=solr:solr docker/solr-k8s/schema ${SCHEMA_SCRIPT_DIR}
 RUN chmod +x ${SCHEMA_SCRIPT_DIR}/*.sh
+#RUN chmod +x ${SCHEMA_SCRIPT_DIR}/init
+
+# Convert line endings of sidecar.sh to Unix-style (LF)
+RUN sed -i 's/\r$//' ${SCHEMA_SCRIPT_DIR}/sidecar.sh && \
+    chmod +x ${SCHEMA_SCRIPT_DIR}/sidecar.sh
+
+USER ${SOLR_USER}
+

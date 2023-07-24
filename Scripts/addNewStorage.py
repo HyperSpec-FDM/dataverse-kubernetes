@@ -96,6 +96,7 @@ profile = "minio_profile_1"
 accessKey = "5IMXGis0YjH6620GIH16"
 secretKey = "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
 endpoint = "http\:\/\/minio\:9000"
+changePostgres = False
 variables = [
     f"-Ddataverse.files.{lable}.type=s3",
     f"-Ddataverse.files.{lable}.label={lable}",
@@ -121,7 +122,6 @@ env_vars = [
             {'name': f'dataverse_files_{lable}_path__style__access', 'value': 'true'},
             {'name': f'dataverse_files_{lable}_access__key', 'value': f'{accessKey}'},
             {'name': f'dataverse_files_{lable}_secret__key', 'value': f'{secretKey}'}]
-
 
 
 # set url for dataverse
@@ -198,27 +198,28 @@ pod_exec(pod_name, container_name, namespace, command, api)
 
 
 # Update Postgresql table
-# Wait for old_pod to be stopped
-while old_pod_status != "Stopped":
-    try:
-        # Get old pod object
-        old_pod = api.read_namespaced_pod(name=pod_name, namespace=namespace)
-        old_pod_status = old_pod.status.conditions.sstatus
+if changePostgres == True:
+    # Wait for old_pod to be stopped
+    while old_pod_status != "Stopped":
+        try:
+            # Get old pod object
+            old_pod = api.read_namespaced_pod(name=pod_name, namespace=namespace)
+            old_pod_status = old_pod.status.conditions.sstatus
+            time.sleep(5)
+        except:
+            old_pod_status = "Stopped"
+
+    # Wait for dataverse to be ready before changing superuser attribute
+    while status != 200:
+        resp = requests.get(url)
+        status = resp.status_code
         time.sleep(5)
-    except:
-        old_pod_status = "Stopped"
 
-# Wait for dataverse to be ready before changing superuser attribute
-while status != 200:
-    resp = requests.get(url)
-    status = resp.status_code
-    time.sleep(5)
+    for user in users:
+        if user["superuser"] == "t":
+            sql_command = f"""UPDATE public.authenticateduser
+                              SET "superuser" = TRUE
+                              WHERE "useridentifier" = '{user["useridentifier"]}';"""
 
-for user in users:
-    if user["superuser"] == "t":
-        sql_command = f"""UPDATE public.authenticateduser
-                          SET "superuser" = TRUE
-                          WHERE "useridentifier" = '{user["useridentifier"]}';"""
-
-        # Execute the SQL command in the PostgreSQL pod and capture the output
-        pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api,)
+            # Execute the SQL command in the PostgreSQL pod and capture the output
+            pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api,)

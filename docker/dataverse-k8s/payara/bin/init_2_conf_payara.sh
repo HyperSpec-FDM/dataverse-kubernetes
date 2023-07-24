@@ -129,7 +129,7 @@ echo "create-system-properties dataverse.solr.host=${SOLR_PORT_8983_TCP_ADDR}" >
 echo "create-system-properties dataverse.solr.port=${SOLR_SERVICE_PORT}" >> ${DV_POSTBOOT}
 echo "create-system-properties dataverse.solr.core=collection1" >> ${DV_POSTBOOT}
 #echo "create-system-properties dataverse.solr.protocol=${SOLR_PORT_8983_TCP_PROTO}" >> ${DV_POSTBOOT}
-#echo "create-system-properties dataverse.solr.path=${POSTGRES_PASSWORD}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.solr.path=/solr/collection1" >> ${DV_POSTBOOT}
 # add commands for system properties see dataverse release note 5.13
 
 ## set storage default to local

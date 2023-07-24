@@ -8,4 +8,6 @@ resources:
 
 images:
   - name: iqss/solr-k8s
-    newTag: "4.20"
+    newTag: "8.11.1"
+#    newTag: "tt"
+#    newTag: "4.20"
