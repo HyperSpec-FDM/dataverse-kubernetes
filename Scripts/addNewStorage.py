@@ -84,19 +84,35 @@ def pod_exec(pod_name, container_name, namespace, command, api_instance, capture
     if capture_output is True:
         return output
 
+def get_pod_status(pod_name, namespace, api_instance):
+    while True:
+        try:
+            pod = api_instance.read_namespaced_pod(pod_name, namespace)
+            return pod.status.phase
+        except Exception as e:
+            print(f"Error while retrieving pod status: {e}")
+            return "Stopped"
+
+def wait_for_pod_status(pod_name, namespace, desired_status, api_instance):
+    while True:
+        pod_status = get_pod_status(pod_name, namespace, api_instance)
+        if pod_status == desired_status:
+            return
+        time.sleep(1)
+
 # Define variables
 namespace = "dv-test"
 deployment_name = "dataverse"
 container_name = "dataverse"
 script_path1 = "/opt/payara/scripts/newS3Storage.sh"
-script_path2 = "/opt/payara/scripts/exportENV.sh"
+# script_path2 = "/opt/payara/scripts/exportENV.sh"
 lable = "hsma"
 bucketname = "hsma"
 profile = "minio_profile_1"
 accessKey = "5IMXGis0YjH6620GIH16"
 secretKey = "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
 endpoint = "http\:\/\/minio\:9000"
-changePostgres = False
+changePostgres = True
 variables = [
     f"-Ddataverse.files.{lable}.type=s3",
     f"-Ddataverse.files.{lable}.label={lable}",
@@ -183,31 +199,30 @@ api_patch.patch_namespaced_deployment(
     body=deployment
 )
 
-# Create jvm resources in new pod
-# Get new pod and run jvm resources
-pod_name = get_pod_name_by_deployment(deployment_name, namespace)
-
-# Wait for the container to be ready before executing commands
-wait_for_container_ready(pod_name, container_name, namespace, api)
-
-# Create command for jvm resource creation
-command = f"chmod +x {script_path1} && {script_path1} {' '.join(variables)}"
-
-# create jvm resources
-pod_exec(pod_name, container_name, namespace, command, api)
+# # Create jvm resources in new pod
+# # Get new pod and run jvm resources
+# pod_name = get_pod_name_by_deployment(deployment_name, namespace)
+#
+# # Wait for the container to be ready before executing commands
+# wait_for_container_ready(pod_name, container_name, namespace, api)
+#
+# # Create command for jvm resource creation
+# command = f"chmod +x {script_path1} && {script_path1} {' '.join(variables)}"
+#
+# # create jvm resources
+# pod_exec(pod_name, container_name, namespace, command, api)
 
 
 # Update Postgresql table
 if changePostgres == True:
     # Wait for old_pod to be stopped
     while old_pod_status != "Stopped":
-        try:
-            # Get old pod object
-            old_pod = api.read_namespaced_pod(name=pod_name, namespace=namespace)
-            old_pod_status = old_pod.status.conditions.sstatus
-            time.sleep(5)
-        except:
-            old_pod_status = "Stopped"
+        # Get old pod status
+        old_pod_status = get_pod_status(old_pod_name, namespace, api)
+        # old_pod = api.read_namespaced_pod(name=pod_name, namespace=namespace)
+        # old_pod_status = old_pod.status.conditions.sstatus
+        print("Waiting for old dataverse pod to be stopped...")
+        time.sleep(5)
 
     # Wait for dataverse to be ready before changing superuser attribute
     while status != 200:
@@ -223,3 +238,50 @@ if changePostgres == True:
 
             # Execute the SQL command in the PostgreSQL pod and capture the output
             pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api,)
+
+    # Create jvm resources in new pod
+    # Get new pod and run jvm resources
+    pod_name = get_pod_name_by_deployment(deployment_name, namespace)
+
+    # Wait for the container to be ready before executing commands
+    wait_for_container_ready(pod_name, container_name, namespace, api)
+
+    # Create command for jvm resource creation
+    command = f"chmod +x {script_path1} && {script_path1} {' '.join(variables)}"
+
+    # create jvm resources
+    pod_exec(pod_name, container_name, namespace, command, api)
+
+
+# # Test to set jvm options in new pod, although they should be present
+# # Wait for old_pod to be stopped
+# old_pod_status = get_pod_status(old_pod_name, namespace, api)
+#
+# while old_pod_status != "Stopped":
+#     # Get old pod status
+#     old_pod_status = get_pod_status(old_pod_name, namespace, api)
+#     # old_pod = api.read_namespaced_pod(name=pod_name, namespace=namespace)
+#     # old_pod_status = old_pod.status.conditions.sstatus
+#     print("Waiting for old dataverse pod to be stopped...")
+#     time.sleep(5)
+#
+# # Wait for dataverse to be ready before changing superuser attribute
+# while status != 200:
+#     resp = requests.get(url)
+#     status = resp.status_code
+#     print("Waiting for dataverse to be ready...")
+#     time.sleep(5)
+#
+#
+# # Create jvm resources in new pod
+# # Get new pod and run jvm resources
+# pod_name = get_pod_name_by_deployment(deployment_name, namespace)
+#
+# # Wait for the container to be ready before executing commands
+# wait_for_container_ready(pod_name, container_name, namespace, api)
+#
+# # Create command for jvm resource creation
+# command = f"chmod +x {script_path1} && {script_path1} {' '.join(variables)}"
+#
+# # create jvm resources
+# pod_exec(pod_name, container_name, namespace, command, api)
