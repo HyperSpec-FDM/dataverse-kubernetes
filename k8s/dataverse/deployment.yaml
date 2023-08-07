@@ -5,8 +5,8 @@ metadata:
   name: dataverse
   labels:
     app.kubernetes.io/name: dataverse
-#    app.kubernetes.io/version: "tt"
-    app.kubernetes.io/version: "5.13"
+    app.kubernetes.io/version: "tt"
+#    app.kubernetes.io/version: "5.13"
 #    app.kubernetes.io/version: "4.20-payara"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
@@ -79,7 +79,7 @@ spec:
             - name: files
               mountPath: /data
             - name: docroot
-              mountPath: /docroot
+              mountPath: /opt/docroot
             - name: heapdumps
               mountPath: /dumps
             - name: db-secret
