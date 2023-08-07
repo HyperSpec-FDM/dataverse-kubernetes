@@ -24,6 +24,10 @@ command: ["/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOL
            do echo waiting for solr; sleep 3; done;']
 added custom entrypoint for solr which starts solr in foreground and creates required collection collection1
 
+added RUN chown -R payara:payara /opt in dataverse dockerfile to give payara permission and ebale logo upload for dataverse collection via ui
+changed DOCROOT_DIR from /docroot to /opt/docroot --> allow dataverse to access logos
+changed mount path of persistent volume docroot from /docroot to /opt/docroot to mount the correct directory
+
 commands:
 kubectl apply -f personas/demo/secrets.yaml
 kubectl apply -k personas\prod-skel\envs\env1

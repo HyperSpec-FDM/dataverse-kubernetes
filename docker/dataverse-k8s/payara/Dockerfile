@@ -13,7 +13,7 @@ ARG VERSION=5.13
 ARG DOMAIN=domain1
 
 ENV DATA_DIR=/data\
-    DOCROOT_DIR=/docroot\
+    DOCROOT_DIR=/opt/docroot\
     METADATA_DIR=/metadata\
     SECRETS_DIR=/secrets\
     DUMPS_DIR=/dumps\
@@ -44,6 +44,10 @@ RUN wget --no-verbose  https://bootstrap.pypa.io/get-pip.py -O -|/usr/bin/python
 RUN wget --no-verbose -O esh https://raw.githubusercontent.com/jirutka/esh/v0.3.0/esh && \
     echo 'fe030e23fc1383780d08128eecf322257cec743b esh' | sha1sum -c - && \
     chmod +x esh && mv esh /usr/local/bin
+
+# change permission of /opt to enable logo upload for dataverse collection
+RUN chown -R payara:payara /opt
+# change permission of /opt to enable logo upload for dataverse collection
 
 # Install PostgreSQL JDBC driver in AppServer
 # TODO: remove this once upstream includes the Postgres Client lib in the WAR.
