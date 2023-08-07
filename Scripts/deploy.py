@@ -6,7 +6,7 @@ os.chdir("..")
 # deploy secrets and dataverse enviroment
 os.system("kubectl apply -f prod-skel\secrets")
 os.system("kubectl apply -k prod-skel\envs\env1")
-os.system("kubectl create -f k8s/dataverse/jobs/bootstrap.yaml")
+# os.system("kubectl create -f k8s/dataverse/jobs/bootstrap.yaml")
 
 
 # deploy s3

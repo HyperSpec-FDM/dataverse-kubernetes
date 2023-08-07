@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: dataverse
     app.kubernetes.io/version: "tt"
-#    app.kubernetes.io/version: "5.13"
+#    app.kubernetes.io/version: "5.14"
 #    app.kubernetes.io/version: "4.20-payara"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
@@ -80,6 +80,8 @@ spec:
               mountPath: /data
             - name: docroot
               mountPath: /opt/docroot
+            - name: logos
+              mountPath: /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos
             - name: heapdumps
               mountPath: /dumps
             - name: db-secret
@@ -135,6 +137,9 @@ spec:
         - name: docroot
           persistentVolumeClaim:
             claimName: dataverse-docroot
+        - name: logos
+          persistentVolumeClaim:
+            claimName: dataverse-logos
         - name: api-secret
           secret:
             secretName: dataverse-api

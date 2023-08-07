@@ -94,14 +94,14 @@ if pod_name:
         if "svg" in imagename:
             change_footer_command = (
                 f"kubectl exec -n {namespace} pod/{pod_name} -c {containername} -- "
-                # f"vim -c \":%s/{imagename}/dataverse_project_logo.svg/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
-                f"vim -c \":%s/dataverse_project_logo.svg/{imagename}/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
+                f"vim -c \":%s/{imagename}/dataverse_project_logo.svg/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
+                # f"vim -c \":%s/dataverse_project_logo.svg/{imagename}/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
             )
         elif "png" in imagename:
             change_footer_command = (
                 f"kubectl exec -n {namespace} pod/{pod_name} -c {containername} -- "
-                # f"vim -c \":%s/{imagename}/dataverseproject_logo.png/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
-                f"vim -c \":%s/dataverseproject_logo.png/{imagename}/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
+                f"vim -c \":%s/{imagename}/dataverseproject_logo.png/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
+                # f"vim -c \":%s/dataverseproject_logo.png/{imagename}/g\" -c \":wq\" /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/dataverse_footer.xhtml"
             )
 
         # Run command to change logo

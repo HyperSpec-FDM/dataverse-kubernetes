@@ -9,7 +9,7 @@ LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"
 
 EXPOSE 4848 9009 8080 8181
 
-ARG VERSION=5.13
+ARG VERSION=5.14
 ARG DOMAIN=domain1
 
 ENV DATA_DIR=/data\
@@ -29,6 +29,7 @@ ENV DATA_DIR=/data\
 USER root
 RUN mkdir -p ${HOME_DIR} ${SCRIPT_DIR} ${SECRETS_DIR} && \
     mkdir -p ${DATA_DIR} ${METADATA_DIR} ${DOCROOT_DIR} ${DUMPS_DIR} && \
+    mkdir -p ${DOMAIN_DIR}/applications/dataverse/logos && \
     chown -R payara: ${DATA_DIR} ${METADATA_DIR} ${DOCROOT_DIR} ${SECRETS_DIR} ${DUMPS_DIR}
 
 ## Install prerequisites
@@ -85,8 +86,8 @@ RUN chmod +x ${SCRIPT_DIR}/*
 COPY --chown=payara:payara docker/dataverse-k8s/bin/*.config ${SCRIPT_DIR}/
 COPY --chown=payara:payara docker/dataverse-k8s/payara/*.config /opt/payara/dvinstall/default.config
 
-## Copy reference_data
-#COPY --chown=payara:payara docker/dataverse-k8s/payara/reference_data.sql /opt/payara/dvinstall/reference_data.sql
+# Copy reference_data
+COPY --chown=payara:payara docker/dataverse-k8s/payara/reference_data.sql /opt/payara/dvinstall/reference_data.sql
 
 # Copy logging.properties
 COPY --chown=payara:payara docker/dataverse-k8s/payara/logging.properties ${PAYARA_DIR}/glassfish/domains/${DOMAIN_NAME}/config/logging.properties
