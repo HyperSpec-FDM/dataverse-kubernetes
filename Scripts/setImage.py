@@ -49,6 +49,8 @@ def resize_svg(original_svg_path, resized_svg_path):
     root = ET.fromstring(svg_content)
 
     # Modify the width and height attributes of the root SVG element
+    # root.set("width", "160")
+    # root.set("height", "50")
     root.set("width", "160")
     root.set("height", "50")
 
@@ -58,6 +60,8 @@ def resize_svg(original_svg_path, resized_svg_path):
     # Write the modified SVG content to a new file
     with open(resized_svg_path, "w") as file:
         file.write(modified_svg_content)
+
+# change directory inside container to make logo persistent
 
 # Usage
 deployment_name = "dataverse"
@@ -84,13 +88,13 @@ if pod_name:
         resize_svg(original_image_path, resized_image_path)
 
     # Copy the resized image to the container
-    copy_command = f"kubectl cp {resized_image_path} {namespace}/{pod_name}:/opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename} -c {containername}"
+    copy_command = f"kubectl cp {resized_image_path} {namespace}/{pod_name}:/opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos/{imagename} -c {containername}"
     os.system(copy_command)
     print(containerID)
     # Change the logo
     if apiBlocked == True:
         change_logo_command = (
-            f"docker exec -u root {containerID} curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            f"docker exec -u root {containerID} curl -X PUT -d logos/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
         )
 
     elif apiBlocked == False:

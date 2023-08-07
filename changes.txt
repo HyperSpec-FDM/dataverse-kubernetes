@@ -28,6 +28,9 @@ added RUN chown -R payara:payara /opt in dataverse dockerfile to give payara per
 changed DOCROOT_DIR from /docroot to /opt/docroot --> allow dataverse to access logos
 changed mount path of persistent volume docroot from /docroot to /opt/docroot to mount the correct directory
 
+create directory /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos via dockerfile
+added persistent volume for this directory to make the custom logo persistent
+
 commands:
 kubectl apply -f personas/demo/secrets.yaml
 kubectl apply -k personas\prod-skel\envs\env1

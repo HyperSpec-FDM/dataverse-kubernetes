@@ -161,6 +161,7 @@ sql_command = "SELECT * FROM public.authenticateduser;"
 # Execute the SQL command in the PostgreSQL pod and capture the output
 output = pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', api, capture_output=True)
 
+
 # Split the text into rows
 headers = output.strip().split("\n")[0:1]  # get header line
 lines = output.strip().split("\n")[2:-1]  # get remaining lines without the last on (rows:x)

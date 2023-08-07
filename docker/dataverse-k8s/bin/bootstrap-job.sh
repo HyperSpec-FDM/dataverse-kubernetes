@@ -9,6 +9,11 @@
 
 # Fail on any error
 set -euo pipefail
+
+# TEST with fixed line endings
+# Fix line endings in default.config
+sed -i 's/\r$//' /opt/payara/scripts/default.config
+
 # Include some sane defaults
 . ${SCRIPT_DIR}/default.config
 
