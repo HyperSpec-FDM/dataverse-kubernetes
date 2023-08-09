@@ -49,8 +49,6 @@ def resize_svg(original_svg_path, resized_svg_path):
     root = ET.fromstring(svg_content)
 
     # Modify the width and height attributes of the root SVG element
-    # root.set("width", "160")
-    # root.set("height", "50")
     root.set("width", "160")
     root.set("height", "50")
 
@@ -90,17 +88,28 @@ if pod_name:
     # Copy the resized image to the container
     copy_command = f"kubectl cp {resized_image_path} {namespace}/{pod_name}:/opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos/{imagename} -c {containername}"
     os.system(copy_command)
-    print(containerID)
+
+    # # copy image in required directory
+    # symbolic_link_command = (
+    #     f"kubectl exec -n {namespace} pod/{pod_name} -c {containername} -- "
+    #     f"cp /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
+    # )
+    # os.system(symbolic_link_command)
+
     # Change the logo
     if apiBlocked == True:
+        # change_logo_command = (
+        #     f"docker exec -u root {containerID} curl -X PUT -d logos/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+        # )
         change_logo_command = (
-            f"docker exec -u root {containerID} curl -X PUT -d logos/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            f"kubectl exec -n {namespace} pod/{pod_name} -c {containername} -- "
+            f"curl -X PUT -d logos/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
         )
 
     elif apiBlocked == False:
         change_logo_command = (
             f"kubectl exec -n {namespace} pod/{pod_name} -c {containername} -- "
-            f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            f"curl -X PUT -d logos/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
         )
     # Run command to change logo
     os.system(change_logo_command)
