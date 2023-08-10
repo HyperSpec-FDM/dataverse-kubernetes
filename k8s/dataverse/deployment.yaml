@@ -81,8 +81,8 @@ spec:
               mountPath: /data
             - name: docroot
               mountPath: /opt/docroot
-            - name: logos
-              mountPath: /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos
+#            - name: logos
+#              mountPath: /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos
             - name: heapdumps
               mountPath: /dumps
             - name: db-secret
@@ -138,9 +138,9 @@ spec:
         - name: docroot
           persistentVolumeClaim:
             claimName: dataverse-docroot
-        - name: logos
-          persistentVolumeClaim:
-            claimName: dataverse-logos
+#        - name: logos
+#          persistentVolumeClaim:
+#            claimName: dataverse-logos
         - name: api-secret
           secret:
             secretName: dataverse-api
