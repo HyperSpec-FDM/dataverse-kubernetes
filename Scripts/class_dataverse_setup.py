@@ -1,17 +1,37 @@
 import os
 import subprocess
+import requests
 from kubernetes import client, config
 from kubernetes.stream import stream
-
+import time
 import zipfile
 from PIL import Image
 from xml.etree import ElementTree as ET
 class dataverse_setuper():
-    def __init__(self, deployment_name, namespace, container_name):
+    def __init__(self, deployment_name, namespace, container_name, url):
         self.deployment_name = deployment_name
         self.namespace = namespace
         self.container_name = container_name
-        self.titles = {"en": "English", "de": "Deutsch", "fr": "Français"}
+        self.url = url
+        self.titles = {
+                        "en": "English",
+                        "de": "Deutsch",
+                        "fr": "Français",
+                        "at": "Deutsch - Österreich",
+                        "de": "Deutsch",
+                        "us": "English - United States",
+                        "es": "Español - España",
+                        "ca": "Français - Canada",
+                        "hu": "Magyar - Magyarország",
+                        "it": "Italiano - Italia",
+                        "pl": "Polski - Polska",
+                        "br": "Português - Brasil",
+                        "pt": "Português - Portugal",
+                        "ru": "Русский - Россия",
+                        "se": "Svenska - Sverige",
+                        "sl": "Slovenščina - Slovenija",
+                        "ua": "Українська - Україна"
+                    }
 
         # Load the Kubernetes configuration
         config.load_kube_config()
@@ -108,6 +128,39 @@ class dataverse_setuper():
         if capture_output is True:
             return output
 
+    def get_pod_status(self, pod_name, namespace):
+        while True:
+            try:
+                pod = self.core_v1.read_namespaced_pod(pod_name, namespace)
+                return pod.status.phase
+            except Exception as e:
+                print(f"Error while retrieving pod status: {e}")
+                return "Stopped"
+
+    def wait_for_container_ready(self, pod_name, container_name, namespace, api_instance):
+        while True:
+            try:
+                pod = api_instance.read_namespaced_pod(pod_name, namespace)
+                print(pod.status.phase)
+                if pod.status.phase != "Running":
+                    time.sleep(1)
+                    continue
+                container_statuses = pod.status.container_statuses
+                for status in container_statuses:
+                    if status.name == container_name and status.ready:
+                        return
+            except Exception as e:
+                time.sleep(1)
+                continue
+            time.sleep(1)
+
+    # def wait_for_pod_status(self, pod_name, namespace, desired_status, api_instance):
+    #     while True:
+    #         pod_status = self.get_pod_status(pod_name, namespace, api_instance)
+    #         if pod_status == desired_status:
+    #             return
+    #         time.sleep(1)
+
     def change_logo(self, imagename):
         if self.pod_name:
             # Resize the image
@@ -121,14 +174,28 @@ class dataverse_setuper():
             elif extension == '.svg':
                 self.resize_svg(original_image_path, resized_image_path)
 
-            # Copy the resized image to the container
-            copy_command = f"kubectl cp {resized_image_path} {self.namespace}/{self.pod_name}:/opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos/{imagename} -c {self.container_name}"
+            # Create directory inside the dataverse container
+            create_dir_command = (
+                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
+                f"mkdir /opt/docroot/logos"
+            )
+            os.system(create_dir_command)
+
+            # Copy the resized image to the container in persistent directory
+            copy_command = f"kubectl cp {resized_image_path} {self.namespace}/{self.pod_name}:/opt/docroot/logos/{imagename} -c {self.container_name}"
+            os.system(copy_command)
+
+            # Copy the resized image in required directory
+            copy_command = (
+                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
+                f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
+            )
             os.system(copy_command)
 
             # Change the logo of dataverse
             change_logo_command = (
                 f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"curl -X PUT -d logos/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+                f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
             )
             os.system(change_logo_command)
             print(change_logo_command)
@@ -259,21 +326,142 @@ class dataverse_setuper():
 
         self.pod_exec(postgresql_pod_name, "postgresql", self.namespace, f'psql -c "{sql_command}"')
 
-    def add_s3_storage(self):
+    def add_s3_storage(self, lable, bucketname, profile, accessKey, secretKey, endpoint, changePostgres = True):
+        # Set variable for script path to add new storage
+        script_path = "/opt/payara/scripts/newS3Storage.sh"
+
+        # Create variables for jvm-options and enviroment variables
+        variables = [
+            f"-Ddataverse.files.{lable}.type=s3",
+            f"-Ddataverse.files.{lable}.label={lable}",
+            f"-Ddataverse.files.{lable}.bucket-name={bucketname}",
+            f"-Ddataverse.files.{lable}.download-redirect=false",
+            f"-Ddataverse.files.{lable}.url-expiration-minutes=120",
+            f"-Ddataverse.files.{lable}.connection-pool-size=4096",
+            f"-Ddataverse.files.{lable}.profile={profile}",
+            f'"-Ddataverse.files.{lable}.custom-endpoint-url\={endpoint}"',
+            f"-Ddataverse.files.{lable}.path-style-access=true",
+            f"-Ddataverse.files.{lable}.access-key={accessKey}",
+            f"-Ddataverse.files.{lable}.secret-key={secretKey}"
+        ]
+        env_vars = [
+            {'name': f'dataverse_files_{lable}_type', 'value': 's3'},
+            {'name': f'dataverse_files_{lable}_label', 'value': f'{lable}'},
+            {'name': f'dataverse_files_{lable}_bucket__name', 'value': f'{bucketname}'},
+            {'name': f'dataverse_files_{lable}_download__redirect', 'value': 'false'},
+            {'name': f'dataverse_files_{lable}_url__expiration__minutes', 'value': '120'},
+            {'name': f'dataverse_files_{lable}_connection__pool__size', 'value': '4096'},
+            {'name': f'dataverse_files_{lable}_profile', 'value': f'{profile}'},
+            {'name': f'dataverse_files_{lable}_custom__endpoint__url', 'value': f'{endpoint}'},
+            {'name': f'dataverse_files_{lable}_path__style__access', 'value': 'true'},
+            {'name': f'dataverse_files_{lable}_access__key', 'value': f'{accessKey}'},
+            {'name': f'dataverse_files_{lable}_secret__key', 'value': f'{secretKey}'}]
+
+        # Set variables for later usage
+        status = None
+        old_pod_status = None
+
+        # Get the pod name for the PostgreSQL deployment
+        postgresql_pod_name, postgresql_container_id = self.get_pod_name_by_deployment("postgresql", self.namespace, "postgresql")
+
+        # Define the SQL command to fetch users and their superuser status
+        sql_command = "SELECT * FROM public.authenticateduser;"
+
+        # Execute the SQL command in the PostgreSQL pod and capture the output
+        output = self.pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', capture_output=True)
+
+        # Split the text into rows
+        headers = output.strip().split("\n")[0:1]  # get header line
+        lines = output.strip().split("\n")[2:-1]  # get remaining lines without the last on (rows:x)
+
+        # Extract column names from the header row
+        headers = [name.strip() for name in headers[0].split("|")]
+
+        users = []
+
+        for line in output.strip().split("\n")[2:-1]:
+            lineList = line.split("|")
+            lineList = [item.replace(" ", "") for item in lineList]
+            merged = dict(zip(headers, lineList))
+            users.append(merged)
+
+        # Set old pod name
+        old_pod_name = self.pod_name
+
+        # Get the deployment
+        deployment = self.apps_v1.read_namespaced_deployment(name=deployment_name, namespace=namespace)
+
+        # Update the environment variable in each container
+        for container in deployment.spec.template.spec.containers:
+            for env in env_vars:
+                if container.env is None:
+                    container.env = []
+                container.env.append(client.V1EnvVar(name=env["name"], value=env["value"]))
+
+        # Patch the deployment to apply the changes
+        self.apps_v1.patch_namespaced_deployment(
+            name=deployment_name,
+            namespace=namespace,
+            body=deployment
+        )
+
+        # Update Postgresql table
+        if changePostgres == True:
+            # Wait for old_pod to be stopped
+            while old_pod_status != "Stopped":
+                # Get old pod status
+                old_pod_status = self.get_pod_status(old_pod_name, namespace)
+                # old_pod = api.read_namespaced_pod(name=pod_name, namespace=namespace)
+                # old_pod_status = old_pod.status.conditions.sstatus
+                print("Waiting for old dataverse pod to be stopped...")
+                time.sleep(5)
+
+            # Wait for dataverse to be ready before changing superuser attribute
+            while status != 200:
+                resp = requests.get(self.url)
+                status = resp.status_code
+                time.sleep(5)
+
+            for user in users:
+                if user["superuser"] == "t":
+                    self.set_superuser(user)
+                    # sql_command = f"""UPDATE public.authenticateduser
+                    #                   SET "superuser" = TRUE
+                    #                   WHERE "useridentifier" = '{user["useridentifier"]}';"""
+                    #
+                    # # Execute the SQL command in the PostgreSQL pod and capture the output
+                    # self.pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', self.core_v1)
+
+            # Create jvm resources in new pod
+            # Get new pod and run jvm resources
+            pod_name, pod_id = self.get_pod_name_by_deployment(deployment_name, self.namespace, self.container_name)
+            self.pod_name = pod_name
+
+            # Wait for the container to be ready before executing commands
+            self.wait_for_container_ready(pod_name, container_name, namespace, self.core_v1)
+
+            # Create command for jvm resource creation
+            command = f"chmod +x {script_path} && {script_path} {' '.join(variables)}"
+
+            # create jvm resources
+            self.pod_exec(pod_name, container_name, namespace, command, self.core_v1)
 
 
 deployment_name = "dataverse"
 namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
+url = "http://localhost:8080" + "/robots.txt"
 imagename = "TransparentLogo.svg"
+languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 
 
-tt = dataverse_setuper(deployment_name, namespace, container_name)
+tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
 # tt.change_logo(imagename)
 # tt.add_custom_metadata("testmeta.tsv")
-# tt.add_languages(["en_US", "de_DE", "fr_FR"], "languages")
+# tt.add_languages(languages, "languages")
 # tt.set_superuser("dataverseAdmin", True)
+tt.add_s3_storage("hsma", "hsma", "minio_profile_1", "5IMXGis0YjH6620GIH16", "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK", "http\:\/\/minio\:9000")
 
 
 

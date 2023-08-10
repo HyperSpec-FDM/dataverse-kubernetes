@@ -29,7 +29,7 @@ ENV DATA_DIR=/data\
 USER root
 RUN mkdir -p ${HOME_DIR} ${SCRIPT_DIR} ${SECRETS_DIR} && \
     mkdir -p ${DATA_DIR} ${METADATA_DIR} ${DOCROOT_DIR} ${DUMPS_DIR} && \
-    mkdir -p ${DOMAIN_DIR}/applications/dataverse/logos && \
+    mkdir -p ${DOMAIN_DIR}&& \
     chown -R payara: ${DATA_DIR} ${METADATA_DIR} ${DOCROOT_DIR} ${SECRETS_DIR} ${DUMPS_DIR}
 
 ## Install prerequisites

@@ -53,7 +53,8 @@ kubectl delete -f prod-skel/bases/minio-standalone/svc.yaml
 kubectl delete -f prod-skel/bases/minio-standalone/pvc.yaml
 
 Docker build commands:
-docker build --no-cache -t iqss/dataverse-k8s:5.13 -f docker/dataverse-k8s/payara/Dockerfile .
+docker build --no-cache -t iqss/dataverse-k8s:5.14 -f docker/dataverse-k8s/payara/Dockerfile .
+docker build --no-cache -t iqss/dataverse-k8s:tt -f docker/dataverse-k8s/payara/Dockerfile .
 docker build --no-cache -t iqss/solr-k8s:8.11.1 -f docker/solr-k8s/Dockerfile .
 
 Payara admin console:

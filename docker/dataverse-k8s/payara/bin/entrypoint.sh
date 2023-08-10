@@ -25,8 +25,10 @@ for f in ${SCRIPT_DIR}/init_* ${SCRIPT_DIR}/init.d/*; do
     echo
 done
 
-
+# Runs first script in background for postboot tasks
+${SCRIPT_DIR}/check_boot.sh &
 exec ${SCRIPT_DIR}/startInForeground.sh $PAYARA_ARGS
+
 
 #if [ "${GIT_CVM_TEMPLATES}" ]; then
 #    #echo "Clone dataverse templates from ${GIT_CVM_TEMPLATES}" >> /tmp/status.log;
