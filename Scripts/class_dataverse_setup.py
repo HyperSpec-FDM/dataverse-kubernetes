@@ -372,9 +372,9 @@ languages = ['en_US', 'de_DE', 'fr_FR']
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
-# tt.change_logo(imagename)
-# tt.add_custom_metadata("testmeta.tsv")
-# tt.add_languages(languages)
+tt.change_logo(imagename)
+tt.add_custom_metadata("testmeta.tsv")
+tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
 tt.add_s3_storage("hsma", "hsma", "minio_profile_1", "5IMXGis0YjH6620GIH16", "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK", "http\:\/\/minio\:9000")
 
