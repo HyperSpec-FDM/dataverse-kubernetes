@@ -58,6 +58,8 @@ else
 
 
 # Check if admin user already exists
+# removed --password-file=${POSTGRES_PASSWORD_FILE} because its not working anymore
+#existingUser=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_SERVER} -d ${POSTGRES_DATABASE} -tAc "SELECT COUNT(*) FROM authenticateduser WHERE useridentifier = 'dataverseAdmin'")
 existingUser=$(psql -U ${POSTGRES_USER} -h ${POSTGRES_SERVER} -d ${POSTGRES_DATABASE} --password-file=${POSTGRES_PASSWORD_FILE} -tAc "SELECT COUNT(*) FROM authenticateduser WHERE useridentifier = 'dataverseAdmin'")
 echo "Existing user value: '$existingUser'"
 if [ "$existingUser" -eq 0 ]; then
@@ -68,6 +70,9 @@ if [ "$existingUser" -eq 0 ]; then
   echo >> /tmp/status.log
 else
   echo "Admin user already exists. Skipping creation." >> /tmp/status.log
+  # add command to set dataverse if existing to true
+  psql -U ${POSTGRES_USER} -h ${POSTGRES_SERVER} -d ${POSTGRES_DATABASE} -tAc "UPDATE public.authenticateduser SET superuser = True WHERE useridentifier = 'dataverseAdmin';"
+#  psql -U ${POSTGRES_USER} -h ${POSTGRES_SERVER} -d ${POSTGRES_DATABASE} --password-file=${POSTGRES_PASSWORD_FILE} -tAc "UPDATE public.authenticateduser SET superuser = True WHERE useridentifier = 'dataverseAdmin';"
 fi
 
 #	echo "Setting up the admin user (and as superuser)" >> /tmp/status.log

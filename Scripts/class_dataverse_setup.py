@@ -13,25 +13,6 @@ class dataverse_setuper():
         self.namespace = namespace
         self.container_name = container_name
         self.url = url
-        self.titles = {
-                        "en": "English",
-                        "de": "Deutsch",
-                        "fr": "Français",
-                        "at": "Deutsch - Österreich",
-                        "de": "Deutsch",
-                        "us": "English - United States",
-                        "es": "Español - España",
-                        "ca": "Français - Canada",
-                        "hu": "Magyar - Magyarország",
-                        "it": "Italiano - Italia",
-                        "pl": "Polski - Polska",
-                        "br": "Português - Brasil",
-                        "pt": "Português - Portugal",
-                        "ru": "Русский - Россия",
-                        "se": "Svenska - Sverige",
-                        "sl": "Slovenščina - Slovenija",
-                        "ua": "Українська - Україна"
-                    }
 
         # Load the Kubernetes configuration
         config.load_kube_config()
@@ -59,7 +40,7 @@ class dataverse_setuper():
             # Return the name of the first pod (assuming there is only one)
             if pods:
                 for pod in pods:
-                    print(f"Containers in pod '{pod.metadata.name}':")
+                    # print(f"Containers in pod '{pod.metadata.name}':")
                     for container_status in pod.status.container_statuses:
                         name = container_status.name
                         container_id = container_status.container_id
@@ -134,14 +115,14 @@ class dataverse_setuper():
                 pod = self.core_v1.read_namespaced_pod(pod_name, namespace)
                 return pod.status.phase
             except Exception as e:
-                print(f"Error while retrieving pod status: {e}")
+                # print(f"Error while retrieving pod status: {e}")
                 return "Stopped"
 
     def wait_for_container_ready(self, pod_name, container_name, namespace, api_instance):
         while True:
             try:
                 pod = api_instance.read_namespaced_pod(pod_name, namespace)
-                print(pod.status.phase)
+                # print(pod.status.phase)
                 if pod.status.phase != "Running":
                     time.sleep(1)
                     continue
@@ -154,12 +135,40 @@ class dataverse_setuper():
                 continue
             time.sleep(1)
 
-    # def wait_for_pod_status(self, pod_name, namespace, desired_status, api_instance):
-    #     while True:
-    #         pod_status = self.get_pod_status(pod_name, namespace, api_instance)
-    #         if pod_status == desired_status:
-    #             return
-    #         time.sleep(1)
+    def get_users(self):
+        # Get the pod name for the PostgreSQL deployment
+        postgresql_pod_name, postgresql_container_id = self.get_pod_name_by_deployment("postgresql", self.namespace,
+                                                                                       "postgresql")
+        # Define the SQL command to fetch users and their superuser status
+        sql_command = "SELECT * FROM public.authenticateduser;"
+        # Execute the SQL command in the PostgreSQL pod and capture the output
+        output = self.pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"',
+                               capture_output=True)
+        # Split the text into rows
+        headers = output.strip().split("\n")[0:1]  # get header line
+        lines = output.strip().split("\n")[2:-1]  # get remaining lines without the last on (rows:x)
+
+        # Extract column names from the header row
+        headers = [name.strip() for name in headers[0].split("|")]
+        users = []
+        for line in output.strip().split("\n")[2:-1]:
+            lineList = line.split("|")
+            lineList = [item.replace(" ", "") for item in lineList]
+            merged = dict(zip(headers, lineList))
+            users.append(merged)
+        return users
+
+    def compare_users(self, users_before, users_after):
+
+        # Create a dictionary where the 'useridentifier' is the key and the entire dictionary is the value
+        dict1 = {item['useridentifier']: item for item in users_before}
+        dict2 = {item['useridentifier']: item for item in users_after}
+
+        # Find the differences based on 'superuser' values
+        differences = []
+        for key in dict1:
+            if key in dict2 and dict1[key]['superuser'] != dict2[key]['superuser']:
+                differences.append((key, dict1[key]['superuser'], dict2[key]['superuser']))
 
     def change_logo(self, imagename):
         if self.pod_name:
@@ -175,30 +184,20 @@ class dataverse_setuper():
                 self.resize_svg(original_image_path, resized_image_path)
 
             # Create directory inside the dataverse container
-            create_dir_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"mkdir /opt/docroot/logos"
-            )
-            os.system(create_dir_command)
+            create_dir_command = "mkdir /opt/docroot/logos"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, create_dir_command)
 
             # Copy the resized image to the container in persistent directory
             copy_command = f"kubectl cp {resized_image_path} {self.namespace}/{self.pod_name}:/opt/docroot/logos/{imagename} -c {self.container_name}"
             os.system(copy_command)
 
             # Copy the resized image in required directory
-            copy_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
-            )
-            os.system(copy_command)
+            copy_command = f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, copy_command)
 
             # Change the logo of dataverse
-            change_logo_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
-            )
-            os.system(change_logo_command)
-            print(change_logo_command)
+            copy_command = f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, copy_command)
 
             # Clean up the resized image file
             os.remove(resized_image_path)
@@ -216,100 +215,28 @@ class dataverse_setuper():
             os.system(copy_command)
 
             # Upload metadata
-            upload_metadata_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"curl http://localhost:8080/api/admin/datasetfield/load -H \"Content-type: text/tab-separated-values\" -X POST --upload-file /opt/payara/dvinstall/data/metadatablocks/{metadataFile}"
-            )
-            # Run command to upload metadata
-            os.system(upload_metadata_command)
+            upload_metadata_command = f"curl http://localhost:8080/api/admin/datasetfield/load -H \"Content-type: text/tab-separated-values\" -X POST --upload-file /opt/payara/dvinstall/data/metadatablocks/{metadataFile}"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, upload_metadata_command)
 
-            command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"curl 'http://localhost:8080/api/admin/index/solr/schema' | /opt/payara/dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
-            )
-            subprocess.run(command, shell=True)
+            # Update index
+            update_index_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' | /opt/payara/dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, update_index_command)
 
             # Reload solr collection to make
             solr_pod_name, solr_container_id = self.get_pod_name_by_deployment("solr", self.namespace, "solr")
-            print(solr_pod_name, solr_container_id)
 
-            command = (
-                f"docker exec {solr_container_id} curl \"http://localhost:8983/solr/admin/cores?action=RELOAD&core=collection1\""
-            )
-            # command = (
-            #     f"kubectl exec -n {self.namespace} pod/{solr_pod_name} -c solr -- "
-            #     f"curl \"http://localhost:8983/solr/admin/cores?action=RELOAD&core=collection1\""
-            # )
-            os.system(command)
+            reload_collection_command = f"curl \"http://localhost:8983/solr/admin/cores?action=RELOAD&core=collection1\""
+            self.pod_exec(solr_pod_name, "solr", self.namespace, reload_collection_command)
+
         else:
             print(f"No pod found for deployment '{deployment_name}'.")
 
-    def add_languages(self, languages, language_base_directory):
+    def add_languages(self, languages):
         if self.pod_name:
-            # Set output name
-            output_zip_filename = "languages.zip"
-
-            # change directory
-            os.chdir("..")
-
-            # Create a zip file to write the selected files
-            with zipfile.ZipFile(output_zip_filename, 'w') as zipf:
-                for directory in os.listdir(language_base_directory):
-                    if directory in languages:
-                        print(directory)
-                        directory_path = os.path.join(language_base_directory, directory)
-                        for file in os.listdir(directory_path):
-                            file_path = os.path.join(directory_path, file)
-                            if os.path.isfile(file_path):
-                                with open(file_path, 'rb') as f:
-                                    file_content = f.read()
-                                    arcname = os.path.basename(file_path)  # Use only the file name in the zip
-                                    zipf.writestr(arcname, file_content)
-
-
-            # Prepare dropdown content for curl command
-            dropdown = []
-            for lang in languages:
-                locale, country = lang.split("_")
-                dropdown.append({"locale": locale, "title": self.titles[locale]})
-
-            print(dropdown)
-
-            # Create directory inside the dataverse container
-            create_dir_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"mkdir /opt/docroot/langBundles"
-            )
-            os.system(create_dir_command)
-
-            # Copy zipfile to the container
-            copy_command = f"kubectl cp {output_zip_filename} {self.namespace}/{self.pod_name}:/opt/docroot/langBundles/{output_zip_filename} -c {self.container_name}"
-            os.system(copy_command)
-
-            # Enable languages
-            enable_languages_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"curl http://localhost:8080/api/admin/settings/:Languages -X PUT -d \"{dropdown}\""
-            )
-            os.system(enable_languages_command)
-            enable_languages_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"curl http://localhost:8080/api/admin/settings/:MetadataLanguages -X PUT -d \"{dropdown}\""
-            )
-            os.system(enable_languages_command)
-            enable_languages_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"asadmin --user=admin --passwordfile=/secrets/asadmin/passwordFile create-jvm-options \"-Ddataverse.lang.directory=/opt/docroot/langBundles\""
-            )
-            os.system(enable_languages_command)
-            enable_languages_command = (
-                f"kubectl exec -n {self.namespace} pod/{self.pod_name} -c {self.container_name} -- "
-                f"curl http://localhost:8080/api/admin/datasetfield/loadpropertyfiles -X POST --upload-file /opt/docroot/langBundles/{output_zip_filename} -H \"Content-Type: application/zip\""
-            )
-            os.system(enable_languages_command)
-
-            # Clean up the zipfile
-            os.remove(output_zip_filename)
+            # Run Container script to add new languages
+            languageString = (" ".join(languages))
+            command = f"./scripts/addLanguages.sh {languageString}"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, command)
 
         else:
             print(f"No pod found for deployment '{deployment_name}'.")
@@ -361,29 +288,7 @@ class dataverse_setuper():
         status = None
         old_pod_status = None
 
-        # Get the pod name for the PostgreSQL deployment
-        postgresql_pod_name, postgresql_container_id = self.get_pod_name_by_deployment("postgresql", self.namespace, "postgresql")
-
-        # Define the SQL command to fetch users and their superuser status
-        sql_command = "SELECT * FROM public.authenticateduser;"
-
-        # Execute the SQL command in the PostgreSQL pod and capture the output
-        output = self.pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', capture_output=True)
-
-        # Split the text into rows
-        headers = output.strip().split("\n")[0:1]  # get header line
-        lines = output.strip().split("\n")[2:-1]  # get remaining lines without the last on (rows:x)
-
-        # Extract column names from the header row
-        headers = [name.strip() for name in headers[0].split("|")]
-
-        users = []
-
-        for line in output.strip().split("\n")[2:-1]:
-            lineList = line.split("|")
-            lineList = [item.replace(" ", "") for item in lineList]
-            merged = dict(zip(headers, lineList))
-            users.append(merged)
+        users = self.get_users()
 
         # Set old pod name
         old_pod_name = self.pod_name
@@ -411,28 +316,28 @@ class dataverse_setuper():
             while old_pod_status != "Stopped":
                 # Get old pod status
                 old_pod_status = self.get_pod_status(old_pod_name, namespace)
-                # old_pod = api.read_namespaced_pod(name=pod_name, namespace=namespace)
-                # old_pod_status = old_pod.status.conditions.sstatus
                 print("Waiting for old dataverse pod to be stopped...")
                 time.sleep(5)
 
             # Wait for dataverse to be ready before changing superuser attribute
             while status != 200:
-                resp = requests.get(self.url)
-                status = resp.status_code
-                time.sleep(5)
+                try:
+                    resp = requests.get(self.url)
+                    status = resp.status_code
+                except:
+                    time.sleep(5)
 
-            for user in users:
-                if user["superuser"] == "t":
-                    self.set_superuser(user)
-                    # sql_command = f"""UPDATE public.authenticateduser
-                    #                   SET "superuser" = TRUE
-                    #                   WHERE "useridentifier" = '{user["useridentifier"]}';"""
-                    #
-                    # # Execute the SQL command in the PostgreSQL pod and capture the output
-                    # self.pod_exec(postgresql_pod_name, "postgresql", namespace, f'psql -c "{sql_command}"', self.core_v1)
+            while True:
+                for user in users:
+                    if user["superuser"] == "t":
+                        self.set_superuser(user["useridentifier"], True)
+                # Extract users from postgres and check if all differences are eliminated
+                users_new = self.get_users()
+                print(users_new)
+                differences = self.compare_users(users, users_new)
+                if not differences:
+                    break
 
-            # Create jvm resources in new pod
             # Get new pod and run jvm resources
             pod_name, pod_id = self.get_pod_name_by_deployment(deployment_name, self.namespace, self.container_name)
             self.pod_name = pod_name
@@ -440,11 +345,19 @@ class dataverse_setuper():
             # Wait for the container to be ready before executing commands
             self.wait_for_container_ready(pod_name, container_name, namespace, self.core_v1)
 
+            # Create directory if not present to store information for every added storage
+            command = f"mkdir /opt/docroot/s3"
+            self.pod_exec(pod_name, container_name, namespace, command)
+
+            # Safe Information in that directory
+            command = f"echo {variables} > /opt/docroot/s3/{lable}"
+            self.pod_exec(pod_name, container_name, namespace, command)
+
             # Create command for jvm resource creation
-            command = f"chmod +x {script_path} && {script_path} {' '.join(variables)}"
+            command = f"{script_path} $(cat /opt/docroot/s3/{lable} | tr -d '[],')"
 
             # create jvm resources
-            self.pod_exec(pod_name, container_name, namespace, command, self.core_v1)
+            self.pod_exec(pod_name, container_name, namespace, command)
 
 
 deployment_name = "dataverse"
@@ -452,16 +365,17 @@ namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
 url = "http://localhost:8080" + "/robots.txt"
 imagename = "TransparentLogo.svg"
-languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
+# languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
+languages = ['en_US', 'de_DE', 'fr_FR']
+
 
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
 # tt.change_logo(imagename)
 # tt.add_custom_metadata("testmeta.tsv")
-# tt.add_languages(languages, "languages")
+# tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
 tt.add_s3_storage("hsma", "hsma", "minio_profile_1", "5IMXGis0YjH6620GIH16", "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK", "http\:\/\/minio\:9000")
-
 
 
