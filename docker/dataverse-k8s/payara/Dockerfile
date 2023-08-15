@@ -38,7 +38,7 @@ RUN mkdir -p ${HOME_DIR} ${SCRIPT_DIR} ${SECRETS_DIR} && \
 # Install prerequisites
 #RUN sed -rz -i 's/http/https/g' /etc/apt/sources.list
 RUN apt-get -qq update && \
-    apt-get -qqy install postgresql-client jq imagemagick curl wget unzip vim python3.8 python3-distutils python3-apt  python3-psycopg2 ed bc original-awk python3-pandas lsb-release patch cron
+    apt-get -qqy install postgresql-client jq imagemagick curl wget unzip vim python3.8 python3-distutils python3-apt  python3-psycopg2 ed bc original-awk python3-pandas lsb-release patch cron git zip
 RUN wget --no-verbose  https://bootstrap.pypa.io/get-pip.py -O -|/usr/bin/python3.8
 
 # Install esh template engine from Github

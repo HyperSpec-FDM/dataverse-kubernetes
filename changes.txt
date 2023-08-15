@@ -31,6 +31,8 @@ changed mount path of persistent volume docroot from /docroot to /opt/docroot to
 create directory /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos via dockerfile
 added persistent volume for this directory to make the custom logo persistent
 
+removed --password-file=${POSTGRES_PASSWORD_FILE} from init-setup.sh because it didnt work
+
 commands:
 kubectl apply -f personas/demo/secrets.yaml
 kubectl apply -k personas\prod-skel\envs\env1
