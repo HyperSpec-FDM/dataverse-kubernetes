@@ -31,6 +31,10 @@ data:
 
   ### DOI SETTINGS
   db_DoiProvider: FAKE
+  db_Protocol: doi
+  db_Authority: "10.12345"
+  db_Shoulder: EXAMPLE/
+
 
   ### FILE STORAGE Local
 #  dataverse_files_file_label: file
