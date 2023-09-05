@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: payara-ingress
+spec:
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /payara
+            pathType: Prefix
+            backend:
+              service:
+                name: dataverse
+                port:
+                  number: 4848
+

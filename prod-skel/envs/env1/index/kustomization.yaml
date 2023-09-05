@@ -1,0 +1,14 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../../k8s/solr
+
+images:
+  - name: iqss/solr-k8s
+    newTag: "8.11.1"
+
+patchesStrategicMerge:
+  - patch-pvc.yaml
+  - patch-pull-always.yaml

@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: bootstrap-dataverse
+  namespace: dv-test
   labels:
     app.kubernetes.io/name: bootstrap
     app.kubernetes.io/version: "1.1"
@@ -17,7 +18,7 @@ spec:
     spec:
       containers:
         - name: bootstrap
-          image: iqss/dataverse-k8s
+          image: iqss/dataverse-k8s:5.14
           command: ["scripts/bootstrap-job.sh"]
           envFrom:
             - configMapRef:
@@ -29,12 +30,34 @@ spec:
                   name: dataverse-postgresql
                   key: username
                   optional: true
+            - name: PGUSER #POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-postgresql
+                  key: username
             - name: POSTGRES_DATABASE
               valueFrom:
                 secretKeyRef:
                   name: dataverse-postgresql
                   key: database
                   optional: true
+            - name: POSTGRES_DB #PGDATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-postgresql
+                  key: database
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-postgresql
+                  key: password
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-postgresql
+                  key: password
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           volumeMounts:
             - name: db-secret
               mountPath: "/secrets/db"
@@ -48,17 +71,19 @@ spec:
             - name: provider-secrets
               mountPath: "/secrets/providers"
               readOnly: true
+            - name: postgresql-persistent-storage
+              mountPath: /var/lib/postgresql/data
+              readOnly: true
       initContainers:
         - name: check-db-ready
-          image: postgres:9.6
+          image: postgres:13.11 #9.6
           command: ['sh', '-c',
             'until pg_isready -h "${POSTGRESQL_SERVICE_HOST}" -p "${POSTGRESQL_SERVICE_PORT}";
             do echo waiting for database; sleep 3; done;']
         - name: check-solr-ready
           image: giantswarm/tiny-tools
-          command: ['sh', '-c',
-            'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/collection1/admin/ping" 2>&1 | grep "status.:.OK";
-            do echo waiting for solr; sleep 3; done;']
+          command: [ "/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
+                     do echo waiting for solr; sleep 3; done;' ]
         - name: check-dataverse-ready
           image: giantswarm/tiny-tools
           command: ['sh', '-c',
@@ -79,5 +104,8 @@ spec:
           secret:
             secretName: dataverse-providers
             optional: true
+        - name: postgresql-persistent-storage
+          persistentVolumeClaim:
+            claimName: postgresql
       restartPolicy: Never
   backoffLimit: 4

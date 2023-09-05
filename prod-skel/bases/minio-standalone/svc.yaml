@@ -1,0 +1,22 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: minio
+  namespace: dv-test
+  labels:
+    app: minio
+spec:
+  ports:
+    - port: 9000
+      name: minio
+      targetPort: 9000
+      protocol: TCP
+    - port: 9010
+      name: console
+      targetPort: 9010
+      protocol: TCP
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/part-of: dataverse

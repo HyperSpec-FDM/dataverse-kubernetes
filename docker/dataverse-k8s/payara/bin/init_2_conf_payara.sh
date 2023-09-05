@@ -11,6 +11,7 @@
 
 # Fail on any error
 set -e
+
 # Include some sane defaults
 . ${SCRIPT_DIR}/default.config
 
@@ -84,8 +85,11 @@ echo "INFO: Defining JavaMail."
 echo "create-javamail-resource --mailhost=${MAIL_SERVER} --mailuser=dataversenotify --fromaddress=${MAIL_FROMADDRESS} mail/notifyMailSession" >> ${DV_POSTBOOT}
 
 echo "INFO: defining miscellaneous configuration options."
+
 # Timer data source
-echo "set configs.config.server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/VDCNetDS" >> ${DV_POSTBOOT}
+echo "set configs.config.server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/__TimerPool" >> ${DV_POSTBOOT}
+#echo "set configs.config.server-config.ejb-container.ejb-timer-service.timer-datasource=jdbc/VDCNetDS" >> ${DV_POSTBOOT}
+
 # AJP connector
 echo "create-network-listener --protocol=http-listener-1 --listenerport=8009 --jkenabled=true jk-connector" >> ${DV_POSTBOOT}
 # Disable logging for grizzly SSL problems -- commented out as this is not GF 4.1
@@ -112,6 +116,29 @@ env -0 | grep -z -Ee "^(dataverse|doi)_" | while IFS='=' read -r -d '' k v; do
     echo "create-system-properties ${KEY}=${v}" >> ${DV_POSTBOOT}
 done
 
+# add commands for system properties see dataverse release note 5.3
+echo "create-system-properties dataverse.db.user=${POSTGRES_USER}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.db.host=${POSTGRES_SERVER}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.db.port=${POSTGRES_PORT}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.db.name=${POSTGRES_DB}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.db.password=${POSTGRES_PASSWORD}" >> ${DV_POSTBOOT}
+# add commands for system properties see dataverse release note 5.3
+
+# add commands for system properties see dataverse release note 5.13
+echo "create-system-properties dataverse.solr.host=${SOLR_PORT_8983_TCP_ADDR}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.solr.port=${SOLR_SERVICE_PORT}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.solr.core=collection1" >> ${DV_POSTBOOT}
+#echo "create-system-properties dataverse.solr.protocol=${SOLR_PORT_8983_TCP_PROTO}" >> ${DV_POSTBOOT}
+echo "create-system-properties dataverse.solr.path=/solr/collection1" >> ${DV_POSTBOOT}
+# add commands for system properties see dataverse release note 5.13
+
+## set storage default to local
+#echo "create-jvm-options -Ddataverse.files.file.label=file" >> ${DV_POSTBOOT}
+#echo "create-jvm-options -Ddataverse.files.file.type=file" >> ${DV_POSTBOOT}
+#echo "create-jvm-options -Ddataverse.files.file.directory=/data" >> ${DV_POSTBOOT}
+#echo "create-jvm-options -Ddataverse.files.storage-driver-id=file" >> ${DV_POSTBOOT}
+## set storage default to local
+
 # 4. Add the commands to the existing postboot file, but insert BEFORE deployment
 echo "$(cat ${DV_POSTBOOT} | cat - ${POSTBOOT_COMMANDS} )" > ${POSTBOOT_COMMANDS}
 echo "DEBUG: postboot contains the following commands:"
@@ -127,3 +154,30 @@ sed -i ${PAYARA_DIR}/glassfish/domains/${DOMAIN_NAME}/config/jhove.conf -e "s:/u
 
 # 6. Disable phone home. Always.
 echo "disable-phome-home" >> ${PREBOOT_COMMANDS}
+echo "source /tmp/.env" >> ${PREBOOT_COMMANDS}
+
+#/bin/bash /opt/payara/init.d/0000-preboot.sh
+#cat /opt/payara/init.d/preboot.payara >> ${POSTBOOT_COMMANDS}
+#rm /opt/payara/init.d/preboot.payara
+
+declare -p -x > /tmp/.env
+chown payara:payara  /tmp/.env
+
+cp ${SCRIPT_DIR}/init-setup.sh ${HOME_DIR}/dvinstall/
+ln -s ${HOME_DIR}/dvinstall/dataverse.war ${DOMAIN_DIR}/autodeploy/dataverse.war
+
+
+
+cd ${HOME_DIR}/dvinstall/ && nohup ./init-setup.sh &>/dev/null &
+
+if [ "${GIT_CVM_TEMPLATES}" ]; then
+    echo "Clone dataverse templates from ${GIT_CVM_TEMPLATES}" >> /tmp/status.log;
+    git clone ${GIT_CVM_TEMPLATES} /tmp/cvm-templates;
+    cd /tmp/cvm-templates; git fetch; git pull origin master;
+    #cp -R /tmp/cvm-templates/templates/dataverse/* /opt/payara/appserver/glassfish/domains/production/applications/dataverse/
+fi
+
+# Workaround disabled
+#echo "Restarting Dataverse...." >> /tmp/status.log
+#This is a workaround
+#${SCRIPT_DIR}/check-dvn.sh &

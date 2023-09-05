@@ -19,6 +19,7 @@ spec:
       name: webhook
       targetPort: 9000
       protocol: TCP
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: solr
     app.kubernetes.io/part-of: dataverse

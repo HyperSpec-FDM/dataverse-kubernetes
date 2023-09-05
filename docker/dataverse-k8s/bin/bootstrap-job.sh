@@ -9,8 +9,14 @@
 
 # Fail on any error
 set -euo pipefail
+
+# TEST with fixed line endings
+# Fix line endings in default.config
+sed -i 's/\r$//' /opt/payara/scripts/default.config
+
 # Include some sane defaults
 . ${SCRIPT_DIR}/default.config
+
 DATAVERSE_SERVICE_HOST=${DATAVERSE_SERVICE_HOST:-"dataverse"}
 DATAVERSE_SERVICE_PORT_HTTP=${DATAVERSE_SERVICE_PORT_HTTP:-"8080"}
 DATAVERSE_URL=${DATAVERSE_URL:-"http://${DATAVERSE_SERVICE_HOST}:${DATAVERSE_SERVICE_PORT_HTTP}"}
@@ -37,11 +43,11 @@ if [ -s "${SECRETS_DIR}/admin/password" ]; then
 fi
 
 # Drop the Postgres credentials into .pgpass
-echo "${POSTGRES_SERVER}:*:*:${POSTGRES_USER}:`cat ${SECRETS_DIR}/db/password`" > ${HOME_DIR}/.pgpass
+echo "${POSTGRESQL_SERVICE_HOST}:*:*:${POSTGRES_USER}:`cat ${SECRETS_DIR}/db/password`" > ${HOME_DIR}/.pgpass
 chmod 0600 ${HOME_DIR}/.pgpass
 
 # 1.) Load SQL data
-psql -h ${POSTGRES_SERVER} -U ${POSTGRES_USER} ${POSTGRES_DATABASE} < ${HOME_DIR}/dvinstall/reference_data.sql
+psql -h ${POSTGRESQL_SERVICE_HOST} -U ${POSTGRES_USER} ${POSTGRES_DATABASE} < ${HOME_DIR}/dvinstall/reference_data.sql
 
 # 2) Initialize common data structures to make Dataverse usable
 cd ${HOME_DIR}/dvinstall

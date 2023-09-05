@@ -14,11 +14,15 @@ spec:
     - port: 8080
       name: http
       targetPort: 8080
+    - port: 4848
+      name: admin
+      targetPort: 4848
       protocol: TCP
     - port: 8009
       name: ajp
       targetPort: 8009
       protocol: TCP
+  type: LoadBalancer
   selector:
     app.kubernetes.io/name: dataverse
     app.kubernetes.io/part-of: dataverse

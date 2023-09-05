@@ -5,7 +5,7 @@ metadata:
   name: solr
   labels:
     app.kubernetes.io/name: solr
-    app.kubernetes.io/version: "4.20"
+    app.kubernetes.io/version: "8.11.1"
     app.kubernetes.io/component: searchindex
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -27,6 +27,8 @@ spec:
       containers:
         - name: solr
           image: iqss/solr-k8s
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c", "$SCRIPT_DIR/schema/createCollection.sh"]
           resources:
             requests:
               memory: "2Gi"
@@ -48,18 +50,19 @@ spec:
             periodSeconds: 60
             failureThreshold: 4 # thus restart after 4 minutes n/a
             httpGet:
-              path: /solr/collection1/admin/ping
+              path: /solr/admin/info/system #/solr/collection1/admin/ping
               port: index
           readinessProbe:
             initialDelaySeconds: 30
             periodSeconds: 60
             failureThreshold: 2
             httpGet:
-              path: /solr/collection1/admin/ping
+              path: /solr/admin/info/system #/solr/collection1/admin/ping #./opt/solr-8.11.1/server/solr/collection1
               port: index
         - name: schema-sidecar
           image: iqss/solr-k8s
-          command: ["/tini", "--", "/scripts/schema/sidecar.sh"]
+          imagePullPolicy: IfNotPresent
+          command: ["tini", "--", "bash", "-c", "cd $SCRIPT_DIR/schema && ./sidecar.sh"]
           ports:
             - name: webhook
               containerPort: 9000
@@ -75,13 +78,15 @@ spec:
               port: webhook
       initContainers:
         - name: volume-mount-hack
-          image: giantswarm/tiny-tools
+          image: giantswarm/tiny-tools:latest
+          imagePullPolicy: IfNotPresent
           command: ["sh", "-c", "chown -c 8983:8983 /data"]
           volumeMounts:
             - name: data
               mountPath: /data
         - name: schema-init
           image: iqss/solr-k8s
+          imagePullPolicy: IfNotPresent
           command: ["/scripts/schema/init.sh"]
           volumeMounts:
             - name: schema
