@@ -1,0 +1,48 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: dataverse
+  labels:
+    app: dataverse
+    app.kubernetes.io/name: configmap
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/component: configmap
+    app.kubernetes.io/part-of: dataverse
+    app.kubernetes.io/managed-by: kubectl
+data:
+  ### GENERAL SETTINGS
+  dataverse_fqdn: data-test.example.org
+  dataverse_siteUrl: https://data-test.example.org
+
+  ### database
+  POSTGRES_ONLY: "true"
+  POSTGRES_SERVER: postgresql
+  POSTGRES_PORT: "5432"
+  POSTGRES_DATABASE: mydataverse
+  POSTGRES_USER: dataverse
+  POSTGRES_PASSWORD: changeme
+  POSTGRES_ADMIN_PASSWORD: changeme
+
+  ### CONTACT SETTINGS
+  CONTACT_MAIL: rdm@example.org
+  MAIL_FROMADDRESS: rdm@example.org
+  db_SystemEmail: Research Data Management Unit Example.org <rdm@example.org>
+
+  ### DOI SETTINGS
+  db_DoiProvider: FAKE
+  db_Protocol: doi
+  db_Authority: "10.12345"
+  db_Shoulder: EXAMPLE/
+
+
+  ### INGEST
+  # deactivate ingest for tabular files
+  db_TabularIngestSizeLimit: "0"
+  # allow uploads only < 2GB
+  db_MaxFileUploadSizeInBytes: "2147483648"
+  db_FileFixityChecksumAlgorithm: SHA-256
+
+  ### CUSTOMIZATION
+  db_StatusMessageHeader: "Test Environment"
+  db_StatusMessageText: "<br />This instance is meant for testing, training and experiments. DOIs minted here are not citeable!"

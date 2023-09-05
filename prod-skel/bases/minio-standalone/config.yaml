@@ -1,0 +1,26 @@
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: minio
+  namespace: dv-test
+  labels:
+    app: minio
+    app.kubernetes.io/name: configmap
+    app.kubernetes.io/version: "1.0"
+    app.kubernetes.io/component: configmap
+    app.kubernetes.io/part-of: minio
+    app.kubernetes.io/managed-by: kubectl
+data:
+  # FILE STORAGE S3
+  s3_bucket_name: testname
+  s3_user: testUSER
+  s3_password: testPassword
+  s3_access_key: test_access_key
+  s3_secret_key: test_secret_key
+  dataverse_files_hsma_label: testname
+  dataverse_files_testname_type: s3
+  dataverse_files_testname__custom__endpoint__url: http://minio:9000
+  dataverse_files_testname__bucket__name: dataverse
+  # required for Minio!
+  dataverse_files_hsma__path__style__access: "true"

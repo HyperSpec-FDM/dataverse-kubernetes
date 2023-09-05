@@ -1,0 +1,14 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: solr
+spec:
+  template:
+    spec:
+      containers:
+        - name: solr
+          imagePullPolicy: IfNotPresent #Always
+      initContainers:
+        - name: schema-init
+          imagePullPolicy: IfNotPresent #Always

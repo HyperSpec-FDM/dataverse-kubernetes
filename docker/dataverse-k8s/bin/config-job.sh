@@ -6,7 +6,7 @@
 
 # Fail on any error
 set -euo pipefail
-DATAVERSE_SERVICE_HOST=${DATAVERSE_SERVICE_HOST:-"dataverse"}
+DATAVERSE_SERVICE_HOST="localhost" #${DATAVERSE_SERVICE_HOST:-"dataverse"} # removed due to loclahost-only access
 DATAVERSE_SERVICE_PORT_HTTP=${DATAVERSE_SERVICE_PORT_HTTP:-"8080"}
 DATAVERSE_URL=${DATAVERSE_URL:-"http://${DATAVERSE_SERVICE_HOST}:${DATAVERSE_SERVICE_PORT_HTTP}"}
 
@@ -28,12 +28,14 @@ if `env | grep -Ee '^db_' 2>&1 > /dev/null`; then
       if [[ -z "${v}" ]]; then
         # empty var => delete the setting
         echo -n " Deleting... "
-        OUTPUT=`curl -sSf -X DELETE "${DATAVERSE_URL}/api/admin/settings/${KEY}?unblock-key=${API_KEY}" 2>&1 || echo -n ""`
+#        OUTPUT=`curl -sSf -X DELETE "${DATAVERSE_URL}/api/admin/settings/${KEY}?unblock-key=${API_KEY}" 2>&1 || echo -n ""`
+        OUTPUT=`curl -sSf -X DELETE "${DATAVERSE_URL}/api/admin/settings/${KEY}" 2>&1 || echo -n ""`
         echo "$OUTPUT" | jq -rM '.status' 2>/dev/null || echo -e 'FAILED\n' "$OUTPUT"
       else
         # set the setting
         echo -n " Setting... "
-        OUTPUT=`curl -sSf -X PUT -d "${v}" "${DATAVERSE_URL}/api/admin/settings/${KEY}?unblock-key=${API_KEY}" 2>&1 || echo -n ""`
+#        OUTPUT=`curl -sSf -X PUT -d "${v}" "${DATAVERSE_URL}/api/admin/settings/${KEY}?unblock-key=${API_KEY}" 2>&1 || echo -n ""`
+        OUTPUT=`curl -sSf -X PUT -d "${v}" "${DATAVERSE_URL}/api/admin/settings/${KEY}" 2>&1 || echo -n ""`
         echo "$OUTPUT" | jq -rM '.status' 2>/dev/null || echo -e 'FAILED\n' "$OUTPUT"
       fi
   done
