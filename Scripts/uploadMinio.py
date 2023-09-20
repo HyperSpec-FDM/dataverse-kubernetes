@@ -3,9 +3,9 @@ from minio.error import S3Error
 
 # Initialize MinIO client
 minio_client = Minio(
-    endpoint="127.0.0.1:9000",
-    access_key="5IMXGis0YjH6620GIH16",
-    secret_key="iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK",
+    endpoint="141.19.44.16:9000",
+    access_key="Vfzf1byfPPLRyNTF0Lzn",
+    secret_key="9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR",
     secure=False  # Change to True if using HTTPS
 )
 
@@ -27,7 +27,7 @@ def upload_file(bucket_name, file_path, object_name):
         print(f"Error uploading file: {e}")
 
 # Usage example
-bucket_name = "hsma"
+bucket_name = "test"
 file_path = "deploy.py"
 object_name = "deploy.py"
 

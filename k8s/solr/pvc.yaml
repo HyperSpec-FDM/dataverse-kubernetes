@@ -11,7 +11,7 @@ metadata:
     app.kubernetes.io/managed-by: kubectl
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   resources:
     requests:
       storage: 3G

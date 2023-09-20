@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: dataverse
-          image: iqss/dataverse-k8s
+          image: docker.io/iqss/dataverse-k8s:5.14
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -129,8 +129,11 @@ spec:
         - name: check-solr-ready
           image: giantswarm/tiny-tools
           imagePullPolicy: IfNotPresent
+#          command: [ "/bin/sh", "-c", 'until curl -sS -f "http://192.168.100.11:30000/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
+#                       do echo waiting for solr; sleep 3; done;' ]
           command: [ "/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
                       do echo waiting for solr; sleep 3; done;' ]
+       
       volumes:
         - name: files
           persistentVolumeClaim:
@@ -158,3 +161,4 @@ spec:
         # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
         - name: primefaces-upload
           emptyDir: {}
+

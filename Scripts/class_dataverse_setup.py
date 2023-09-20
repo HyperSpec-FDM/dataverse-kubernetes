@@ -363,19 +363,19 @@ class dataverse_setuper():
 deployment_name = "dataverse"
 namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
-url = "http://localhost:8080" + "/robots.txt"
+url = "http://192.168.100.11:30000" + "/robots.txt"
 imagename = "TransparentLogo.svg"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
-languages = ['en_US', 'de_DE', 'fr_FR']
+languages = ['en_US', 'de_DE']
 
 
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
 tt.change_logo(imagename)
-tt.add_custom_metadata("testmeta.tsv")
-tt.add_languages(languages)
+# tt.add_custom_metadata("testmeta.tsv")
+# tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-tt.add_s3_storage("hsma", "hsma", "minio_profile_1", "5IMXGis0YjH6620GIH16", "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK", "http\:\/\/minio\:9000")
+# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
 
