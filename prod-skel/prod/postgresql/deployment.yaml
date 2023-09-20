@@ -82,6 +82,7 @@ spec:
           volumeMounts:
             - name: postgresql-persistent-storage
               mountPath: /var/lib/postgresql/data
+              readOnly: false
           readinessProbe:
             exec:
               command: ["pg_isready"]

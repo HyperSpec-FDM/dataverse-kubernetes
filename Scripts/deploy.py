@@ -10,15 +10,19 @@ response_code = None
 os.chdir("..")
 
 # deploy secrets and dataverse enviroment
-os.system("kubectl apply -f prod-skel\secrets")
-os.system("kubectl apply -k prod-skel\envs\env1")
+#os.system("kubectl apply -f pvs/pvs.yaml")
+#os.system("kubectl apply -f prod-skel/storageClass.yaml")
+os.system("kubectl create namespace dv-test")
+os.system("helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner     --set nfs.server=141.19.44.16 --set nfs.path=/export/dataverse-pvs")
+os.system("kubectl apply -f prod-skel/secrets")
+os.system("kubectl apply -k prod-skel/envs/env1")
 
 # deploy s3
-os.system("kubectl apply -f prod-skel/bases/minio-standalone/pvc.yaml")
-os.system("kubectl apply -f prod-skel/bases/minio-standalone/svc.yaml")
-os.system("kubectl apply -f prod-skel/bases/minio-standalone/config.yaml")
-os.system("kubectl apply -f prod-skel/bases/minio-standalone/deployment.yaml")
-os.system("kubectl apply -f prod-skel/bases/minio-standalone/job.yaml")
+# os.system("kubectl apply -f prod-skel/bases/minio-standalone/pvc.yaml")
+# os.system("kubectl apply -f prod-skel/bases/minio-standalone/svc.yaml")
+# os.system("kubectl apply -f prod-skel/bases/minio-standalone/config.yaml")
+# os.system("kubectl apply -f prod-skel/bases/minio-standalone/deployment.yaml")
+# os.system("kubectl apply -f prod-skel/bases/minio-standalone/job.yaml")
 
 # # deploy jobs after dataverse is ready
 # while response_code != 200:
