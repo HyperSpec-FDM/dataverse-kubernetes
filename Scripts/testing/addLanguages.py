@@ -45,7 +45,7 @@ base_directory = "languages"
 output_zip_filename = "languages.zip"
 
 # change directory
-os.chdir("..")
+os.chdir("../..")
 
 # Create a zip file to write the selected files
 with zipfile.ZipFile(output_zip_filename, 'w') as zipf:

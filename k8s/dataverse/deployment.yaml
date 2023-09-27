@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: dataverse
-          image: docker.io/iqss/dataverse-k8s:5.14
+          image: 192.168.100.11:31000/iqss/dataverse-k8s:5.14
           imagePullPolicy: IfNotPresent
           resources:
             requests:
@@ -107,6 +107,8 @@ spec:
             initialDelaySeconds: 60 #5
             failureThreshold: 100
             periodSeconds: 5
+      imagePullSecrets:
+        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools
