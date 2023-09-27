@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
         - name: solr
-          image: docker.io/iqss/solr-k8s:8.11.1
+          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
           imagePullPolicy: IfNotPresent
           command: ["bash", "-c", "$SCRIPT_DIR/schema/createCollection.sh"]
           resources:
@@ -62,7 +62,7 @@ spec:
               path: /solr/admin/info/system #/solr/collection1/admin/ping #./opt/solr-8.11.1/server/solr/collection1
               port: index
         - name: schema-sidecar
-          image: docker.io/iqss/solr-k8s:8.11.1
+          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
           imagePullPolicy: IfNotPresent
 #          command: ["/tini", "--", "/scripts/schema/sidecar.sh"]
 #          command: ["tini", "--", "sleep", "3600"]
@@ -81,6 +81,8 @@ spec:
             httpGet:
               path: /
               port: webhook
+      imagePullSecrets:
+        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools:latest
@@ -90,13 +92,10 @@ spec:
             - name: data
               mountPath: /data
         - name: schema-init
-          image: docker.io/iqss/solr-k8s:8.11.1
+          image: 192.168.100.11:31756/iqss/solr-k8s:8.11.1
           imagePullPolicy: IfNotPresent
+
           command: ["/scripts/schema/init.sh"]
-#        - name: testen-wir-mal
-#          image: iqss/solr-k8s
-#          imagePullPolicy: IfNotPresent
-#          command: ["bash", "-c", "precreate-core collection1"]
           volumeMounts:
             - name: schema
               mountPath: /schema

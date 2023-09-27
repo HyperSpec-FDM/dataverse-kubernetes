@@ -28,7 +28,7 @@ def upload_file(bucket_name, file_path, object_name):
 
 # Usage example
 bucket_name = "test"
-file_path = "deploy.py"
+file_path = "../deploy.py"
 object_name = "deploy.py"
 
 upload_file(bucket_name, file_path, object_name)
