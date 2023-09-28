@@ -17,8 +17,8 @@ password = "changeme"
 
 # Define which image to build and push
 dataverse = True
-solr = True
-pushonly = True
+solr = False
+pushonly = False
 
 # Change working directory
 os.chdir("..")
