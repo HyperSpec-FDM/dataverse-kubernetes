@@ -62,9 +62,27 @@ spec:
                 secretKeyRef:
                   name: dataverse-postgresql
                   key: database
+#          command:
+#            - bash
+#            - -c
+#            - |
+#              /docker-entrypoint.sh postgres &
+#              until psql -U postgres -c '\l'; do
+#                echo "PostgreSQL is unavailable. Waiting..."
+#                sleep 1
+#              done
+#              psql -U postgres -c "CREATE USER $PGUSER WITH ENCRYPTED PASSWORD '$POSTGRES_PASSWORD';"
+#              psql -U postgres -c "CREATE DATABASE $POSTGRES_DB;"
+#              psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE $POSTGRES_DB TO $PGUSER;"
+#              psql -U $PGUSER -c "\connect $POSTGRES_DB"
+#              echo "Initialization complete. PostgreSQL is ready to accept connections."
+#              psql -U postgres -c "ALTER DATABASE $POSTGRES_DB OWNER TO $PGUSER;"
+#              psql -U $PGUSER -d $POSTGRES_DB -c "SELECT version();"
+#              sleep infinity
           volumeMounts:
             - name: postgresql-persistent-storage
               mountPath: /var/lib/postgresql/data
+              readOnly: false
           readinessProbe:
             exec:
               command: ["pg_isready"]

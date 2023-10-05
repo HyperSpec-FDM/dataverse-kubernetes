@@ -8,5 +8,8 @@ resources:
 images:
   - name: iqss/dataverse-k8s
     newTag: "5.13"
+#    newTag: "4.20"
   - name: iqss/solr-k8s
     newTag: "8.11.1"
+#    newTag: "tt"
+#    newTag: "4.20"
