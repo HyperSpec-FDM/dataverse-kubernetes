@@ -92,7 +92,7 @@ spec:
             - name: data
               mountPath: /data
         - name: schema-init
-          image: 192.168.100.11:31756/iqss/solr-k8s:8.11.1
+          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
           imagePullPolicy: IfNotPresent
 
           command: ["/scripts/schema/init.sh"]
