@@ -6,6 +6,8 @@ metadata:
   labels:
     app.kubernetes.io/name: solr
     app.kubernetes.io/version: "8.11.1"
+#    app.kubernetes.io/version: "tt"
+#    app.kubernetes.io/version: "4.20"
     app.kubernetes.io/component: searchindex
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -26,7 +28,7 @@ spec:
     spec:
       containers:
         - name: solr
-          image: iqss/solr-k8s
+          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
           imagePullPolicy: IfNotPresent
           command: ["bash", "-c", "$SCRIPT_DIR/schema/createCollection.sh"]
           resources:
@@ -60,8 +62,11 @@ spec:
               path: /solr/admin/info/system #/solr/collection1/admin/ping #./opt/solr-8.11.1/server/solr/collection1
               port: index
         - name: schema-sidecar
-          image: iqss/solr-k8s
+          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
           imagePullPolicy: IfNotPresent
+#          command: ["/tini", "--", "/scripts/schema/sidecar.sh"]
+#          command: ["tini", "--", "sleep", "3600"]
+#          command: ["tini", "--", "bash", "-c", "cd /scripts/schema && ./sidecar.sh"]
           command: ["tini", "--", "bash", "-c", "cd $SCRIPT_DIR/schema && ./sidecar.sh"]
           ports:
             - name: webhook
@@ -76,6 +81,8 @@ spec:
             httpGet:
               path: /
               port: webhook
+      imagePullSecrets:
+        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools:latest
@@ -85,8 +92,9 @@ spec:
             - name: data
               mountPath: /data
         - name: schema-init
-          image: iqss/solr-k8s
+          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
           imagePullPolicy: IfNotPresent
+
           command: ["/scripts/schema/init.sh"]
           volumeMounts:
             - name: schema

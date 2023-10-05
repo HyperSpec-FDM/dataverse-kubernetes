@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: bootstrap
-          image: iqss/dataverse-k8s:5.14
+          image: 192.168.100.11:31000/iqss/dataverse-k8s:5.14
           command: ["scripts/bootstrap-job.sh"]
           envFrom:
             - configMapRef:
@@ -74,7 +74,12 @@ spec:
             - name: postgresql-persistent-storage
               mountPath: /var/lib/postgresql/data
               readOnly: true
+      imagePullSecrets:
+        - name: registry-auth
       initContainers:
+#        - name: line-ending-init
+#          image: alpine:latest # You can choose a base image with sed pre-installed
+#          command: [ "sh", "-c", "sed -i 's/\r$//' /opt/payara/scripts/default.config" ]
         - name: check-db-ready
           image: postgres:13.11 #9.6
           command: ['sh', '-c',

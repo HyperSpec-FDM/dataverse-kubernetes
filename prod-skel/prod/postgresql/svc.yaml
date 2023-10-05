@@ -13,8 +13,9 @@ spec:
   ports:
     - port: 5432
       targetPort: 5432
+#      nodePort: 5432
       protocol: TCP
-  type: LoadBalancer
+#  type: LoadBalancer
   selector:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/part-of: dataverse

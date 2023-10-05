@@ -192,11 +192,13 @@ class dataverse_setuper():
             os.system(copy_command)
 
             # Copy the resized image in required directory
-            copy_command = f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
+            # copy_command = f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
+            copy_command = f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/resources/images/{imagename}"
             self.pod_exec(self.pod_name, self.container_name, self.namespace, copy_command)
 
             # Change the logo of dataverse
-            copy_command = f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            # copy_command = f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            copy_command = f"curl -X PUT -d /resources/images/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
             self.pod_exec(self.pod_name, self.container_name, self.namespace, copy_command)
 
             # Clean up the resized image file
@@ -361,19 +363,21 @@ class dataverse_setuper():
 
 
 deployment_name = "dataverse"
-namespace = "dv-test"
+namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
-url = "http://localhost:8080" + "/robots.txt"
+url = "http://192.168.100.11:30000" + "/robots.txt"
 imagename = "TransparentLogo.svg"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
-languages = ['en_US', 'de_DE', 'fr_FR']
+languages = ['en_US', 'de_DE']
 
 
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
-tt.change_logo(imagename)
-tt.add_custom_metadata("testmeta.tsv")
-tt.add_languages(languages)
+# tt.change_logo(imagename)
+# tt.add_custom_metadata("testmeta.tsv")
+# tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-tt.add_s3_storage("testname", "testname", "minio_profile_1", "test_accessKey", "test_secretKey", "http\:\/\/minio\:9000")
+tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+
+

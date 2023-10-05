@@ -5,7 +5,10 @@ metadata:
   name: dataverse
   labels:
     app.kubernetes.io/name: dataverse
+#    app.kubernetes.io/version: "tt"
+#    app.kubernetes.io/version: "5.13"
     app.kubernetes.io/version: "5.14"
+#    app.kubernetes.io/version: "4.20-payara"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -26,8 +29,8 @@ spec:
     spec:
       containers:
         - name: dataverse
-          image: iqss/dataverse-k8s
-          imagePullPolicy: IfNotPresent
+          image: 192.168.100.11:31000/iqss/dataverse-k8s:5.14
+          imagePullPolicy: Always
           resources:
             requests:
               memory: "2Gi"
@@ -67,11 +70,19 @@ spec:
                 secretKeyRef:
                   name: dataverse-postgresql
                   key: database
+#            - name: POSTGRES_SERVER
+#              value: postgresql
+#            - name: DB_HOST
+#              value: postgresql
+#            - name: DB_HOSTNAME
+#              value: postgresql
           volumeMounts:
             - name: files
               mountPath: /data
             - name: docroot
               mountPath: /opt/docroot
+#            - name: logos
+#              mountPath: /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos
             - name: heapdumps
               mountPath: /dumps
             - name: db-secret
@@ -96,6 +107,8 @@ spec:
             initialDelaySeconds: 60 #5
             failureThreshold: 100
             periodSeconds: 5
+      imagePullSecrets:
+        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools
@@ -118,8 +131,11 @@ spec:
         - name: check-solr-ready
           image: giantswarm/tiny-tools
           imagePullPolicy: IfNotPresent
+#          command: [ "/bin/sh", "-c", 'until curl -sS -f "http://192.168.100.11:30000/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
+#                       do echo waiting for solr; sleep 3; done;' ]
           command: [ "/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
                       do echo waiting for solr; sleep 3; done;' ]
+       
       volumes:
         - name: files
           persistentVolumeClaim:
@@ -127,6 +143,9 @@ spec:
         - name: docroot
           persistentVolumeClaim:
             claimName: dataverse-docroot
+#        - name: logos
+#          persistentVolumeClaim:
+#            claimName: dataverse-logos
         - name: api-secret
           secret:
             secretName: dataverse-api
@@ -144,3 +163,4 @@ spec:
         # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
         - name: primefaces-upload
           emptyDir: {}
+

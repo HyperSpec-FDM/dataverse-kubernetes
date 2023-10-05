@@ -35,6 +35,12 @@ spec:
                 path: tls.crt
               - key: tls.key
                 path: tls.key
+#        - name: tls-crt
+#          secret:
+#            secretName: dataverse-certificate
+#        - name: tls-key
+#          secret:
+#            secretName: dataverse-certificate
         - name: config
           configMap:
             name: ssl-sidecar
