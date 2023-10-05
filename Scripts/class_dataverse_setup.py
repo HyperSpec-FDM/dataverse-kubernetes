@@ -192,11 +192,13 @@ class dataverse_setuper():
             os.system(copy_command)
 
             # Copy the resized image in required directory
-            copy_command = f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
+            # copy_command = f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/{imagename}"
+            copy_command = f"cp /opt/docroot/logos/{imagename} /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/resources/images/{imagename}"
             self.pod_exec(self.pod_name, self.container_name, self.namespace, copy_command)
 
             # Change the logo of dataverse
-            copy_command = f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            # copy_command = f"curl -X PUT -d {imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            copy_command = f"curl -X PUT -d /resources/images/{imagename} http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
             self.pod_exec(self.pod_name, self.container_name, self.namespace, copy_command)
 
             # Clean up the resized image file
@@ -372,10 +374,10 @@ languages = ['en_US', 'de_DE']
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
-tt.change_logo(imagename)
+# tt.change_logo(imagename)
 # tt.add_custom_metadata("testmeta.tsv")
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
 

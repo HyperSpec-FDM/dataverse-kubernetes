@@ -30,7 +30,7 @@ spec:
       containers:
         - name: dataverse
           image: 192.168.100.11:31000/iqss/dataverse-k8s:5.14
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           resources:
             requests:
               memory: "2Gi"
