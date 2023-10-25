@@ -124,4 +124,25 @@ if [ "${INIT_SCRIPTS_FOLDER}" ]; then
         done
 fi
 echo
+
+
 echo "Setup done. Enjoy Dataversing...." >> /tmp/status.log
+
+# testing
+#sleep 60
+# Wait until Dataverse is fully setup
+echo "Starting with checking for set DoiProvider"
+while true; do
+    response=$(curl -sS "http://localhost:${DATAVERSE_SERVICE_PORT_HTTP}/api/admin/settings/:DoiProvider" -m 2 2>&1)
+    if [ "$response" = '{"status":"OK","data":{"message":"DataCite"}}' ]; then
+        echo "Dataverse setup is finished."
+        break
+    else
+        echo "Waiting for Dataverse setup to finish..."
+        echo "Curl Output: $response"
+        sleep 15
+    fi
+done
+exec ${SCRIPT_DIR}/config-job.sh
+echo "Configuration from ConfigMap done...." >> /tmp/status.log
+# testing

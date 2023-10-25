@@ -361,6 +361,15 @@ class dataverse_setuper():
             # create jvm resources
             self.pod_exec(pod_name, container_name, namespace, command)
 
+    def delete_dataset(self, api_key, persistent_id):
+        delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/datasets/:persistentId/destroy/?persistentId={persistent_id}\""
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
+
+    def setup_shibboleth(self, api_key, persistent_id):
+        delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/datasets/:persistentId/destroy/?persistentId={persistent_id}\""
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
+
+
 
 deployment_name = "dataverse"
 namespace = "dv-test"  # Replace with the appropriate namespace
@@ -369,6 +378,8 @@ url = "http://192.168.100.11:30000" + "/robots.txt"
 imagename = "TransparentLogo.svg"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
+api_key = "5624a1d8-0f9b-4c8d-ad71-318f6e303fd3"
+persistent_id = "doi:10.12345/EXAMPLE/RQZQZ0"
 
 
 
@@ -378,6 +389,8 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 # tt.add_custom_metadata("testmeta.tsv")
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+
+tt.delete_dataset(api_key, persistent_id)
 
 

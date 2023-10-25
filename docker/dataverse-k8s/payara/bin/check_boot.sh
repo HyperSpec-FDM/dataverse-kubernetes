@@ -21,14 +21,14 @@ for f in ${SCRIPT_DIR}/postboot_*; do
 done
 
 
-# Wait until Dataverse is fully setup
-echo "Starting with checking for set DoiProvider"
-until response=$(curl -sS -f "http://localhost:${DATAVERSE_SERVICE_PORT_HTTP}/api/admin/settings/:DoiProvider" -m 2 2>&1); do
-    echo "Waiting for Dataverse setup to finish..."
-    echo "Curl Output: $response"
-    sleep 15
-done
-
-# Run config-jon
-echo "Running config-job"
-${SCRIPT_DIR}/config-job.sh
+## Wait until Dataverse is fully setup
+#echo "Starting with checking for set DoiProvider"
+#until response=$(curl -sS -f "http://localhost:${DATAVERSE_SERVICE_PORT_HTTP}/api/admin/settings/:DoiProvider" -m 2 2>&1); do
+#    echo "Waiting for Dataverse setup to finish..."
+#    echo "Curl Output: $response"
+#    sleep 15
+#done
+#
+## Run config-jon
+#echo "Running bootstrap-job and config-job"
+#${SCRIPT_DIR}/bootstrap-job.sh
