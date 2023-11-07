@@ -6,7 +6,7 @@ os.chdir("..")
 
 # add command to import secret for registry in namespace
 
-os.system("kubectl delete -f k8s/dataverse/jobs/bootstrap.yaml")
+# os.system("kubectl delete -f k8s/dataverse/jobs/bootstrap.yaml")
 os.system("kubectl delete -f k8s/dataverse/jobs/configure.yaml")
 os.system("kubectl delete -k prod-skel/envs/env1")
 os.system("kubectl delete -f prod/secrets/secrets.yaml")
