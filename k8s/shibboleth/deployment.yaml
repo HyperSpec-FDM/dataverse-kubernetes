@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shibboleth
+spec:
+  replicas: 1  # You can adjust the number of replicas as needed.
+  selector:
+    matchLabels:
+      app: shibboleth
+  template:
+    metadata:
+      labels:
+        app: shibboleth
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - kubernetes-1
+      containers:
+        - name: shibboleth-container
+          image: 192.168.100.11:31000/shibboleth:1.0  # Use the name of your Docker image
+          imagePullPolicy: Always
+          command: ["sh", "-c", "./usr/local/bin/run-httpd.sh"]
+          ports:
+            - containerPort: 443
+              hostPort: 443
+            - containerPort: 80
+      imagePullSecrets:
+        - name: registry-auth

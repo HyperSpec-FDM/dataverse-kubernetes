@@ -10,14 +10,20 @@ dockerfileSolr = "./docker/solr-k8s/Dockerfile"
 versionSolr = "8.11.1"
 tagSolr = "iqss/solr-k8s:" + versionSolr
 
+# Define Shibboleth Dockerfile, Version and Tag
+dockerfileShibboleth = "./docker/shibboleth/Dockerfile"
+versionShibboleth = "1.0"
+tagShibboleth = "shibboleth:" + versionShibboleth
+
 # Define privat registry endpoint
 registry = "192.168.100.11:31000"
 user = "tim"
 password = "changeme"
 
 # Define which image to build and push
-dataverse = True
+dataverse = False
 solr = False
+shibboleth = True
 pushonly = False
 
 # Change working directory
@@ -37,14 +43,19 @@ def pushToRegistry(imageTag, registry):
     print(pushCommand)
     os.system(pushCommand)
 
+# Clean up system to prevent full storage
+cleancommand = "docker system prune -f"
+os.system(cleancommand)
 
 # Build the desired image or images and push to local registry
-if dataverse and solr:
+if dataverse and solr and shibboleth:
     if not pushonly:
         buildImage(dockerfileDataverse, tagDataverse)
         buildImage(dockerfileSolr, tagSolr)
+        buildImage(dockerfileShibboleth, tagShibboleth)
     pushToRegistry(tagDataverse, registry)
     pushToRegistry(tagSolr, registry)
+    pushToRegistry(tagShibboleth, registry)
 elif dataverse:
     if not pushonly:
         buildImage(dockerfileDataverse, tagDataverse)
@@ -53,6 +64,10 @@ elif solr:
     if not pushonly:
         buildImage(dockerfileSolr, tagSolr)
     pushToRegistry(tagSolr, registry)
+elif shibboleth:
+    if not pushonly:
+        buildImage(dockerfileShibboleth, tagShibboleth)
+    pushToRegistry(tagShibboleth, registry)
 else:
     print("No image to build..")
 

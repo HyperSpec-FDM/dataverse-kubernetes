@@ -12,6 +12,8 @@ os.system('kubectl get secret registry-auth -n docker-registry -o yaml | sed s/"
 # deploy secrets and dataverse enviroment
 os.system("kubectl apply -f prod-skel/secrets")
 os.system("kubectl apply -k prod-skel/envs/env1")
+os.system("kubectl apply -f k8s/shibboleth/deployment.yaml")
+os.system("kubectl apply -f k8s/shibboleth/svc.yaml")
 # os.system("kubectl create -f k8s/dataverse/jobs/bootstrap.yaml")
 
 # deploy s3

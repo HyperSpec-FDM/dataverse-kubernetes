@@ -1,0 +1,15 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI
+	hyperspec-fdm		HyperSpec-FDM	https://dataverse.org/schema/hyperspec-fdm/
+#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	keyword	Keyword	A key term that describes an important aspect of the Dataset and information about any controlled vocabulary used		none	0		FALSE	FALSE	TRUE	FALSE	TRUE	TRUE		hyperspec-fdm
+	keywordValueList	Term	A key term that describes important aspects of the Dataset		text	1	#VALUE	TRUE	TRUE	FALSE	TRUE	TRUE	FALSE	keyword	hyperspec-fdm
+	keywordValue	Term	A key term that describes important aspects of the Dataset		text	2	#VALUE	TRUE	FALSE	FALSE	TRUE	TRUE	FALSE	keyword	hyperspec-fdm
+	dateOfDeletion	Date of Deletion	Date of Deletion	YYYY-MM-DD	date	3		TRUE	FALSE	FALSE	TRUE	TRUE	TRUE		hyperspec-fdm
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder
+	keywordValueList	Test 1		0
+	keywordValueList	Test 2		1
+	keywordValueList	Test 3		2
+	keywordValueList	Test 4		3
+	keywordValueList	Test 5		4
+	keywordValueList	Test 6		5
+	keywordValueList	Test 7		6
