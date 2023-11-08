@@ -1,4 +1,5 @@
 import os
+import csv
 import subprocess
 import requests
 from kubernetes import client, config
@@ -211,9 +212,16 @@ class dataverse_setuper():
         if self.pod_name:
             # Custom metadata
             metadataFile_path = "../metadata/" + metadataFile
+            properties_file = os.path.splitext(os.path.basename(metadataFile))[0] + ".properties"
+            properties_path = "../metadata/exchange/" + properties_file
 
             # Copy the metadata file to the container
             copy_command = f"kubectl cp {metadataFile_path} {self.namespace}/{self.pod_name}:/opt/payara/dvinstall/data/metadatablocks/{metadataFile} -c {self.container_name}"
+            os.system(copy_command)
+
+            # Copy the metadata properties
+            self.createPropertiesFile(metadataFile_path)
+            copy_command = f"kubectl cp {properties_path} {self.namespace}/{self.pod_name}:/opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/WEB-INF/classes/propertyFiles/{properties_file} -c {self.container_name}"
             os.system(copy_command)
 
             # Upload metadata
@@ -221,17 +229,106 @@ class dataverse_setuper():
             self.pod_exec(self.pod_name, self.container_name, self.namespace, upload_metadata_command)
 
             # Update index
-            update_index_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' | /opt/payara/dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
-            self.pod_exec(self.pod_name, self.container_name, self.namespace, update_index_command)
+            # Update Schema
+            update_schema_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' | ./dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, update_schema_command)
+
+            # Copy the schema from dataverse to solr
+            solr_pod_name, solr_container_id = self.get_pod_name_by_deployment("solr", self.namespace, "solr")
+            copy_command = f"kubectl cp {self.namespace}/{self.pod_name}:/opt/payara/dvinstall/schema.xml -c {self.container_name} ../metadata/exchange/schema.xml"
+            os.system(copy_command)
+            copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/opt/solr-8.11.1/server/solr/collection1/conf/schema.xml -c solr"
+            os.system(copy_command)
+            #Attention this is the right file, the one above is just for all of them to be the same!!!
+            copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/var/solr/data/collection1/conf/schema.xml -c solr"
+            os.system(copy_command)
 
             # Reload solr collection to make
-            solr_pod_name, solr_container_id = self.get_pod_name_by_deployment("solr", self.namespace, "solr")
-
             reload_collection_command = f"curl \"http://localhost:8983/solr/admin/cores?action=RELOAD&core=collection1\""
             self.pod_exec(solr_pod_name, "solr", self.namespace, reload_collection_command)
 
         else:
             print(f"No pod found for deployment '{deployment_name}'.")
+
+    def createPropertiesFile(self, metadataFile):
+        properties_file = os.path.splitext(os.path.basename(metadataFile))[0] + ".properties"
+        properties_file = "../metadata/exchange/" + properties_file
+
+        # Create dictionaries to store metadata block, dataset fields, and controlled vocabulary data
+        metadata_block = {}
+        dataset_fields = {}
+        controlled_vocabulary = {}
+
+        with open(metadataFile, mode='r', newline='', encoding='utf-8') as tsv:
+            reader = csv.reader(tsv, delimiter='\t')
+            section = None
+            rows_datasetFields = 0
+            rows_controlledVocabulary = 0
+            for row in reader:
+                if not row:
+                    continue
+                if row[0].startswith("#"):
+                    section = row[0].strip("#").strip()
+                else:
+                    if section == "metadataBlock":
+                        metadata_block["name"] = row[1]
+                        metadata_block["dataverseAlias"] = row[2]
+                        metadata_block["displayName"] = row[3]
+                    elif section == "datasetField":
+                        rows_datasetFields = rows_datasetFields + 1
+                        dataset_fields[rows_datasetFields] = {
+                            "name": row[1],
+                            "title": row[2],
+                            "description": row[3],
+                            "watermark": row[4],
+                            "fieldType": row[5],
+                            "displayOrder": row[6],
+                            "displayFormat": row[7],
+                            "advancedSearchField": row[8],
+                            "allowControlledVocabulary": row[9],
+                            "allowmultiples": row[10],
+                            "facetable": row[11],
+                            "displayoncreate": row[12],
+                            "required": row[13],
+                            "parent": row[14],
+                            "metadatablock_id": row[15]
+                        }
+                    elif section == "controlledVocabulary":
+                        rows_controlledVocabulary = rows_controlledVocabulary + 1
+                        controlled_vocabulary[rows_controlledVocabulary] = {
+                            "DatasetField": row[1],
+                            "Value": row[2],
+                            "identifier": row[3],
+                            "displayOrder": row[4]
+                        }
+
+        # Create a dictionary to store the properties
+        properties = {}
+
+        # Add metadatablock.name and metadatablock.displayName
+        properties['metadatablock.name'] = metadata_block['name']
+        properties['metadatablock.displayName'] = metadata_block['displayName']
+
+        # Add metadatablock.displayFacet if displayName is not empty
+        if metadata_block['displayName']:
+            properties['metadatablock.displayFacet'] = metadata_block['displayName']
+
+        # Generate the .properties file
+        with open(properties_file, 'w', encoding='utf-8') as prop_file:
+            for key, value in properties.items():
+                prop_file.write(f'{key}={value}\n')
+
+            for item in dataset_fields:
+                for entry in dataset_fields[item]:
+                    if entry == "title" or entry == "description" or entry == "watermark":
+                        prop_file.write(
+                            f'datasetfieldtype.{dataset_fields[item]["name"]}.{entry}={dataset_fields[item][entry]}\n')
+
+            for item in controlled_vocabulary:
+                for entry in controlled_vocabulary[item]:
+                    if entry == "Value":
+                        prop_file.write(
+                            f'datasetfieldtype.{controlled_vocabulary[item]["DatasetField"]}.{controlled_vocabulary[item][entry].lower()}={controlled_vocabulary[item][entry]}\n')
 
     # def remove_custom_metadata(self, name):
     #     # nicht nutzen, macht die ganze instand unbrauchbar!!
@@ -411,24 +508,24 @@ class dataverse_setuper():
 deployment_name = "dataverse"
 namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
-url = "http://192.168.100.11:30000" + "/robots.txt"
+url = "http://localhost:8080/" + "/robots.txt"
 imagename = "TransparentLogo.svg"
-metadata_file = "addition_citation.tsv" #"citation.tsv"
+metadata_file = "testmeta.tsv" #"hyperspectral_imaging.tsv" #"testmeta.tsv" #"addition_citation.tsv" #"customPSRI.tsv"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "5624a1d8-0f9b-4c8d-ad71-318f6e303fd3"
-persistent_id = "doi:10.12345/EXAMPLE/H7RRWR"
+api_key = "00936e65-b4c2-4a8e-a122-ef56281279e2"
+persistent_id = "doi:10.12345/EXAMPLE/GKDTQO"
 
 
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
 # tt.change_logo(imagename)
-# tt.add_custom_metadata(metadata_file)
+tt.add_custom_metadata(metadata_file)
 # tt.remove_custom_metadata("hyperspec-fdm")
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
 # tt.delete_dataset(api_key, persistent_id)
 # tt.curl_dataverse(api_key, "HyperSpec-FDM")

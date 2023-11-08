@@ -1,0 +1,43 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI
+	hyperspectral_imaging		Hyperspectral Imaging	https://dataverse.org/schema/hyperspectral_imaging/
+#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	fileID	fileID	Primary key assigned automatically by DB (Do not edit)		text	0		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/dc/terms/title
+	directory	directory	same as path to this sheet - assigned automatically (Do not edit)		text	1		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	uniqueFileName	uniqueFileName	automatically generated (equipment_analyte_stabilization_sampleType_lab_timestamp)		text	3		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	https://schema.org/distribution
+	lab	lab	name of the lab where the experiment was done		text	4		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	contact	contact	Stable (ideally long-term) contact information for experimenter(s).		text	5		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	publication	publication	associated publication data was published in (e.g. DOI)		text	6		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	acquisitionDate	acquisitionDate	Same as data of .mis file creation - assigned automatically 		text	7		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/dc/terms/creator
+	ionization	ionization	This just to make sure that we don't get other types of ionization		text	8		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	analyzer	analyzer	Mass analyzer used (see drop down menu)		text	9		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	polarity	polarity	Polarity (see drop down menu)		text	10		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/spar/datacite/AgentIdentifierScheme
+	equipment	equipment	choose one of ('autoflex', 'ultraflex', 'rapiflex', 'solarix','other')		text	11		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	acquisitionType	acquisitionType	whole tissue or TMAs (drop down menu)		text	12		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	surfaceType	surfaceType	Surface analyzed or used as an underlying substrate for analysis (ITO, glass, metal)		text	13		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	surfaceMods	surfaceMods	Was the surface analyzed modified in any way (functionalized, coated)?		text	14		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	analyte	analyte	analytes being imaged (small molecules, peptides, proteins, glycans, other)		text	15		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	minRange	minRange	Minimum m/z for the acquired mass range.		text	16		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	maxRange	maxRange	Maximum m/z for the acquired mass range.		text	17		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	calType	calType	Type of calibration employed (external, internal, lock mass).		text	18		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	calStandard	calStandard	Calibration standard or standard mixture(s) used.		text	19		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/dc/terms/subject
+	fixation	fixation	What stabilization method was used (dehydration, heat inactivation, alcohol/cross-linking fixation, freezing)?		text	20		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	embedding	embedding	Embedding method for sample (OCT, CMC, gelatin, paraffin, none).		text	21		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	microtome 	microtome 	(Cryo)-microtome instrument used to section material.		text	22		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	thickness 	thickness 	Tissue section thickness (µm)		text	23		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	wash 	wash 	Wash or solution treatment for section(s) and/or surface(s) (fixation, re-hydration).		text	24		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	scan 	scan 	Was sample / section scanned prior to analysis for co-registration?		text	25		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	matrixType 	matrixType 	What compound or material was used to mediate ionization (2.5-DHB, DAN, THAP, HCCA, CLCCA, SDHB, DHAP, 9AA, other)?		text	26		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	matrixInstrument	matrixInstrument	Instrument used for matrix preparation (manual sprayer, ImagePrep, sublimation chamber, iMatrixSpray, TM-sprayer, sunChrome, M3, M5, other).		text	27		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	laserDiameter 	laserDiameter 	Laser spot size, or measured area (µm).		text	28		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/dc/terms/isReferencedBy
+	laserPower	laserPower	Laser power if known		text	29		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/dc/terms/bibliographicCitation
+	laserRepRate	laserRepRate	laser repetition rate (kHz)		text	30		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/spar/datacite/ResourceIdentifierScheme
+	spatialRes 	spatialRes 	The size of the data pixels (spectra) [µm].		text	31		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	processing 	processing 	List of the pre-processing steps / pipeline used on the raw data.		text	32		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	https://schema.org/distribution
+	normalization 	normalization 	Method used for intensity normalization (none, TIC, RMS, ...).		text	33		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	sampleType	sampleType	The type of sample (animal, clinical, geological)		text	34		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging	http://purl.org/dc/terms/language
+	multipleTissueTypesInFile	multipleTissueTypesInFile	whether the slide contains multipe tissue types (ex. liver and kidney …) 		text	35		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	tissueType	tissueType	The name of the organ the tissue was taken from (liver, kidney, brain, stomach, intestine, skin lung, colon, abdomen, thoraxwall, peritoneum, pelvis, pancreas). For multiple entries use a comman for separation		text	36		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	condition	condition	pathological condition: ex. diseased, wildtype, mutant, control, tumor, gist, glioblastoma, …		text	37		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	isTumor	isTumor	is the sample an oncological specimen?		text	38		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		hyperspectral_imaging
+	tissueSubType	tissueSubType	optional - additional info about the tissue		text	39		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		hyperspectral_imaging
+	comment	comment	optional - comments		text	40		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		hyperspectral_imaging
