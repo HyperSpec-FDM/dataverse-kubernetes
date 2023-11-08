@@ -2,7 +2,9 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generateName: metadata-update-dataverse-
+#  generateName: metadata-update-dataverse-
+  name: metadata-update-dataverse
+  namespace: dv-test
   labels:
     app.kubernetes.io/name: metadata-update
     app.kubernetes.io/version: "1.0"
@@ -18,7 +20,7 @@ spec:
     spec:
       containers:
         - name: metadata-update
-          image: iqss/dataverse-k8s
+          image: iqss/dataverse-k8s:5.14
           command: ['scripts/metadata-update.sh']
           envFrom:
             - configMapRef:

@@ -7,11 +7,11 @@
 set -euo pipefail
 DATAVERSE_SERVICE_HOST=${DATAVERSE_SERVICE_HOST:-"dataverse"}
 DATAVERSE_SERVICE_PORT_HTTP=${DATAVERSE_SERVICE_PORT_HTTP:-"8080"}
-DATAVERSE_URL=${DATAVERSE_URL:-"http://${DATAVERSE_SERVICE_HOST}:${DATAVERSE_SERVICE_PORT_HTTP}"}
+DATAVERSE_URL=localhost:8080 #${DATAVERSE_URL:-"http://${DATAVERSE_SERVICE_HOST}:${DATAVERSE_SERVICE_PORT_HTTP}"}
 
 SOLR_SERVICE_HOST=${SOLR_SERVICE_HOST:-"solr"}
 SOLR_SERVICE_PORT_WEBHOOK=${SOLR_SERVICE_PORT_WEBHOOK:-"9000"}
-SOLR_URL=${SOLR_URL:-"http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT_WEBHOOK}/hooks/update-schema"}
+SOLR_URL=localhost:9000/hooks/update-schema #${SOLR_URL:-"http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT_WEBHOOK}/hooks/update-schema"}
 
 # Check API key secret is available
 if [ ! -s "${SECRETS_DIR}/api/key" ]; then
@@ -45,7 +45,8 @@ fi
 # Load metadata blocks
 while IFS= read -r TSV; do
   echo -n "Loading ${TSV}: "
-  OUTPUT=`curl -sS -f -H "Content-type: text/tab-separated-values" -X POST --data-binary "@${TSV}" "${DATAVERSE_URL}/api/admin/datasetfield/load?unblock-key=${API_KEY}" 2>&1 || echo -n ""`
+  #OUTPUT=`curl -sS -f -H "Content-type: text/tab-separated-values" -X POST --data-binary "@${TSV}" "${DATAVERSE_URL}/api/admin/datasetfield/load?unblock-key=${API_KEY}" 2>&1 || echo -n ""`
+  OUTPUT=`curl -sS -f -H "Content-type: text/tab-separated-values" -X POST --upload-file "${TSV}" "${DATAVERSE_URL}/api/admin/datasetfield/load" 2>&1 || echo -n ""`
   echo "$OUTPUT" | jq -rM '.status' 2>/dev/null || echo -e 'FAILED\n' "$OUTPUT"
 done <<< "${TSVS}"
 
@@ -53,7 +54,8 @@ done <<< "${TSVS}"
 echo "--------------"
 echo "Firing webhook for Solr update. Response following:"
 echo "--------------"
-curl --header "Content-Type: application/json" \
-     --request POST -sS -f \
-     --data "`jq -Mn --arg key "${API_KEY}" --arg url "${DATAVERSE_URL}" '{ "api_key": $key, "dataverse_url": $url }'`" \
-     "${SOLR_URL}"
+echo curl --header "Content-Type: application/json" \
+             --request POST -sS -f \
+                  --data "`jq -Mn --arg key "${API_KEY}" --arg url "${DATAVERSE_URL}" '{ "api_key": $key, "dataverse_url": $url }'`" \
+                       "${SOLR_URL}"
+curl --header "Content-Type: application/json"  --request POST -sS -f --data "`jq -Mn --arg key "${API_KEY}" --arg url localhost:8080 '{"dataverse_url": $url }'`" localhost:9000 # "${SOLR_URL}"
