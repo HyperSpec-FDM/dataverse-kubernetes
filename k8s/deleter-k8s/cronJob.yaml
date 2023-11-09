@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dataverse-deleter
+  namespace: dv-test
+spec:
+  schedule: "*/1 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: dataverse-curler-service-account
+          automountServiceAccountToken: true
+          containers:
+          - name: dataverse-deleter
+            image: dataverse_cron_job:1.0
+            imagePullPolicy: IfNotPresent
+            env:
+              - name: url
+                value: "http://localhost:8080/"
+              - name: api_key
+                value: "b3752a5a-3a15-4dcc-9f7f-921c216dadcc"
+              - name: dataverse_id
+                value: "HyperSpec-FDM"
+              - name: deployment_name
+                value: "dataverse"
+              - name: namespace
+                value: "dv-test"
+              - name: container_name
+                value: "dataverse"
+          restartPolicy: OnFailure
