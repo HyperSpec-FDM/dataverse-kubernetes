@@ -235,7 +235,7 @@ class dataverse_setuper():
 
             # Copy the schema from dataverse to solr
             solr_pod_name, solr_container_id = self.get_pod_name_by_deployment("solr", self.namespace, "solr")
-            copy_command = f"kubectl cp {self.namespace}/{self.pod_name}:/opt/payara/dvinstall/schema.xml -c {self.container_name} ../metadata/exchange/schema.xml"
+            copy_command = f"kubectl cp {self.namespace}/{self.pod_name}:dvinstall/schema.xml -c {self.container_name} ../metadata/exchange/schema.xml"
             os.system(copy_command)
             copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/opt/solr-8.11.1/server/solr/collection1/conf/schema.xml -c solr"
             os.system(copy_command)
@@ -246,6 +246,10 @@ class dataverse_setuper():
             # Reload solr collection to make
             reload_collection_command = f"curl \"http://localhost:8983/solr/admin/cores?action=RELOAD&core=collection1\""
             self.pod_exec(solr_pod_name, "solr", self.namespace, reload_collection_command)
+
+            #Cleanup exchange
+            for file in os.listdir( "../metadata/exchange"):
+                os.remove("../metadata/exchange/" + file)
 
         else:
             print(f"No pod found for deployment '{deployment_name}'.")
@@ -504,17 +508,21 @@ class dataverse_setuper():
         curl_command = f"curl -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/{dataverse_id}/contents\""
         self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
 
+    def curl_dataset(self, api_key, dataset_pid):
+        curl_command = f"curl -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/datasets/:persistentId/versions/:draft?persistentId={dataset_pid}\""
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
 
 deployment_name = "dataverse"
 namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
 url = "http://localhost:8080/" + "/robots.txt"
 imagename = "TransparentLogo.svg"
-metadata_file = "testmeta.tsv" #"hyperspectral_imaging.tsv" #"testmeta.tsv" #"addition_citation.tsv" #"customPSRI.tsv"
+metadata_file = "hyperspectral_imaging.tsv" #"testmeta.tsv" #"hyperspectral_imaging.tsv" #"testmeta.tsv" #"addition_citation.tsv" #"customPSRI.tsv"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "00936e65-b4c2-4a8e-a122-ef56281279e2"
-persistent_id = "doi:10.12345/EXAMPLE/GKDTQO"
+api_key = "b3752a5a-3a15-4dcc-9f7f-921c216dadcc"
+persistent_id = "doi:10.12345/EXAMPLE/UHEYRV"
 
 
 
@@ -522,13 +530,15 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
 # tt.change_logo(imagename)
 tt.add_custom_metadata(metadata_file)
-# tt.remove_custom_metadata("hyperspec-fdm")
+# tt.remove_custom_metadata("testmetadata")
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
 # tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
-# tt.delete_dataset(api_key, persistent_id)
 # tt.curl_dataverse(api_key, "HyperSpec-FDM")
+# tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/N97BD6")
+# tt.delete_dataset(api_key, persistent_id)
+
 # tt.delete_dataverse(api_key, "")
 
 
