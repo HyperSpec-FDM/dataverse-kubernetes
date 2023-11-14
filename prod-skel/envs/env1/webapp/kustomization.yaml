@@ -7,9 +7,8 @@ kind: Kustomization
 
 images:
   - name: iqss/dataverse-k8s
-#    newTag: "tt"
-#    newTag: "5.13"
-    newTag: "5.14"
+#    newTag: "5.14"
+    newTag: "6.0"
 
 patchesStrategicMerge:
   - patch-pvc.yaml

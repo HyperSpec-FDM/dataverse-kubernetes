@@ -5,9 +5,7 @@ metadata:
   name: solr
   labels:
     app.kubernetes.io/name: solr
-    app.kubernetes.io/version: "8.11.1"
-#    app.kubernetes.io/version: "tt"
-#    app.kubernetes.io/version: "4.20"
+    app.kubernetes.io/version: "9.3.0"
     app.kubernetes.io/component: searchindex
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -28,9 +26,9 @@ spec:
     spec:
       containers:
         - name: solr
-          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
+          image: iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
-          command: ["bash", "-c", "$SCRIPT_DIR/schema/createCollection.sh"]
+          command: ["bash", "-c", "$SCRIPT_DIR/schema/boot.sh"]
           resources:
             requests:
               memory: "2Gi"
@@ -47,6 +45,12 @@ spec:
           env:
             - name: SOLR_PORT  # Otherwise, this is wrongfully set by K8s.
               value: "8983"
+            - name: SOLR_HOME
+              value: server/solr/collection1/conf
+            - name: SOLR_SECURITY_MANAGER_ENABLED
+              value: "false"
+            - name: SOLR_CORES
+              value: "collection1"
           livenessProbe:
             initialDelaySeconds: 30
             periodSeconds: 60
@@ -62,7 +66,7 @@ spec:
               path: /solr/admin/info/system #/solr/collection1/admin/ping #./opt/solr-8.11.1/server/solr/collection1
               port: index
         - name: schema-sidecar
-          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
+          image: iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
 #          command: ["/tini", "--", "/scripts/schema/sidecar.sh"]
 #          command: ["tini", "--", "sleep", "3600"]
@@ -81,8 +85,8 @@ spec:
             httpGet:
               path: /
               port: webhook
-      imagePullSecrets:
-        - name: registry-auth
+#      imagePullSecrets:
+#        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools:latest
@@ -92,9 +96,8 @@ spec:
             - name: data
               mountPath: /data
         - name: schema-init
-          image: 192.168.100.11:31000/iqss/solr-k8s:8.11.1
+          image: iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
-
           command: ["/scripts/schema/init.sh"]
           volumeMounts:
             - name: schema
@@ -102,6 +105,22 @@ spec:
             - name: api-secret
               mountPath: "/scripts/schema/api"
               readOnly: true
+#        - name: collection-init
+#          image: iqss/solr-k8s:9.3.0
+#          imagePullPolicy: IfNotPresent
+#          command: ["bash", "-c", "mkdir /var/solr/data && precreate-core collection1 server/solr/collection1/conf" ]
+#          env:
+#            - name: SOLR_PORT  # Otherwise, this is wrongfully set by K8s.
+#              value: "8983"
+#            - name: SOLR_HOME
+#              value: server/solr/collection1/conf
+#            - name: SOLR_SECURITY_MANAGER_ENABLED
+#              value: "false"
+#            - name: SOLR_CORES
+#              value: "collection1"
+#          volumeMounts:
+#            - name: data
+#              mountPath: /opt/solr/server/solr/collection1/data
       volumes:
         - name: data
           persistentVolumeClaim:

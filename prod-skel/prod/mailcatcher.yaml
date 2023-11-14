@@ -3,6 +3,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: mailcatcher
+  namespace: dv-test
   labels:
     app: mailcatcher
 spec:
@@ -27,6 +28,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: postfix
+  namespace: dv-test
   labels:
     app: mailcatcher
 spec:
@@ -44,6 +46,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: mailcatcher
+  namespace: dv-test
   labels:
     app: mailcatcher
 spec:

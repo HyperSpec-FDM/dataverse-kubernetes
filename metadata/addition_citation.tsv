@@ -21,11 +21,11 @@
 	dsDescriptionValue	Text	A summary describing the purpose, nature, and scope of the Dataset		textbox	17	#VALUE	TRUE	FALSE	FALSE	FALSE	TRUE	TRUE	dsDescription	citation	
 	dsDescriptionDate	Date	The date when the description was added to the Dataset. If the Dataset contains more than one description, e.g. the data producer supplied one description and the data repository supplied another, this date is used to distinguish between the descriptions	YYYY-MM-DD	date	18	(#VALUE)	FALSE	FALSE	FALSE	FALSE	TRUE	FALSE	dsDescription	citation	
 	subject	Subject	The area of study relevant to the Dataset		text	19		TRUE	TRUE	TRUE	TRUE	TRUE	TRUE		citation	http://purl.org/dc/terms/subject
-	keyword	Keyword Free text	A key term that describes an important aspect of the Dataset and information about any controlled vocabulary used		none	20		FALSE	FALSE	TRUE	FALSE	TRUE	FALSE		citation
-	keywordValue	Free text Keyword	A key term that describes important aspects of the Dataset		text	21	#VALUE	TRUE	FALSE	FALSE	TRUE	TRUE	TRUE	keyword	citation
-	keywordVocabulary	Controlled Vocabulary Name	The controlled vocabulary used for the keyword term (e.g. LCSH, MeSH)		text	22	(#VALUE)	FALSE	FALSE	FALSE	FALSE	TRUE	FALSE	keyword	citation
-	keywordVocabularyURI	Controlled Vocabulary URL	The URL where one can access information about the term's controlled vocabulary	https://	url	23	"<a href=""#VALUE"" target=""_blank"" rel=""noopener"">#VALUE</a>"	FALSE	FALSE	FALSE	FALSE	TRUE	FALSE	keyword	citation
-	givenKeywords	Keyword List	Term that describes important aspects of the Dataset		text	24		TRUE	TRUE	TRUE	TRUE	TRUE	TRUE		citation
+	keyword	Keyword	A key term that describes an important aspect of the Dataset and information about any controlled vocabulary used		none	20		FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation
+	keywordValue	Term	A key term that describes important aspects of the Dataset		text	21	#VALUE	TRUE	FALSE	FALSE	TRUE	FALSE	FALSE	keyword	citation
+	keywordVocabulary	Controlled Vocabulary Name	The controlled vocabulary used for the keyword term (e.g. LCSH, MeSH)		text	22	(#VALUE)	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	keyword	citation
+	keywordVocabularyURI	Controlled Vocabulary URL	The URL where one can access information about the term's controlled vocabulary	https://	url	23	"<a href=""#VALUE"" target=""_blank"" rel=""noopener"">#VALUE</a>"	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	keyword	citation
+	keywords	Keywords	Key terms that describes an important aspect of the Dataset		text	24		TRUE	TRUE	TRUE	TRUE	TRUE	TRUE		citation
 	topicClassification	Topic Classification	Indicates a broad, important topic or subject that the Dataset covers and information about any controlled vocabulary used		none	25		FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation
 	topicClassValue	Term	A topic or subject term		text	26	#VALUE	TRUE	FALSE	FALSE	TRUE	FALSE	FALSE	topicClassification	citation
 	topicClassVocab	Controlled Vocabulary Name	The controlled vocabulary used for the keyword term (e.g. LCSH, MeSH)		text	27	(#VALUE)	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	topicClassification	citation
@@ -35,10 +35,10 @@
 	publicationIDType	Identifier Type	The type of identifier that uniquely identifies a related publication		text	31	#VALUE: 	TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	publication	citation	http://purl.org/spar/datacite/ResourceIdentifierScheme
 	publicationIDNumber	Identifier	The identifier for a related publication		text	32	#VALUE	TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	publication	citation	http://purl.org/spar/datacite/ResourceIdentifier
 	publicationURL	URL	The URL form of the identifier entered in the Identifier field, e.g. the DOI URL if a DOI was entered in the Identifier field. Used to display what was entered in the ID Type and ID Number fields as a link. If what was entered in the Identifier field has no URL form, the URL of the publication webpage is used, e.g. a journal article webpage	https://	url	33	"<a href=""#VALUE"" target=""_blank"" rel=""noopener"">#VALUE</a>"	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	publication	citation	https://schema.org/distribution
-	notesText	Notes	Additional information about the Dataset		textbox	34		FALSE	FALSE	FALSE	FALSE	FALSE	FALSE		citation
+	notesText	Notes	Additional information about the Dataset		textbox	34		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		citation
 	language	Language	A language that the Dataset's files is written in		text	35		TRUE	TRUE	TRUE	TRUE	FALSE	FALSE		citation	http://purl.org/dc/terms/language
-	producer	Producer	The entity, such a person or organization, managing the finances or other administrative processes involved in the creation of the Dataset		none	36		FALSE	FALSE	TRUE	FALSE	TRUE	TRUE		citation
-	producerName	Name	The name of the entity, e.g. the person's name or the name of an organization	1) FamilyName, GivenName or 2) Organization	text	37	#VALUE	TRUE	FALSE	FALSE	TRUE	TRUE	TRUE	producer	citation
+	producer	Producer	The entity, such a person or organization, managing the finances or other administrative processes involved in the creation of the Dataset		none	36		FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation
+	producerName	Name	The name of the entity, e.g. the person's name or the name of an organization	1) FamilyName, GivenName or 2) Organization	text	37	#VALUE	TRUE	FALSE	FALSE	TRUE	FALSE	FALSE	producer	citation
 	producerAffiliation	Affiliation	The name of the entity affiliated with the producer, e.g. an organization's name	Organization XYZ	text	38	(#VALUE)	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	producer	citation
 	producerAbbreviation	Abbreviated Name	The producer's abbreviated name (e.g. IQSS, ICPSR)		text	39	(#VALUE)	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	producer	citation
 	producerURL	URL	The URL of the producer's website	https://	url	40	"<a href=""#VALUE"" target=""_blank"" rel=""noopener"">#VALUE</a>"	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	producer	citation
@@ -63,9 +63,9 @@
 	timePeriodCovered	Time Period	The time period that the data refer to. Also known as span. This is the time period covered by the data, not the dates of coding, collecting data, or making documents machine-readable		none	59	";"	FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation	https://schema.org/temporalCoverage
 	timePeriodCoveredStart	Start Date	The start date of the time period that the data refer to	YYYY-MM-DD	date	60	#NAME: #VALUE 	TRUE	FALSE	FALSE	TRUE	FALSE	FALSE	timePeriodCovered	citation
 	timePeriodCoveredEnd	End Date	The end date of the time period that the data refer to	YYYY-MM-DD	date	61	#NAME: #VALUE 	TRUE	FALSE	FALSE	TRUE	FALSE	FALSE	timePeriodCovered	citation
-	dateOfCollection	Date of Collection	The dates when the data were collected or generated		none	62	";"	FALSE	FALSE	TRUE	FALSE	TRUE	FALSE		citation
-	dateOfCollectionStart	Start Date	The date when the data collection started	YYYY-MM-DD	date	63	#NAME: #VALUE 	FALSE	FALSE	FALSE	FALSE	TRUE	FALSE	dateOfCollection	citation
-	dateOfCollectionEnd	End Date	The date when the data collection ended	YYYY-MM-DD	date	64	#NAME: #VALUE 	FALSE	FALSE	FALSE	FALSE	TRUE	FALSE	dateOfCollection	citation
+	dateOfCollection	Date of Collection	The dates when the data were collected or generated		none	62	";"	FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation
+	dateOfCollectionStart	Start Date	The date when the data collection started	YYYY-MM-DD	date	63	#NAME: #VALUE 	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	dateOfCollection	citation
+	dateOfCollectionEnd	End Date	The date when the data collection ended	YYYY-MM-DD	date	64	#NAME: #VALUE 	FALSE	FALSE	FALSE	FALSE	FALSE	FALSE	dateOfCollection	citation
 	kindOfData	Data Type	The type of data included in the files (e.g. survey data, clinical data, or machine-readable text)		text	65		TRUE	FALSE	TRUE	TRUE	TRUE	FALSE		citation	http://rdf-vocabulary.ddialliance.org/discovery#kindOfData
 	series	Series	Information about the dataset series to which the Dataset belong		none	66	:	FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation
 	seriesName	Name	The name of the dataset series		text	67	#VALUE	TRUE	FALSE	FALSE	TRUE	FALSE	FALSE	series	citation
@@ -193,7 +193,7 @@
 	language	Georgian		50	kat	geo	ka
 	language	German		51	deu	ger	de
 	language	Greek (modern)		52	gre	ell	el
-	language	Guaran?í		53	grn	gn
+	language	Guaran?Ý		53	grn	gn
 	language	Gujarati		54	guj	gu
 	language	Haitian, Haitian Creole		55	hat ht
 	language	Hausa		56	hau	ha
@@ -243,8 +243,8 @@
 	language	Malay		100	may	msa	ms
 	language	Malayalam		101	mal	ml
 	language	Maltese		102	mlt	mt
-	language	M?³ori		103	mao	mri	mi
-	language	Marathi (Mar?³??íh?¢)		104	mar	mr
+	language	M??ori		103	mao	mri	mi
+	language	Marathi (Mar????Ýh?ó)		104	mar	mr
 	language	Marshallese		105	mah	mh
 	language	Mixtepec Mixtec		106	mix
 	language	Mongolian		107	mon	mn
@@ -253,7 +253,7 @@
 	language	Northern Ndebele		110	nde	nd
 	language	Nepali		111	nep	ne
 	language	Ndonga		112	ndo	ng
-	language	Norwegian Bokm?Ðl		113	nob	nb
+	language	Norwegian Bokm?ðl		113	nob	nb
 	language	Norwegian Nynorsk		114	nno	nn
 	language	Norwegian		115	nor	no
 	language	Nuosu		116
@@ -265,7 +265,7 @@
 	language	Oriya		122	ori	or
 	language	Ossetian, Ossetic		123	oss	os
 	language	Panjabi, Punjabi		124	pan	pa
-	language	P?³li		125	pli	pi
+	language	P??li		125	pli	pi
 	language	Persian (Farsi)		126	per	fas	fa
 	language	Polish		127	pol	pl
 	language	Pashto, Pushto		128	pus	ps
@@ -275,7 +275,7 @@
 	language	Kirundi		132	run	rn
 	language	Romanian		133	ron	rum	ro
 	language	Russian		134	rus	ru
-	language	Sanskrit (Sa??³sk??°ta)		135	san	sa
+	language	Sanskrit (Sa???sk???ta)		135	san	sa
 	language	Sardinian		136	srd	sc
 	language	Sindhi		137	snd	sd
 	language	Northern Sami		138	sme	se
@@ -326,6 +326,6 @@
 	language	Zhuang, Chuang		183	zha	za
 	language	Zulu		184	zul	zu
 	language	Not applicable		185
-	givenKeywords	T1		0
-	givenKeywords	T2		1
-	givenKeywords	T3		2
+	keywords	T1		0
+	keywords	T2		1
+	keywords	T3		2

@@ -10,9 +10,7 @@ resources:
 
 images:
   - name: iqss/solr-k8s
-    newTag: "8.11.1"
-#    newTag: "tt"
-#    newTag: "4.20"
+    newTag: "9.3.0"
 
 patchesStrategicMerge:
   - patch-pvc.yaml

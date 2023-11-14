@@ -4,12 +4,14 @@
 # You may obtain a copy of the License at
 # http://www.apache.org/licenses/LICENSE-2.0
 
-FROM payara/server-full:5.2022.3-jdk11
+FROM payara/server-full:6.2023.9-jdk17
+# must use payara/server-full:6.2023.9-jdk17 instead of payara/server-full:6.2023.8-jdk17
+# due to fix for payara/Payara#6337
 LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"
 
 EXPOSE 4848 9009 8080 8181
 
-ARG VERSION=5.14
+ARG VERSION=6.0
 ARG DOMAIN=domain1
 
 ENV DATA_DIR=/data\
@@ -37,9 +39,10 @@ RUN mkdir -p ${HOME_DIR} ${SCRIPT_DIR} ${SECRETS_DIR} && \
 #    apt-get -qqy install postgresql-client jq imagemagick curl wget unzip
 # Install prerequisites
 #RUN sed -rz -i 's/http/https/g' /etc/apt/sources.list
-RUN apt-get -qq update && \
-    apt-get -qqy install postgresql-client jq imagemagick curl wget unzip vim python3.8 python3-distutils python3-apt  python3-psycopg2 ed bc original-awk python3-pandas lsb-release patch cron git zip dos2unix
-RUN wget --no-verbose  https://bootstrap.pypa.io/get-pip.py -O -|/usr/bin/python3.8
+RUN cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d #fixing error W:
+RUN apt-get -qq update &&\
+    apt-get -qqy install postgresql-client jq imagemagick curl wget unzip vim python3.10 python3-distutils python3-apt  python3-psycopg2 ed bc original-awk python3-pandas lsb-release patch cron git zip dos2unix
+RUN wget --no-verbose  https://bootstrap.pypa.io/get-pip.py -O -|/usr/bin/python3.10
 
 # Install esh template engine from Github
 RUN wget --no-verbose -O esh https://raw.githubusercontent.com/jirutka/esh/v0.3.0/esh && \

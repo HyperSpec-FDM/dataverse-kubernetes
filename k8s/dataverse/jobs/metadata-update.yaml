@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: metadata-update
-          image: iqss/dataverse-k8s:5.14
+          image: iqss/dataverse-k8s:6.0
           command: ['scripts/metadata-update.sh']
           envFrom:
             - configMapRef:

@@ -5,10 +5,8 @@ metadata:
   name: dataverse
   labels:
     app.kubernetes.io/name: dataverse
-#    app.kubernetes.io/version: "tt"
-#    app.kubernetes.io/version: "5.13"
-    app.kubernetes.io/version: "5.14"
-#    app.kubernetes.io/version: "4.20-payara"
+#    app.kubernetes.io/version: "5.14"
+    app.kubernetes.io/version: "6.0"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -29,7 +27,7 @@ spec:
     spec:
       containers:
         - name: dataverse
-          image: 192.168.100.11:31000/iqss/dataverse-k8s:5.14
+          image: iqss/dataverse-k8s:6.0
           imagePullPolicy: Always
           resources:
             requests:
@@ -107,8 +105,8 @@ spec:
             initialDelaySeconds: 60 #5
             failureThreshold: 100
             periodSeconds: 5
-      imagePullSecrets:
-        - name: registry-auth
+#      imagePullSecrets:
+#        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools
