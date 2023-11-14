@@ -5,14 +5,14 @@
 # http://www.apache.org/licenses/LICENSE-2.0
 
 #FROM solr:7.7
-FROM solr:8.11.1
+FROM solr:9.3.0
 
 LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"
 
 ARG WEBHOOK_VERSION=2.6.11
 ARG TINI_VERSION=v0.18.0
-ARG VERSION=5.13
-ARG SOLR_VERSION=8.11.1
+ARG VERSION=6.0
+ARG SOLR_VERSION=9.3.0
 ARG COLLECTION=collection1
 ENV SOLR_OPTS="-Dsolr.jetty.request.header.size=102400"\
     COLLECTION_DIR=/opt/solr/server/solr/${COLLECTION}\
@@ -24,7 +24,7 @@ ENV SCHEMA_SCRIPT_DIR=${SCRIPT_DIR}/schema
 
 # Install necessary utilities
 USER root
-RUN apt-get update && apt-get install -y ed bc sed gawk
+RUN apt-get update && apt-get install -y ed bc sed gawk unzip
 
 # Create schema store and scripts folder if not present, change permissions
 USER root
@@ -48,6 +48,7 @@ USER ${SOLR_USER}
 USER root
 RUN mkdir -p ${COLLECTION_DIR} && \
     chown -R ${SOLR_USER}:${SOLR_USER} ${COLLECTION_DIR}
+
 USER ${SOLR_USER}
 
 # Copy the _default configset and create core.properties
@@ -98,7 +99,7 @@ RUN wget --no-verbose -O webhook.tar.gz https://github.com/adnanh/webhook/releas
     rm webhook.tar.gz
 
 #COPY --chown=solr:solr schema/ ${SCHEMA_SCRIPT_DIR}
-COPY --chown=solr:solr docker/solr-k8s/schema ${SCHEMA_SCRIPT_DIR}
+COPY --chown=solr:solr schema/ ${SCHEMA_SCRIPT_DIR}
 RUN chmod +x ${SCHEMA_SCRIPT_DIR}/*.sh
 #RUN chmod +x ${SCHEMA_SCRIPT_DIR}/init
 

@@ -8,7 +8,6 @@ DATAVERSE_SERVICE_PORT_HTTP=${DATAVERSE_SERVICE_PORT_HTTP:-"8080"}
 DATAVERSE_URL=${DATAVERSE_URL:-"http://${DATAVERSE_SERVICE_HOST}:${DATAVERSE_SERVICE_PORT_HTTP}"}
 SOLR_URL="http://localhost:8983"
 TARGET="/opt/solr-8.11.1/server/solr/collection1/conf/schema.xml"
-#SOURCE=""
 SOURCE="/opt/solr-8.11.1/server/solr/collection1/conf/schema.xml"
 
 # Check API key secret is available
