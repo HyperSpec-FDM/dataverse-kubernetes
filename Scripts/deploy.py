@@ -13,9 +13,9 @@ os.system("kubectl create namespace dv-test")
 # os.system("kubectl apply -f prod-skel/secrets/")
 os.system("kubectl apply -f prod-skel/secrets/secrets.yaml")
 os.system("kubectl apply -k prod-skel/envs/env1")
-# os.system("kubectl apply -f prod-skel/prod/mailcatcher.yaml")
-# os.system("kubectl apply -f k8s/shibboleth/deployment.yaml")
-# os.system("kubectl apply -f k8s/shibboleth/svc.yaml")
+os.system("kubectl apply -f prod-skel/prod/mailcatcher.yaml")
+os.system("kubectl apply -f k8s/shibboleth/deployment.yaml")
+os.system("kubectl apply -f k8s/shibboleth/svc.yaml")
 
 # os.system("kubectl create -f k8s/dataverse/jobs/bootstrap.yaml")
 
