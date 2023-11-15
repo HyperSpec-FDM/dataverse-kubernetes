@@ -230,14 +230,18 @@ class dataverse_setuper():
 
             # Update index
             # Update Schema
-            update_schema_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' | ./dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
+            update_schema_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' | bash ./dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
             self.pod_exec(self.pod_name, self.container_name, self.namespace, update_schema_command)
+            # testing
+            update_schema_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' > /opt/payara/dvinstall/schema_changes.xml"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, update_schema_command)
+            # testing
 
             # Copy the schema from dataverse to solr
             solr_pod_name, solr_container_id = self.get_pod_name_by_deployment("solr", self.namespace, "solr")
             copy_command = f"kubectl cp {self.namespace}/{self.pod_name}:dvinstall/schema.xml -c {self.container_name} ../metadata/exchange/schema.xml"
             os.system(copy_command)
-            copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/opt/solr-8.11.1/server/solr/collection1/conf/schema.xml -c solr"
+            copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/opt/solr-9.3.0/server/solr/collection1/conf/schema.xml -c solr"
             os.system(copy_command)
             #Attention this is the right file, the one above is just for all of them to be the same!!!
             copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/var/solr/data/collection1/conf/schema.xml -c solr"
@@ -332,37 +336,7 @@ class dataverse_setuper():
                 for entry in controlled_vocabulary[item]:
                     if entry == "Value":
                         prop_file.write(
-                            f'datasetfieldtype.{controlled_vocabulary[item]["DatasetField"]}.{controlled_vocabulary[item][entry].lower()}={controlled_vocabulary[item][entry]}\n')
-
-    # def remove_custom_metadata(self, name):
-    #     # nicht nutzen, macht die ganze instand unbrauchbar!!
-    #     pass
-    #     # Get postgresql pod
-    #     postgresql_pod_name, postgresql_container_id = self.get_pod_name_by_deployment("postgresql", self.namespace, "postgresql")
-    #
-    #     # Define sql command
-    #     sql_command = f"""SELECT id
-    #                       FROM public.datasetfieldtype
-    #                       WHERE metadatablock_id = (SELECT id FROM public.metadatablock WHERE name = '{name}');
-    #
-    #                       ALTER TABLE public.datasetfieldtype
-    #                       DROP CONSTRAINT fk_datasetfieldtype_parentdatasetfieldtype_id;
-    #
-    #                       UPDATE public.datasetfieldtype
-    #                       SET metadatablock_id = NULL
-    #                       WHERE metadatablock_id = (SELECT id FROM public.metadatablock WHERE name = '{name}');
-    #
-    #                       DELETE FROM public.datasetfieldtype WHERE metadatablock_id IS NULL;
-    #                       DELETE FROM public.metadatablock WHERE name = '{name}';
-    #                       SELECT SETVAL(pg_get_serial_sequence('public.metadatablock', 'id'), (SELECT MAX(column_name) FROM public.metadatablock));
-    #
-    #                       ALTER TABLE public.datasetfieldtype
-    #                       ADD CONSTRAINT fk_datasetfieldtype_parentdatasetfieldtype_id
-    #                       FOREIGN KEY (id)
-    #                       REFERENCES public.datasetfieldtype(id);
-    #                         """
-    #
-    #     self.pod_exec(postgresql_pod_name, "postgresql", self.namespace, f'psql -c "{sql_command}"')
+                            f'controlledvocabulary.{controlled_vocabulary[item]["DatasetField"]}.{controlled_vocabulary[item][entry].lower()}={controlled_vocabulary[item][entry]}\n')
 
     def add_languages(self, languages):
         if self.pod_name:
@@ -518,7 +492,7 @@ namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
 url = "http://localhost:8080/" + "/robots.txt"
 imagename = "TransparentLogo.svg"
-metadata_file = "addition_citation.tsv" #"testmeta.tsv" #"hyperspectral_imaging.tsv" #"testmeta.tsv" #"addition_citation.tsv" #"customPSRI.tsv"
+metadata_file = "citation.tsv" #"testmeta.tsv" #"hyperspectral_imaging.tsv" #"testmeta.tsv" #"addition_citation.tsv" #"customPSRI.tsv"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
 api_key = "b3752a5a-3a15-4dcc-9f7f-921c216dadcc"
@@ -530,7 +504,6 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
 # tt.change_logo(imagename)
 tt.add_custom_metadata(metadata_file)
-# tt.remove_custom_metadata("testmetadata")
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
 # tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
