@@ -374,10 +374,10 @@ languages = ['en_US', 'de_DE']
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
-# tt.change_logo(imagename)
-# tt.add_custom_metadata("testmeta.tsv")
-# tt.add_languages(languages)
+tt.change_logo(imagename)
+tt.add_custom_metadata("testmeta.tsv")
+tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+tt.add_s3_storage("testname", "testname", "minio_profile_1", "test_accessKey", "test_secretKey", "http\:\/\/minio\:9000")
 
 
