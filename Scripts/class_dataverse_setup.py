@@ -495,23 +495,15 @@ imagename = "TransparentLogo.svg"
 metadata_file = "citation.tsv" #"testmeta.tsv" #"hyperspectral_imaging.tsv" #"testmeta.tsv" #"addition_citation.tsv" #"customPSRI.tsv"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "b3752a5a-3a15-4dcc-9f7f-921c216dadcc"
-persistent_id = "doi:10.12345/EXAMPLE/UHEYRV"
 
 
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
-# tt.change_logo(imagename)
-tt.add_custom_metadata(metadata_file)
-# tt.add_languages(languages)
+tt.change_logo(imagename)
+tt.add_custom_metadata("testmeta.tsv")
+tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
-
-# tt.curl_dataverse(api_key, "HyperSpec-FDM")
-# tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/N97BD6")
-# tt.delete_dataset(api_key, persistent_id)
-
-# tt.delete_dataverse(api_key, "")
+tt.add_s3_storage("testname", "testname", "minio_profile_1", "test_accessKey", "test_secretKey", "http\:\/\/minio\:9000")
 
 
