@@ -218,10 +218,14 @@ class dataverse_setuper():
             # Copy the metadata file to the container
             copy_command = f"kubectl cp {metadataFile_path} {self.namespace}/{self.pod_name}:/opt/payara/dvinstall/data/metadatablocks/{metadataFile} -c {self.container_name}"
             os.system(copy_command)
+            copy_command = f"kubectl cp {metadataFile_path} {self.namespace}/{self.pod_name}:/opt/docroot/metadata/{metadataFile} -c {self.container_name}"
+            os.system(copy_command)
 
             # Copy the metadata properties
             self.createPropertiesFile(metadataFile_path)
             copy_command = f"kubectl cp {properties_path} {self.namespace}/{self.pod_name}:/opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/WEB-INF/classes/propertyFiles/{properties_file} -c {self.container_name}"
+            os.system(copy_command)
+            copy_command = f"kubectl cp {properties_path} {self.namespace}/{self.pod_name}:/opt/docroot/metadata/{properties_file} -c {self.container_name}"
             os.system(copy_command)
 
             # Upload metadata
@@ -490,13 +494,13 @@ class dataverse_setuper():
 deployment_name = "dataverse"
 namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
-url = "http://localhost:8080/" + "/robots.txt"
+url = "http://192.168.100.11:30000" + "/robots.txt"
 imagename = "TransparentLogo.svg"
-metadata_file = "citation.tsv" #"testmeta.tsv" #"hyperspectral_imaging.tsv" #"testmeta.tsv" #"addition_citation.tsv" #"customPSRI.tsv"
+metadata_file = "citation.tsv" #"citation.tsv"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "b3752a5a-3a15-4dcc-9f7f-921c216dadcc"
-persistent_id = "doi:10.12345/EXAMPLE/UHEYRV"
+api_key = "21d306cf-2a50-4d43-8a87-7556bec11d18"
+persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
 
 
 
@@ -508,8 +512,8 @@ tt.add_custom_metadata(metadata_file)
 # tt.set_superuser("dataverseAdmin", True)
 # tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
-# tt.curl_dataverse(api_key, "HyperSpec-FDM")
-# tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/N97BD6")
+# tt.curl_dataverse(api_key, "KI-Nachwuchs")
+# tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
 # tt.delete_dataset(api_key, persistent_id)
 
 # tt.delete_dataverse(api_key, "")

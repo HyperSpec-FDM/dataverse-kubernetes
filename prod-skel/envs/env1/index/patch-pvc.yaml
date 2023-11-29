@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: solr
 spec:
-  storageClassName: hostpath
+  storageClassName: nfs-client
   accessModes:
   - ReadWriteMany
   resources:

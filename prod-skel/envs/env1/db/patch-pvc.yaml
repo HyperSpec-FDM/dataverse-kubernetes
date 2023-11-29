@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: postgresql
 spec:
-  storageClassName: hostpath
+  storageClassName: nfs-client
   accessModes:
   - ReadWriteMany
   resources:

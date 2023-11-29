@@ -5,8 +5,8 @@ metadata:
   name: dataverse
   labels:
     app.kubernetes.io/name: dataverse
-    app.kubernetes.io/version: "5.14"
-#    app.kubernetes.io/version: "6.0"
+#    app.kubernetes.io/version: "5.14"
+    app.kubernetes.io/version: "6.0"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -25,9 +25,10 @@ spec:
         app.kubernetes.io/part-of: dataverse
         app.kubernetes.io/component: appserver
     spec:
+      serviceAccountName: reader
       containers:
         - name: dataverse
-          image: iqss/dataverse-k8s:6.0
+          image: 192.168.100.11:31000/iqss/dataverse-k8s:6.0
           imagePullPolicy: Always
           resources:
             requests:
@@ -105,8 +106,8 @@ spec:
             initialDelaySeconds: 60 #5
             failureThreshold: 100
             periodSeconds: 5
-#      imagePullSecrets:
-#        - name: registry-auth
+      imagePullSecrets:
+        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools
@@ -161,4 +162,35 @@ spec:
         # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
         - name: primefaces-upload
           emptyDir: {}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: dv-test
+  name: pod-reader-role
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/exec"]
+  verbs: ["get", "list", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-reader-rolebinding
+  namespace: dv-test
+subjects:
+- kind: ServiceAccount
+  name: reader
+  namespace: dv-test
+roleRef:
+  kind: Role
+  name: pod-reader-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: reader
+  namespace: dv-test
 

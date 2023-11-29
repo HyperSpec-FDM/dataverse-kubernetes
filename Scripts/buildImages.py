@@ -2,12 +2,12 @@ import os
 
 # Define Dataverse Dockerfile, Version and Tag
 dockerfileDataverse = "./docker/dataverse-k8s/payara/Dockerfile"
-versionDataverse = "5.14"
+versionDataverse = "6.0"
 tagDataverse = "iqss/dataverse-k8s:" + versionDataverse
 
 # Define Solr Dockerfile, Version and Tag
 dockerfileSolr = "./docker/solr-k8s/Dockerfile"
-versionSolr = "8.11.1"
+versionSolr = "9.3.0"
 tagSolr = "iqss/solr-k8s:" + versionSolr
 
 # Define Shibboleth Dockerfile, Version and Tag
@@ -21,9 +21,9 @@ user = "tim"
 password = "changeme"
 
 # Define which image to build and push
-dataverse = False
+dataverse = True
 solr = False
-shibboleth = True
+shibboleth = False
 pushonly = False
 
 # Change working directory

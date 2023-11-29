@@ -76,7 +76,7 @@
 	relatedMaterial	Related Material	Information, such as a persistent ID or citation, about the material related to the Dataset, such as appendices or sampling information available outside of the Dataset		textbox	72		FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation
 	relatedDatasets	Related Dataset	Information, such as a persistent ID or citation, about a related dataset, such as previous research on the Dataset's subject		textbox	73		FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation	http://purl.org/dc/terms/relation
 	otherReferences	Other Reference	Information, such as a persistent ID or citation, about another type of resource that provides background or supporting material to the Dataset		text	74		FALSE	FALSE	TRUE	FALSE	FALSE	FALSE		citation	http://purl.org/dc/terms/references
-	dataSources	Data Source	Information, such as a persistent ID or citation, about sources of the Dataset (e.g. a book, article, serial, or machine-readable data file)		textbox	75		FALSE	FALSE	FALSE	FALSE	TRUE	TRUE		citation	https://www.w3.org/TR/prov-o/#wasDerivedFrom
+	dataSources	Data Source	Information, such as a persistent ID or citation, about sources of the Dataset (e.g. a book, article, serial, or machine-readable data file)		text	75		FALSE	FALSE	TRUE	FALSE	TRUE	TRUE		citation	https://www.w3.org/TR/prov-o/#wasDerivedFrom
 	originOfSources	Origin of Historical Sources	For historical sources, the origin and any rules followed in establishing them as sources		textbox	76		FALSE	FALSE	FALSE	FALSE	FALSE	FALSE		citation
 	characteristicOfSources	Characteristic of Sources	Characteristics not already noted elsewhere		textbox	77		FALSE	FALSE	FALSE	FALSE	FALSE	FALSE		citation
 	accessToSources	Documentation and Access to Sources	1) Methods or procedures for accessing data sources and 2) any special permissions needed for access		textbox	78		FALSE	FALSE	FALSE	FALSE	FALSE	FALSE		citation
@@ -193,7 +193,7 @@
 	language	Georgian		50	kat	geo	ka
 	language	German		51	deu	ger	de
 	language	Greek (modern)		52	gre	ell	el
-	language	Guaran?ª		53	grn	gn
+	language	Guaran??		53	grn	gn
 	language	Gujarati		54	guj	gu
 	language	Haitian, Haitian Creole		55	hat ht
 	language	Hausa		56	hau	ha
@@ -244,7 +244,7 @@
 	language	Malayalam		101	mal	ml
 	language	Maltese		102	mlt	mt
 	language	M??ori		103	mao	mri	mi
-	language	Marathi (Mar????ªh?¥)		104	mar	mr
+	language	Marathi (Mar?????h?ð)		104	mar	mr
 	language	Marshallese		105	mah	mh
 	language	Mixtepec Mixtec		106	mix
 	language	Mongolian		107	mon	mn
@@ -253,7 +253,7 @@
 	language	Northern Ndebele		110	nde	nd
 	language	Nepali		111	nep	ne
 	language	Ndonga		112	ndo	ng
-	language	Norwegian Bokm?¡l		113	nob	nb
+	language	Norwegian Bokm?¦l		113	nob	nb
 	language	Norwegian Nynorsk		114	nno	nn
 	language	Norwegian		115	nor	no
 	language	Nuosu		116

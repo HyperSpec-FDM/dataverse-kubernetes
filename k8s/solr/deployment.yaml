@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: solr
-          image: iqss/solr-k8s:9.3.0
+          image: 192.168.100.11:31000/iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
           command: ["bash", "-c", "$SCRIPT_DIR/schema/boot.sh"]
 #          command: ["bash", "-c", "mkdir -p /var/solr/data/collection1 && precreate-core collection1 && solr -f -a \"-Dlog4j.configurationFile=/opt/solr-9.3.0/server/resources/log4j2.xml\""]
@@ -70,7 +70,7 @@ spec:
               path: /solr/admin/info/system #/solr/collection1/admin/ping #./opt/solr-8.11.1/server/solr/collection1
               port: index
         - name: schema-sidecar
-          image: iqss/solr-k8s:9.3.0
+          image: 192.168.100.11:31000/iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
 #          command: ["/tini", "--", "/scripts/schema/sidecar.sh"]
 #          command: ["tini", "--", "sleep", "3600"]
@@ -89,8 +89,8 @@ spec:
             httpGet:
               path: /
               port: webhook
-#      imagePullSecrets:
-#        - name: registry-auth
+      imagePullSecrets:
+        - name: registry-auth
       initContainers:
         - name: volume-mount-hack
           image: giantswarm/tiny-tools:latest
@@ -100,7 +100,7 @@ spec:
             - name: data
               mountPath: /data
         - name: schema-init
-          image: iqss/solr-k8s:9.3.0
+          image: 192.168.100.11:31000/iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
           command: ["/scripts/schema/init.sh"]
           volumeMounts:
