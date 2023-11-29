@@ -99,7 +99,7 @@ RUN wget --no-verbose -O webhook.tar.gz https://github.com/adnanh/webhook/releas
     rm webhook.tar.gz
 
 #COPY --chown=solr:solr schema/ ${SCHEMA_SCRIPT_DIR}
-COPY --chown=solr:solr schema/ ${SCHEMA_SCRIPT_DIR}
+COPY --chown=solr:solr docker/solr-k8s/schema ${SCHEMA_SCRIPT_DIR}
 RUN chmod +x ${SCHEMA_SCRIPT_DIR}/*.sh
 #RUN chmod +x ${SCHEMA_SCRIPT_DIR}/init
 

@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: dataverse-files
 spec:
-  storageClassName: hostpath
+  storageClassName: nfs-client
   accessModes:
   - ReadWriteMany
   resources:
@@ -17,7 +17,7 @@ apiVersion: v1
 metadata:
   name: dataverse-docroot
 spec:
-  storageClassName: hostpath
+  storageClassName: nfs-client
   accessModes:
   - ReadWriteMany
   resources:

@@ -44,6 +44,11 @@ RUN apt-get -qq update &&\
     apt-get -qqy install postgresql-client jq imagemagick curl wget unzip vim python3.10 python3-distutils python3-apt  python3-psycopg2 ed bc original-awk python3-pandas lsb-release patch cron git zip dos2unix
 RUN wget --no-verbose  https://bootstrap.pypa.io/get-pip.py -O -|/usr/bin/python3.10
 
+# Install kubectl
+RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+RUN chmod +x ./kubectl
+RUN mv ./kubectl /usr/local/bin
+
 # Install esh template engine from Github
 RUN wget --no-verbose -O esh https://raw.githubusercontent.com/jirutka/esh/v0.3.0/esh && \
     echo 'fe030e23fc1383780d08128eecf322257cec743b esh' | sha1sum -c - && \
