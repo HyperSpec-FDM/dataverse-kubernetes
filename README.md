@@ -21,8 +21,6 @@ This project follows the same branching strategy as the upstream Dataverse proje
 
 ## Usage
 
-### Build images
-
 1. **Configure variables** for image building in [buildImages.py](Scripts/buildImages.py)
 2. **Build images** for Dataverse, Solr and Shibboleth\
 and push them to your private registry.
