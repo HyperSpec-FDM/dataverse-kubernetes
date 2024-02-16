@@ -470,6 +470,15 @@ class dataverse_setuper():
             # create jvm resources
             self.pod_exec(pod_name, container_name, namespace, command)
 
+    def add_mail(self, host, mail, password):
+        # Create directory if not present to store information for every added storage
+        command = f"mkdir /opt/docroot/mail/"
+        self.pod_exec(pod_name, container_name, namespace, command)
+        mail_command = f"asadmin --user=admin --passwordfile=/secrets/asadmin/passwordFile create-javamail-resource --mailhost {host} --mailuser {mail} --fromaddress {mail} --property mail.smtp.auth=true:mail.smtp.password={password}:mail.smtp.port=465:mail.smtp.socketFactory.port=465:mail.smtp.socketFactory.fallback=false:mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory mail/notifyMailSession"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, mail_command)
+        save_command = f"echo {mail_command} > /opt/docroot/mail/add_mail.txt"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, save_command)
+
     def setup_shibboleth(self, api_key, persistent_id):
         delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/datasets/:persistentId/destroy/?persistentId={persistent_id}\""
         self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
@@ -501,8 +510,9 @@ metadata_file = "citation.tsv" #"citation.tsv"
 languages = ['en_US', 'de_DE']
 api_key = "21d306cf-2a50-4d43-8a87-7556bec11d18"
 persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
-
-
+host = "mail.hs-mannheim.de"
+mail = "t.haeussermann@hs-mannheim.de"
+password = "EUr,G-GMWQdNnX#,P3+n"
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
@@ -511,6 +521,7 @@ tt.add_custom_metadata(metadata_file)
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
 # tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+# tt.add_mail(host, mail, password)
 
 # tt.curl_dataverse(api_key, "KI-Nachwuchs")
 # tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")

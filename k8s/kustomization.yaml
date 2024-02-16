@@ -7,6 +7,6 @@ resources:
 
 images:
   - name: iqss/dataverse-k8s
-    newTag: "6.0"
+    newTag: "6.1"
   - name: iqss/solr-k8s
     newTag: "9.3.0"
