@@ -11,7 +11,7 @@ LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"
 
 EXPOSE 4848 9009 8080 8181
 
-ARG VERSION=6.0
+ARG VERSION=6.1
 ARG DOMAIN=domain1
 
 ENV DATA_DIR=/data\

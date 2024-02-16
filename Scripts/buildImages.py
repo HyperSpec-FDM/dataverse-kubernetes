@@ -2,7 +2,7 @@ import os
 
 # Define Dataverse Dockerfile, Version and Tag
 dockerfileDataverse = "./docker/dataverse-k8s/payara/Dockerfile"
-versionDataverse = "6.0"
+versionDataverse = "6.1"
 tagDataverse = "iqss/dataverse-k8s:" + versionDataverse
 
 # Define Solr Dockerfile, Version and Tag
