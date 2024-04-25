@@ -147,7 +147,6 @@ async def add_mail(host, mail, password, overwrite: bool = False):
     else:
         return {"message": f"Mail already set, use overwrite=True to overwrite."}
 
-
 @App.post("/add_shibboleth")
 async def add_shibboleth():
     setuper.add_shibboleth()
@@ -161,16 +160,3 @@ async def remove_shibboleth():
 
 """rund API server. swagger ui on http://127.0.0.1:8000/docs#/"""
 uvicorn.run(App, host="0.0.0.0", port=8000, log_level="info")
-
-
-
-api_key = "21d306cf-2a50-4d43-8a87-7556bec11d18"
-persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
-
-
-
-# tt.curl_dataverse(api_key, "KI-Nachwuchs")
-# tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
-# tt.delete_dataset(api_key, persistent_id)
-
-# tt.delete_dataverse(api_key, "")

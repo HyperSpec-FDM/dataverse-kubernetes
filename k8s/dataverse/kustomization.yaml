@@ -5,9 +5,7 @@ resources:
   - deployment.yaml
   - pvc.yaml
   - svc.yaml
-#  - ing.yaml
 
 images:
   - name: iqss/dataverse-k8s
-#    newTag: "5.14"
     newTag: "6.2"

@@ -38,17 +38,15 @@ spec:
             - name: PROXY_ADDRESS_FORWARDING
               value: "true"
             - name: KEYCLOAK_ADMIN
-              value: admin
+              value: changeme
             - name: KEYCLOAK_ADMIN_PASSWORD
-              value: admin
+              value: changeme
             - name: KC_HOSTNAME_STRICT
               value: "false"
             - name: KC_HOSTNAME_STRICT_HTTPS
               value: "false"
             - name: KC_HOSTNAME_STRICT_BACKCHANNEL
               value: "true"
-#            - name: KC_HTTP_ENABLED
-#              value: "true"
             - name: KC_HOSTNAME_DEBUG
               value: "true"
             - name: KC_LOG_LEVEL

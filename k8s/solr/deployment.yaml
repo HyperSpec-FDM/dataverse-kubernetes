@@ -29,8 +29,6 @@ spec:
           image: 192.168.100.11:31000/iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
           command: ["bash", "-c", "$SCRIPT_DIR/schema/boot.sh"]
-#          command: ["bash", "-c", "mkdir -p /var/solr/data/collection1 && precreate-core collection1 && solr -f -a \"-Dlog4j.configurationFile=/opt/solr-9.3.0/server/resources/log4j2.xml\""]
-#          command: ["bash", "-c", "$SCRIPT_DIR/schema/createCollection.sh"]
           resources:
             requests:
               memory: "2Gi"
@@ -40,8 +38,6 @@ spec:
             - name: index
               containerPort: 8983
           volumeMounts:
-#            - name: data
-#              mountPath: /opt/solr/server/solr/collection1/data
             - name: data
               mountPath: /var/solr/data
             - name: schema
@@ -49,8 +45,6 @@ spec:
           env:
             - name: SOLR_PORT  # Otherwise, this is wrongfully set by K8s.
               value: "8983"
-#            - name: SOLR_HOME
-#              value: /opt/solr-9.3.0/server/solr/collection1/conf
             - name: SOLR_SECURITY_MANAGER_ENABLED
               value: "false"
             - name: SOLR_CORES
@@ -72,9 +66,6 @@ spec:
         - name: schema-sidecar
           image: 192.168.100.11:31000/iqss/solr-k8s:9.3.0
           imagePullPolicy: IfNotPresent
-#          command: ["/tini", "--", "/scripts/schema/sidecar.sh"]
-#          command: ["tini", "--", "sleep", "3600"]
-#          command: ["tini", "--", "bash", "-c", "cd /scripts/schema && ./sidecar.sh"]
           command: ["tini", "--", "bash", "-c", "cd $SCRIPT_DIR/schema && ./sidecar.sh"]
           ports:
             - name: webhook
@@ -109,22 +100,6 @@ spec:
             - name: api-secret
               mountPath: "/scripts/schema/api"
               readOnly: true
-#        - name: collection-init
-#          image: iqss/solr-k8s:9.3.0
-#          imagePullPolicy: IfNotPresent
-#          command: ["bash", "-c", "mkdir /var/solr/data && precreate-core collection1 server/solr/collection1/conf" ]
-#          env:
-#            - name: SOLR_PORT  # Otherwise, this is wrongfully set by K8s.
-#              value: "8983"
-#            - name: SOLR_HOME
-#              value: server/solr/collection1/conf
-#            - name: SOLR_SECURITY_MANAGER_ENABLED
-#              value: "false"
-#            - name: SOLR_CORES
-#              value: "collection1"
-#          volumeMounts:
-#            - name: data
-#              mountPath: /opt/solr/server/solr/collection1/data
       volumes:
         - name: data
           persistentVolumeClaim:

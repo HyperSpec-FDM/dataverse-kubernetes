@@ -51,15 +51,6 @@ spec:
                 secretKeyRef:
                   name: dataverse-s3
                   key: secret-key
-            # MinIO access key and secret key
-#            - name: MINIO_ACCESS_KEY
-#              value: "5IMXGis0YjH6620GIH16"
-#            - name: MINIO_SECRET_KEY
-#              value: "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
-#            - name: MINIO_BROWSER_ACCESS_KEY
-#              value: "5IMXGis0YjH6620GIH16"
-#            - name: MINIO_BROWSER_SECRET_KEY
-#              value: "iJAI9HhY8RUW8RWjF0gt7lYZ9yxMKtFfuhlfrxLK"
           volumeMounts:
             - name: data
               mountPath: /data
