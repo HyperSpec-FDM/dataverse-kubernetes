@@ -1,6 +1,8 @@
 # For more information, please refer to https://aka.ms/vscode-docker-python
 FROM python:3.9
 
+EXPOSE 8000
+
 # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
 
@@ -8,13 +10,12 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # Install pip requirements
-COPY docker/deleter-k8s/requirements.txt requirements.txt
+COPY docker/dataverse-setuper-k8s/requirements.txt requirements.txt
 RUN python -m pip install -r requirements.txt
 
-WORKDIR /cronJob
-COPY docker/deleter-k8s/class_dataverse_curler.py  class_dataverse_curler.py
-COPY docker/deleter-k8s/dataverse_cron_job.py  dataverse_cron_job.py
+WORKDIR /dataverse-setuper
+ADD docker/dataverse-setuper-k8s /dataverse-setuper
 
 # Run the application
 ENTRYPOINT ["python"]
-CMD ["dataverse_cron_job.py"]
+CMD ["app.py"]

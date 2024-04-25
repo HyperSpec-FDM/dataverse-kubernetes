@@ -1,5 +1,6 @@
 import os
 import csv
+import json
 import subprocess
 import requests
 from kubernetes import client, config
@@ -8,6 +9,7 @@ import time
 import zipfile
 from PIL import Image
 from xml.etree import ElementTree as ET
+
 class dataverse_setuper():
     def __init__(self, deployment_name, namespace, container_name, url):
         self.deployment_name = deployment_name
@@ -16,7 +18,8 @@ class dataverse_setuper():
         self.url = url
 
         # Load the Kubernetes configuration
-        config.load_kube_config()
+        config.load_incluster_config()
+        #config.load_kube_config()
 
         # Create an instance of the Kubernetes AppsV1 API client
         self.apps_v1 = client.AppsV1Api()
@@ -171,10 +174,10 @@ class dataverse_setuper():
             if key in dict2 and dict1[key]['superuser'] != dict2[key]['superuser']:
                 differences.append((key, dict1[key]['superuser'], dict2[key]['superuser']))
 
-    def change_logo(self, imagename):
+    def change_logo(self, imagedir, imagename):
         if self.pod_name:
             # Resize the image
-            original_image_path = "../img/" + imagename
+            original_image_path = f"{imagedir}/{imagename}"
             resized_image_path = "resized_" + imagename
 
             # Determine the file type based on the extension
@@ -208,12 +211,21 @@ class dataverse_setuper():
         else:
             print(f"No pod found for deployment '{deployment_name}'.")
 
-    def add_custom_metadata(self, metadataFile):
+    def remove_logo(self):
+        if self.pod_name:
+            # Change the logo back to dataverse default
+            remove_command = f"curl -X DELETE http://localhost:8080/api/admin/settings/:LogoCustomizationFile"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, copy_command)
+
+        else:
+            print(f"No pod found for deployment '{deployment_name}'.")
+
+    def add_custom_metadata(self, metadatadir, metadataFile):
         if self.pod_name:
             # Custom metadata
-            metadataFile_path = "../metadata/" + metadataFile
+            metadataFile_path = f"{metadatadir}/{metadataFile}"
             properties_file = os.path.splitext(os.path.basename(metadataFile))[0] + ".properties"
-            properties_path = "../metadata/exchange/" + properties_file
+            properties_path = f"{metadatadir}/exchange/" + properties_file
 
             # Copy the metadata file to the container
             copy_command = f"kubectl cp {metadataFile_path} {self.namespace}/{self.pod_name}:/opt/payara/dvinstall/data/metadatablocks/{metadataFile} -c {self.container_name}"
@@ -352,6 +364,24 @@ class dataverse_setuper():
         else:
             print(f"No pod found for deployment '{deployment_name}'.")
 
+    def check_user_exist(self, user):
+        # Get postgresql pod
+        postgresql_pod_name, postgresql_container_id = self.get_pod_name_by_deployment("postgresql", self.namespace,
+                                                                                       "postgresql")
+        # sql_command = f"SELECT EXISTS(SELECT 1 FROM public.authenticateduser WHERE useridentifier='{user}');"
+
+        sql_command = f"""
+                        SELECT 
+                            CASE 
+                                WHEN EXISTS(SELECT 1 FROM public.authenticateduser WHERE useridentifier='{user}') 
+                                THEN 'True' 
+                                ELSE 'False' 
+                            END;
+                
+                        """
+
+        return self.pod_exec(postgresql_pod_name, "postgresql", self.namespace, f'psql -c "{sql_command}"', capture_output=True)
+
     def set_superuser(self, user, value=True):
         # Get postgresql pod
         postgresql_pod_name, postgresql_container_id = self.get_pod_name_by_deployment("postgresql", self.namespace, "postgresql")
@@ -363,6 +393,19 @@ class dataverse_setuper():
         # sql_command = f"psql -c \"{sql_command}\""
 
         self.pod_exec(postgresql_pod_name, "postgresql", self.namespace, f'psql -c "{sql_command}"')
+
+    def check_s3_labels(self):
+        # Check if the s3 directory exists
+        command = "if [ -d /opt/docroot/s3 ]; then echo True; else echo False; fi"
+        exists = self.pod_exec(self.pod_name, self.container_name, self.namespace, command, capture_output=True)
+        exists = json.loads(exists.lower())
+
+        if exists == True:
+            command = "ls /opt/docroot/s3"
+            labels = self.pod_exec(self.pod_name, self.container_name, self.namespace, command, capture_output=True)
+            return labels.splitlines()
+        else:
+            return None
 
     def add_s3_storage(self, lable, bucketname, profile, accessKey, secretKey, endpoint, changePostgres = True):
         # Set variable for script path to add new storage
@@ -470,8 +513,21 @@ class dataverse_setuper():
             # create jvm resources
             self.pod_exec(pod_name, container_name, namespace, command)
 
+    def check_mail(self):
+        # Check if the s3 directory exists
+        command = "if [ -d /opt/docroot/mail ]; then echo True; else echo False; fi"
+        exists = self.pod_exec(self.pod_name, self.container_name, self.namespace, command, capture_output=True)
+        exists = json.loads(exists.lower())
+
+        if exists == True:
+            command = "ls /opt/docroot/mail"
+            labels = self.pod_exec(self.pod_name, self.container_name, self.namespace, command, capture_output=True)
+            return labels.splitlines()
+        else:
+            return None
+
     def add_mail(self, host, mail, password):
-        # Create directory if not present to store information for every added storage
+        # Create directory if not present to store information for mail
         command = f"mkdir /opt/docroot/mail/"
         self.pod_exec(self.pod_name, self.container_name, self.namespace, command)
         mail_command = f"asadmin --user=admin --passwordfile=/secrets/asadmin/passwordFile create-javamail-resource --mailhost {host} --mailuser {mail} --fromaddress {mail} --property mail.smtp.auth=true:mail.smtp.password={password}:mail.smtp.port=465:mail.smtp.socketFactory.port=465:mail.smtp.socketFactory.fallback=false:mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory mail/notifyMailSession"
@@ -479,9 +535,28 @@ class dataverse_setuper():
         save_command = f"echo {mail_command} > /opt/docroot/mail/add_mail.txt"
         self.pod_exec(self.pod_name, self.container_name, self.namespace, save_command)
 
-    def setup_shibboleth(self, api_key, persistent_id):
-        delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/datasets/:persistentId/destroy/?persistentId={persistent_id}\""
-        self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
+    def remove_mail(self):
+
+        mail_command = "asadmin --user=admin --passwordfile=/secrets/asadmin/passwordFile delete-javamail-resource mail/notifyMailSession"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, mail_command)
+
+        save_command = "rm /opt/docroot/mail/add_mail.txt"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, save_command)
+
+    def add_shibboleth(self):
+        # copy shibAuthProvider.json to dataverse container
+        copy_command = f"kubectl cp ./shib/shibAuthProvider.json {self.namespace}/{self.pod_name}:/opt/docroot/shibAuthProvider.json -c {self.container_name}"
+        os.system(copy_command)
+
+        enable_command = f"curl -X POST -H 'Content-type: application/json' --upload-file /opt/docroot/shibAuthProvider.json http://localhost:8080/api/admin/authenticationProviders"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, enable_command)
+
+        delete_command = f"rm /opt/docroot/shibAuthProvider.json"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, enable_command)
+
+    def remove_shibboleth(self):
+        remove_command = f"curl -X DELETE http://localhost:8080/api/admin/authenticationProviders/shib"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, remove_command)
 
     def delete_dataverse(self, api_key, persistent_id):
         delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/dataverses/{persistent_id}\""
@@ -498,35 +573,5 @@ class dataverse_setuper():
     def curl_dataset(self, api_key, dataset_pid):
         curl_command = f"curl -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/datasets/:persistentId/versions/:draft?persistentId={dataset_pid}\""
         self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
-
-
-deployment_name = "dataverse"
-namespace = "dv-test"  # Replace with the appropriate namespace
-container_name = "dataverse"
-url = "http://192.168.100.11:30000" + "/robots.txt"
-imagename = "TransparentLogo.svg"
-metadata_file = "citation.tsv" #"citation.tsv"
-# languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
-languages = ['en_US', 'de_DE']
-api_key = "21d306cf-2a50-4d43-8a87-7556bec11d18"
-persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
-host = "mail.hs-mannheim.de"
-mail = "t.haeussermann@hs-mannheim.de"
-password = "EUr,G-GMWQdNnX#,P3+n"
-
-tt = dataverse_setuper(deployment_name, namespace, container_name, url)
-
-# tt.change_logo(imagename)
-tt.add_custom_metadata(metadata_file)
-# tt.add_languages(languages)
-# tt.set_superuser("dataverseAdmin", True)
-# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
-# tt.add_mail(host, mail, password)
-
-# tt.curl_dataverse(api_key, "KI-Nachwuchs")
-# tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
-# tt.delete_dataset(api_key, persistent_id)
-
-# tt.delete_dataverse(api_key, "")
 
 

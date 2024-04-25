@@ -11,7 +11,7 @@ LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"
 
 EXPOSE 4848 9009 8080 8181
 
-ARG VERSION=6.1
+ARG VERSION=6.2
 ARG DOMAIN=domain1
 
 ENV DATA_DIR=/data\
@@ -57,6 +57,15 @@ RUN wget --no-verbose -O esh https://raw.githubusercontent.com/jirutka/esh/v0.3.
 # change permission of /opt to enable logo upload for dataverse collection
 RUN chown -R payara:payara /opt
 # change permission of /opt to enable logo upload for dataverse collection
+
+# added for openID
+# copy keycloak cert into payara trusted store
+COPY docker/dataverse-k8s/payara/oidc-provider.crt /tmp/my-oidc-provider.crt
+RUN keytool -importcert -alias oidc-provider -file /tmp/my-oidc-provider.crt -keystore /usr/lib/jvm/zulu17-ca-amd64/lib/security/cacerts -storepass changeit -noprompt
+RUN keytool -importcert -alias oidc-provider -file /tmp/my-oidc-provider.crt -keystore /opt/payara/appserver/glassfish/domains/domain1/config/cacerts.p12 -storepass changeit -noprompt
+#RUN chown -R payara:payara /usr
+# added for openID
+
 
 # Install PostgreSQL JDBC driver in AppServer
 # TODO: remove this once upstream includes the Postgres Client lib in the WAR.

@@ -2,7 +2,7 @@ import os
 
 # Define Dataverse Dockerfile, Version and Tag
 dockerfileDataverse = "./docker/dataverse-k8s/payara/Dockerfile"
-versionDataverse = "6.1"
+versionDataverse = "6.2"
 tagDataverse = "iqss/dataverse-k8s:" + versionDataverse
 
 # Define Solr Dockerfile, Version and Tag
@@ -11,9 +11,24 @@ versionSolr = "9.3.0"
 tagSolr = "iqss/solr-k8s:" + versionSolr
 
 # Define Shibboleth Dockerfile, Version and Tag
-dockerfileShibboleth = "./docker/shibboleth/Dockerfile"
+dockerfileShibboleth = "./docker/shibboleth-k8s/Dockerfile"
 versionShibboleth = "1.0"
 tagShibboleth = "shibboleth:" + versionShibboleth
+
+# Define Deleter Dockerfile, Version and Tag
+dockerfileDeleter = "./docker/deleter-k8s/Dockerfile"
+versionDeleter = "1.0"
+tagDeleter = "dataverse_deleter:" + versionDeleter
+
+# Define Dataverse Setuper Dockerfile, Version and Tag
+dockerfileDataverseSetuper = "./docker/dataverse-setuper-k8s/Dockerfile"
+versionDataverseSetuper = "1.0"
+tagDataverseSetuper = "dataverse-setuper-k8s:" + versionDataverseSetuper
+
+# Define keycloak-idp Dockerfile, Version and Tag
+dockerfileKeycloakIdP = "./docker/keycloak-idp-k8s/Dockerfile"
+versionKeycloakIdP = "1.0"
+tagKeycloakIdP = "keycloak-idp-k8s:" + versionKeycloakIdP
 
 # Define privat registry endpoint
 registry = "192.168.100.11:31000"
@@ -24,6 +39,9 @@ password = "changeme"
 dataverse = True
 solr = False
 shibboleth = False
+deleter = False
+dataversesetuper = False
+keycloakidp = False
 pushonly = False
 
 # Change working directory
@@ -48,27 +66,29 @@ cleancommand = "docker system prune -f"
 os.system(cleancommand)
 
 # Build the desired image or images and push to local registry
-if dataverse and solr and shibboleth:
-    if not pushonly:
-        buildImage(dockerfileDataverse, tagDataverse)
-        buildImage(dockerfileSolr, tagSolr)
-        buildImage(dockerfileShibboleth, tagShibboleth)
-    pushToRegistry(tagDataverse, registry)
-    pushToRegistry(tagSolr, registry)
-    pushToRegistry(tagShibboleth, registry)
-elif dataverse:
+if dataverse == True:
     if not pushonly:
         buildImage(dockerfileDataverse, tagDataverse)
     pushToRegistry(tagDataverse, registry)
-elif solr:
+if solr == True:
     if not pushonly:
         buildImage(dockerfileSolr, tagSolr)
     pushToRegistry(tagSolr, registry)
-elif shibboleth:
+if shibboleth == True:
     if not pushonly:
         buildImage(dockerfileShibboleth, tagShibboleth)
     pushToRegistry(tagShibboleth, registry)
-else:
-    print("No image to build..")
+if deleter == True:
+    if not pushonly:
+        buildImage(dockerfileDeleter, tagDeleter)
+    pushToRegistry(tagDeleter, registry)
+if dataversesetuper == True:
+    if not pushonly:
+        buildImage(dockerfileDataverseSetuper, tagDataverseSetuper)
+    pushToRegistry(tagDataverseSetuper, registry)
+if keycloakidp == True:
+    if not pushonly:
+        buildImage(dockerfileKeycloakIdP, tagKeycloakIdP)
+    pushToRegistry(tagKeycloakIdP, registry)
 
 

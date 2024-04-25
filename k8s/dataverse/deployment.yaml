@@ -6,7 +6,7 @@ metadata:
   labels:
     app.kubernetes.io/name: dataverse
 #    app.kubernetes.io/version: "5.14"
-    app.kubernetes.io/version: "6.1"
+    app.kubernetes.io/version: "6.2"
     app.kubernetes.io/component: appserver
     app.kubernetes.io/part-of: dataverse
     app.kubernetes.io/managed-by: kubectl
@@ -28,7 +28,7 @@ spec:
       serviceAccountName: reader
       containers:
         - name: dataverse
-          image: 192.168.100.11:31000/iqss/dataverse-k8s:6.1
+          image: 192.168.100.11:31000/iqss/dataverse-k8s:6.2
           imagePullPolicy: Always
           resources:
             requests:
@@ -59,7 +59,12 @@ spec:
                   name: dataverse-postgresql
                   key: database
                   optional: true
-            - name: PGPASSWORD
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-postgresql
+                  key: password
+            - name: POSTGRES_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: dataverse-postgresql
@@ -69,19 +74,16 @@ spec:
                 secretKeyRef:
                   name: dataverse-postgresql
                   key: database
-#            - name: POSTGRES_SERVER
-#              value: postgresql
-#            - name: DB_HOST
-#              value: postgresql
-#            - name: DB_HOSTNAME
-#              value: postgresql
+            - name: dataverse_mail_mta_password
+              valueFrom:
+                secretKeyRef:
+                  name: dataverse-mail
+                  key: password
           volumeMounts:
             - name: files
               mountPath: /data
             - name: docroot
               mountPath: /opt/docroot
-#            - name: logos
-#              mountPath: /opt/payara/appserver/glassfish/domains/domain1/applications/dataverse/logos
             - name: heapdumps
               mountPath: /dumps
             - name: db-secret
@@ -99,6 +101,7 @@ spec:
             # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
             - name: primefaces-upload
               mountPath: /opt/dataverse/appserver/glassfish/domains/domain1/generated/jsp/dataverse
+
           readinessProbe:
             httpGet:
               path: /robots.txt
@@ -130,8 +133,6 @@ spec:
         - name: check-solr-ready
           image: giantswarm/tiny-tools
           imagePullPolicy: IfNotPresent
-#          command: [ "/bin/sh", "-c", 'until curl -sS -f "http://192.168.100.11:30000/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
-#                       do echo waiting for solr; sleep 3; done;' ]
           command: [ "/bin/sh", "-c", 'until curl -sS -f "http://${SOLR_SERVICE_HOST}:${SOLR_SERVICE_PORT}/solr/admin/info/system" 2>&1 | grep "status" | grep "0";
                       do echo waiting for solr; sleep 3; done;' ]
        
@@ -142,9 +143,6 @@ spec:
         - name: docroot
           persistentVolumeClaim:
             claimName: dataverse-docroot
-#        - name: logos
-#          persistentVolumeClaim:
-#            claimName: dataverse-logos
         - name: api-secret
           secret:
             secretName: dataverse-api
@@ -162,6 +160,7 @@ spec:
         # This is here because of IQSS/dataverse-kubernetes#177. TBR for #178
         - name: primefaces-upload
           emptyDir: {}
+
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1

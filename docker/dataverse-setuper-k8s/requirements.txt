@@ -1,0 +1,6 @@
+fastapi==0.110.1
+kubernetes==28.1.0
+Pillow==10.3.0
+Requests==2.31.0
+uvicorn==0.29.0
+python-multipart

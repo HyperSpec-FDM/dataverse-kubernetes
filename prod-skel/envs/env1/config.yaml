@@ -21,13 +21,23 @@ data:
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: mydataverse
   POSTGRES_USER: dataverse
-  POSTGRES_PASSWORD: aZn5~mZ){SjAd@F-
-  POSTGRES_ADMIN_PASSWORD: aZn5~mZ){SjAd@F-
+#  POSTGRES_PASSWORD: aZn5~mZ){SjAd@F-
+#  POSTGRES_ADMIN_PASSWORD: aZn5~mZ){SjAd@F-
 
   ### CONTACT SETTINGS
   CONTACT_MAIL: t.haeussermann@hs-mannheim.de
   MAIL_FROMADDRESS: t.haeussermann@hs-mannheim.de
-  db_SystemEmail: HyperSpecFDM <t.haeussermann@hs-mannheim.de>
+  DATAVERSE_MAIL_SYSTEM_EMAIL: t.haeussermann@hs-mannheim.de
+  DATAVERSE_MAIL_SUPPORT_EMAI: t.haeussermann@hs-mannheim.de
+  DATAVERSE_MAIL_DEBUG: "true"
+  MAIL_SERVER: mail.hs-mannheim.de
+  dataverse_mail_system-email: HyperSpecFDM <t.haeussermann@hs-mannheim.de>
+  dataverse_mail_mta_host: mail.hs-mannheim.de
+  dataverse_mail_mta_port: "465"
+  dataverse_mail_mta_ssl_enable: "true"
+  dataverse_mail_mta_auth: "true"
+  dataverse_mail_mta_user: t.haeussermann@hs-mannheim.de
+#  dataverse_mail_mta_password: "EUr,G-GMWQdNnX#,P3+n"
 
   ### DOI SETTINGS
   db_DoiProvider: FAKE
@@ -58,5 +68,5 @@ data:
   db_FileFixityChecksumAlgorithm: SHA-256
 
   ### CUSTOMIZATION
-  db_StatusMessageHeader: "Test Environment"
-  db_StatusMessageText: "<br />This instance is meant for testing, training and experiments. DOIs minted here are not citeable!"
+#  db_StatusMessageHeader: "Test Environment"
+#  db_StatusMessageText: "<br />This instance is meant for testing, training and experiments. DOIs minted here are not citeable!"
