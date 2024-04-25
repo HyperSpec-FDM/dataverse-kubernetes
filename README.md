@@ -79,7 +79,7 @@ IP.2 = vlan IP
 sudo openssl req -x509 -nodes -days 730 -newkey rsa:2048 -keyout key.pem -out cert.pem -config san.cnf
 ```
 
-# Enable certificate
+#### Enable certificate
 1. Add the certificate and key to the nginx sites_enabled section for Keycloak.
 2. Check nginx configuration:
 ```
@@ -90,7 +90,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-# Enable keycloak in dataver
+#### Enable keycloak in Dataverse
 1. Add to Dataverse Dockerfile:
 ```
 COPY docker/dataverse-k8s/payara/oidc-provider.crt /tmp/my-oidc-provider.crt
