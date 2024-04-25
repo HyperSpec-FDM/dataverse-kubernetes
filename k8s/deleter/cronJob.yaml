@@ -21,7 +21,7 @@ spec:
               - name: url
                 value: "http://localhost:8080/"
               - name: api_key
-                value: "21d306cf-2a50-4d43-8a87-7556bec11d18"
+                value: "api_key"
               - name: dataverse_id
                 value: "HyperSpec-FDM"
               - name: deployment_name

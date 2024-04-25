@@ -4,10 +4,11 @@ from datetime import datetime
 import os
 
 local = False
+
 # get enviroment variables
 if local:
     url = "http://localhost:8080/"
-    api_key = "b3752a5a-3a15-4dcc-9f7f-921c216dadcc"
+    api_key = "api_key"
     dataverse_id = "HyperSpec-FDM"
     deployment_name = "dataverse"
     namespace = "dv-test"
