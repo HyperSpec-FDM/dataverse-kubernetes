@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataverse-setuper
+  namespace: dv-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataverse-setuper
+  template:
+    metadata:
+      labels:
+        app: dataverse-setuper
+    spec:
+      serviceAccountName: dataverse-setuper-service-account
+      automountServiceAccountToken: true
+      containers:
+      - name: dataverse-setuper-k8s
+        image: 192.168.100.11:31000/dataverse-setuper-k8s:1.0
+        imagePullPolicy: Always
+        env:
+          - name: "KUBECONFIG"
+            value: "/etc/kubernetes/admin.conf"
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+          - name: kube-volume
+            mountPath: /etc/kubernetes
+      volumes:
+        - name: kube-volume
+          hostPath:
+            path: /etc/kubernetes
+            type: DirectoryOrCreate
+      imagePullSecrets:
+        - name: registry-auth
+
+

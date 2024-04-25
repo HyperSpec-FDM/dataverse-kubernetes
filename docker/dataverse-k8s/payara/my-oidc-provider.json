@@ -1,0 +1,8 @@
+{
+    "id":"keycloak",
+    "factoryAlias":"oidc",
+    "title":"Keycloak",
+    "subtitle":"HyperSpec-FDM",
+    "factoryData":"type: oidc | issuer: https://141.19.44.18:8443/realms/master | clientId: dataverse | clientSecret: DL7corRR06H2z80twFuraYifioA1TqZs | pkceEnabled: true | pkceMethod: S256",
+    "enabled":true
+}

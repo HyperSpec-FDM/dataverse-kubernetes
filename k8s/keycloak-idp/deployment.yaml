@@ -1,0 +1,59 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: keycloak-idp
+  namespace: dv-test
+spec:
+  selector:
+    matchLabels:
+      app: keycloak-idp
+  replicas: 1
+  revisionHistoryLimit: 1
+  template:
+    metadata:
+      labels:
+        app: keycloak-idp
+    spec:
+      containers:
+        - name: keycloak-idp
+          image: 192.168.100.11:31000/keycloak-idp-k8s:1.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+            - containerPort: 8443
+          env:
+            - name: KEYCLOAK_USER
+              value: admin
+            - name: KEYCLOAK_PASSWORD
+              value: admin
+            - name: KC_PROXY
+              value: edge
+            - name: KEYCLOAK_HOSTNAME
+              value: 141.19.44.18:8443
+            - name: KC_HOSTNAME_URL
+              value: https://141.19.44.18:8443
+            - name: KC_HOSTNAME_ADMIN_URL
+              value: https://141.19.44.18:8443
+            - name: PROXY_ADDRESS_FORWARDING
+              value: "true"
+            - name: KEYCLOAK_ADMIN
+              value: admin
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              value: admin
+            - name: KC_HOSTNAME_STRICT
+              value: "false"
+            - name: KC_HOSTNAME_STRICT_HTTPS
+              value: "false"
+            - name: KC_HOSTNAME_STRICT_BACKCHANNEL
+              value: "true"
+#            - name: KC_HTTP_ENABLED
+#              value: "true"
+            - name: KC_HOSTNAME_DEBUG
+              value: "true"
+            - name: KC_LOG_LEVEL
+              value: debug
+      imagePullSecrets:
+        - name: registry-auth
+
+

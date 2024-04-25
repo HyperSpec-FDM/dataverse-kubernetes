@@ -1,0 +1,20 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak-idp-svc
+  namespace: dv-test
+spec:
+  selector:
+    app: keycloak-idp
+  ports:
+    - port: 8080
+      name: http
+      targetPort: 8080
+      nodePort: 30880
+    - port: 8443
+      name: https
+      targetPort: 8443
+      nodePort: 30843
+  type: LoadBalancer
+

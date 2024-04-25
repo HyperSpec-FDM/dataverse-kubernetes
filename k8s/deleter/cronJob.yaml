@@ -15,13 +15,13 @@ spec:
           automountServiceAccountToken: true
           containers:
           - name: dataverse-deleter
-            image: dataverse_cron_job:1.0
+            image: 192.168.100.11:31000/dataverse_deleter:1.0
             imagePullPolicy: IfNotPresent
             env:
               - name: url
                 value: "http://localhost:8080/"
               - name: api_key
-                value: "b3752a5a-3a15-4dcc-9f7f-921c216dadcc"
+                value: "21d306cf-2a50-4d43-8a87-7556bec11d18"
               - name: dataverse_id
                 value: "HyperSpec-FDM"
               - name: deployment_name
@@ -31,3 +31,5 @@ spec:
               - name: container_name
                 value: "dataverse"
           restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: registry-auth
