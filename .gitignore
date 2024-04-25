@@ -3,7 +3,7 @@
 
 # Files and directories containing secrets
 /Scripts/class_dataverse_setup.py
-/docker/keycloak-idp-k8s/conf/
+/docker/keycloak-idp-k8s/conf/*
 
 
 # Byte-compiled / optimized / DLL files
