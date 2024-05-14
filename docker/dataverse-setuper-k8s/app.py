@@ -9,14 +9,16 @@ import typing
 
 
 # retrieve variables from environment
-# deployment_name = os.environ["deployment_name"]
-# namespace = os.environ["namespace"]
-# container_name = os.environ["container_name"]
-# dataverse_url = os.environ["dataverse_url"] +  "/robots.txt"
-deployment_name = "dataverse"
-namespace = "dv-test"  # Replace with the appropriate namespace
-container_name = "dataverse"
-dataverse_url = "http://192.168.100.11:30000" + "/robots.txt"
+deployment_name = os.environ["deployment_name"]
+namespace = os.environ["namespace"]
+container_name = os.environ["container_name"]
+dataverse_url = os.environ["dataverse_url"] +  "/robots.txt"
+
+# for local usage
+# deployment_name = "dataverse"
+# namespace = "dv-test"  # Replace with the appropriate namespace
+# container_name = "dataverse"
+# dataverse_url = "http://192.168.100.11:30000" + "/robots.txt"
 
 # define directory variables
 img_dir = "./img"
@@ -31,7 +33,6 @@ setuper = dataverse_setuper(deployment_name=deployment_name, namespace=namespace
 
 
 """create API"""
-rootPath = "/dtps"
 App = FastAPI()
 
 """define API Methods"""
@@ -63,7 +64,7 @@ async def add_custom_metadata(file: UploadFile = File(...)):
     try:
         contents = file.file.read()
         extension = os.path.splitext(file.filename)[-1].lower()
-        if extension == "tsv":
+        if extension == ".tsv":
             with open(f"{metadata_dir}/{file.filename}", 'wb') as f:
                 f.write(contents)
         else:
@@ -75,8 +76,8 @@ async def add_custom_metadata(file: UploadFile = File(...)):
         file.file.close()
 
     try:
-        setuper.change_logo(metadata_dir, file.filename)
-        return {"message": f"Successfully changed dataverse logo to {file.filename}"}
+        setuper.add_custom_metadata(metadata_dir, file.filename)
+        return {"message": f"Successfully changed added metadata {file.filename}"}
     except:
         return {"message": "Failed to change dataverse logo"}
 
@@ -157,6 +158,16 @@ async def add_shibboleth():
 async def remove_shibboleth():
     setuper.remove_shibboleth()
     return {"message": f"Removed Shibboleth Authentication Provider."}
+
+@App.post("/add_keycloak")
+async def add_keycloak():
+    setuper.add_keycloak()
+    return {"message": f"Added Keycloak Authentication Provider."}
+
+@App.delete("/remove_keycloak")
+async def remove_keycloak():
+    setuper.remove_keycloak()
+    return {"message": f"Removed Keycloak Authentication Provider."}
 
 
 """rund API server. swagger ui on http://127.0.0.1:8000/docs#/"""

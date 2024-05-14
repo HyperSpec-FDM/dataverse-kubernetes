@@ -545,7 +545,7 @@ class dataverse_setuper():
 
     def add_shibboleth(self):
         # copy shibAuthProvider.json to dataverse container
-        copy_command = f"kubectl cp ./shib/shibAuthProvider.json {self.namespace}/{self.pod_name}:/opt/docroot/shibAuthProvider.json -c {self.container_name}"
+        copy_command = f"kubectl cp ./authenticationProviders/shibAuthProvider.json {self.namespace}/{self.pod_name}:/opt/docroot/shibAuthProvider.json -c {self.container_name}"
         os.system(copy_command)
 
         enable_command = f"curl -X POST -H 'Content-type: application/json' --upload-file /opt/docroot/shibAuthProvider.json http://localhost:8080/api/admin/authenticationProviders"
@@ -556,6 +556,21 @@ class dataverse_setuper():
 
     def remove_shibboleth(self):
         remove_command = f"curl -X DELETE http://localhost:8080/api/admin/authenticationProviders/shib"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, remove_command)
+
+    def add_keycloak(self):
+        # copy keycloakAuthProvider.json to dataverse container
+        copy_command = f"kubectl cp ./authenticationProviders/keycloakAuthProvider.json {self.namespace}/{self.pod_name}:/opt/docroot/keycloakAuthProvider.json -c {self.container_name}"
+        os.system(copy_command)
+
+        enable_command = f"curl -X POST -H 'Content-type: application/json' --upload-file /opt/docroot/keycloakAuthProvider.json http://localhost:8080/api/admin/authenticationProviders"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, enable_command)
+
+        delete_command = f"rm /opt/docroot/keycloakAuthProvider.json"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, enable_command)
+
+    def remove_keycloak(self):
+        remove_command = f"curl -X DELETE http://localhost:8080/api/admin/authenticationProviders/keycloak"
         self.pod_exec(self.pod_name, self.container_name, self.namespace, remove_command)
 
     def delete_dataverse(self, api_key, persistent_id):
