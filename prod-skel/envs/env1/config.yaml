@@ -12,16 +12,17 @@ metadata:
     app.kubernetes.io/managed-by: kubectl
 data:
   ### GENERAL SETTINGS
-  dataverse_fqdn: 141.19.44.18
-  dataverse_siteUrl: https://141.19.44.18
+  dataverse_fqdn: "141.19.44.18"
+  dataverse_siteUrl: "https://141.19.44.18"
 
   ### database
   POSTGRES_ONLY: "true"
-  POSTGRES_SERVER: postgresql
+  POSTGRES_SERVER: "postgresql"
   POSTGRES_PORT: "5432"
-  POSTGRES_DATABASE: mydataverse
-  POSTGRES_USER: dataverse
-#  POSTGRES_PASSWORD: aZn5~mZ){SjAd@F-
+  POSTGRES_DATABASE: "mydataverse"
+  POSTGRES_USER: "dataverse"
+  POSTGRES_PASSWORD: "TqnXXPCi^+wO=q9MHv.t"
+  dataverse_db_password: "TqnXXPCi^+wO=q9MHv.t"
 #  POSTGRES_ADMIN_PASSWORD: aZn5~mZ){SjAd@F-
 
   ### CONTACT SETTINGS

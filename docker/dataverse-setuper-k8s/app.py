@@ -79,7 +79,7 @@ async def add_custom_metadata(file: UploadFile = File(...)):
         setuper.add_custom_metadata(metadata_dir, file.filename)
         return {"message": f"Successfully changed added metadata {file.filename}"}
     except:
-        return {"message": "Failed to change dataverse logo"}
+        return {"message": "Failed to add metadata"}
 
 
 @App.post("/add_languages")
@@ -168,6 +168,16 @@ async def add_keycloak():
 async def remove_keycloak():
     setuper.remove_keycloak()
     return {"message": f"Removed Keycloak Authentication Provider."}
+
+@App.post("/reload_pod")
+async def reload_pod():
+    old_pod = setuper.pod_name
+    new_pod = setuper.get_pod_name_by_deployment(deployment_name, namespace, container_name)
+    if old_pod != new_pod:
+        return {"message": f"Pod did not changed. No reload necessary."}
+    else:
+        setuper.reload_pod()
+        return {"message": f"Pod changed from {old_pod} to {new_pod}"}
 
 
 """rund API server. swagger ui on http://127.0.0.1:8000/docs#/"""

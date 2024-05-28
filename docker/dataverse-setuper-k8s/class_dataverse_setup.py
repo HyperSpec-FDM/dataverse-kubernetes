@@ -56,6 +56,9 @@ class dataverse_setuper():
         except:
             return None
 
+    def reload_pod(self):
+        self.pod_name, self.containerID = self.get_pod_name_by_deployment(self.deployment_name, self.namespace, self.container_name)
+
     def resize_image(self, original_image_path, resized_image_path):
         with Image.open(original_image_path) as image:
             resized_image = image.resize((160, 50))
