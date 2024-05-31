@@ -40,11 +40,18 @@ data:
   dataverse_mail_mta_user: t.haeussermann@hs-mannheim.de
 #  dataverse_mail_mta_password: "EUr,G-GMWQdNnX#,P3+n"
 
-  ### DOI SETTINGS
-  db_DoiProvider: FAKE
-  db_Protocol: doi
-  db_Authority: "10.12345"
-  db_Shoulder: EXAMPLE/
+  ### DOI SETTINGS OLD
+#  db_DoiProvider: FAKE
+#  db_Protocol: doi
+#  db_Authority: "10.12345"
+#  db_Shoulder: EXAMPLE/
+  ## Updated DOI SETTINGS due to Dataverse Version 6.2
+  dataverse_pid_providers: "fake"
+  dataverse_pid_default__provider: "fake"
+  dataverse_pid_fake_type: "FAKE"
+  dataverse_pid_fake_label: "FakeDOIProvider"
+  dataverse_pid_fake_authority: "10.5072"
+  dataverse_pid_fake_shoulder: "FK2/"
 
 
   ### FILE STORAGE Local
