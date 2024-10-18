@@ -1,0 +1,132 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI	Unnamed: 5	Unnamed: 6	Unnamed: 7	Unnamed: 8	Unnamed: 9	Unnamed: 10	Unnamed: 11	Unnamed: 12	Unnamed: 13	Unnamed: 14	Unnamed: 15	Unnamed: 16
+	mass_spectrometry_imaging		Mass Spectrometry (Imaging)	https://dataverse.org/schema/mass_spectrometry_imaging/
+#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	ionization_msi	Ionization	This just to make sure that we don't get other types of ionization		text	0		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	analyzer_msi	Analyzer	Mass analyzer used (see drop down menu)		text	1		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	polarity_msi	Polarity	Polarity (see drop down menu)		text	2		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	equipment_msi	Equipment	choose one of ('autoflex', 'ultraflex', 'rapiflex', 'solarix','other')		text	3		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	acquisitionType_msi	Acquisition Type	whole tissue or TMAs (drop down menu)		text	4		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	surfaceType_msi	Surface Type	Surface analyzed or used as an underlying substrate for analysis (ITO, glass, metal)		text	5		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	surfaceMods_msi	Surface Mods	Was the surface analyzed modified in any way (functionalized, coated)?		text	6		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	analyte_msi	Analyte	analytes being imaged (small molecules, peptides, proteins, glycans, other)		text	7		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	lowerMassRange_msi	Lower Mass Range	Minimum m/z for the acquired mass range.		text	8		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	upperMassRange_msi	Upper Mass Range	Maximum m/z for the acquired mass range.		text	9		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	calType_msi	Calibration Type	Type of calibration employed (external, internal, lock mass).		text	10		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	calStandard_msi	Calibration Standard	Calibration standard or standard mixture(s) used.		text	11		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	fixation_msi	Fixation	What stabilization method was used (dehydration, heat inactivation, alcohol/cross-linking fixation, freezing)?		text	12		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	embedding_msi	Embedding method	Embedding method for sample (OCT, CMC, gelatin, paraffin, none).		text	13		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	microtome_msi	Microtome 	(Cryo)-microtome instrument used to section material.		text	14		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	thickness_msi	Tickness 	Tissue section thickness (Âµm)		text	15		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	wash_msi	Wash 	Wash or solution treatment for section(s) and/or surface(s) (fixation, re-hydration).		text	16		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	scan_msi	Scan 	Was sample / section scanned prior to analysis for co-registration?		text	17		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	matrixType_msi	Matrix Type 	What compound or material was used to mediate ionization (2.5-DHB, DAN, THAP, HCCA, CLCCA, SDHB, DHAP, 9AA, other)?		text	18		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	matrixInstrument_msi	Matrix Instrument	Instrument used for matrix preparation (manual sprayer, ImagePrep, sublimation chamber, iMatrixSpray, TM-sprayer, sunChrome, M3, M5, other).		text	19		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	laserDiameter_msi	Laser Diameter 	Laser spot size, or measured area (Âµm).		text	20		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	laserPower_msi	Laser Power	Laser power if known		text	21		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	laserRepRate_msi	Laser Repetition Rate	Laser repetition rate (kHz)		text	22		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	spatialRes_msi	Spatial Res 	The size of the data pixels (spectra) [Âµm].		text	23		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	processing_msi	Processing 	List of the pre-processing steps / pipeline used on the raw data.		text	24		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	normalization_msi	Normalization 	Method used for intensity normalization (none, TIC, RMS, ...).		text	25		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	sampleSource_msi	Sample Source	The source of sample (animal, clinical, geological)		text	26		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	multipleSampleTypesInFile_msi	Multiple Sample Types in File	whether the slide contains multipe tissue types (ex. liver and kidney â€¦) 		text	27		FALSE	TRUE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	sampleType_msi	Sample Type	The name of the organ the tissue was taken from (liver, kidney, brain, stomach, intestine, skin lung, colon, abdomen, thoraxwall, peritoneum, pelvis, pancreas). For multiple entries use a comman for separation		text	28		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	condition_msi	Condition	pathological condition: ex. diseased, wildtype, mutant, control, tumor, gist, glioblastoma, â€¦		text	29		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+	sampleSubType_msi	Sample Sub-Type	optional - additional info about the tissue		text	30		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder
+	ionization_msi	MALDI		0
+	ionization_msi	ESI		1
+	ionization_msi	DESI		2
+	ionization_msi	SIMS		3
+	ionization_msi	Other		4
+	analyzer_msi	ToF reflector		0
+	analyzer_msi	ToF linear		1
+	analyzer_msi	Q-ToF		2
+	analyzer_msi	LTQ		3
+	analyzer_msi	Ion Trap		4
+	analyzer_msi	Orbitrap		5
+	analyzer_msi	FTICR		6
+	analyzer_msi	other		7
+	polarity_msi	positive		0
+	polarity_msi	negative		1
+	equipment_msi	autoflex		0
+	equipment_msi	ultraflex		1
+	equipment_msi	rapiflex		2
+	equipment_msi	solarix		3
+	equipment_msi	timsTOFfleX		4
+	equipment_msi	timsTOFpro		5
+	equipment_msi	NeofleX		6
+	equipment_msi	other		7
+	acquisitionType_msi	whole tissue		0
+	acquisitionType_msi	TMA		1
+	acquisitionType_msi	Biopsy		2
+	acquisitionType_msi	single cells		3
+	acquisitionType_msi	3D cells		4
+	acquisitionType_msi	other		5
+	surfaceType_msi	ITO		0
+	surfaceType_msi	glass		1
+	surfaceType_msi	metal		2
+	surfaceType_msi	Au		3
+	surfaceType_msi	PEN slide		4
+	surfaceType_msi	other		5
+	analyte_msi	small molecules		0
+	analyte_msi	peptides		1
+	analyte_msi	proteins		2
+	analyte_msi	glycans		3
+	analyte_msi	other		4
+	calType_msi	none		0
+	calType_msi	external		1
+	calType_msi	internal		2
+	calType_msi	lock mass		3
+	calType_msi	online		4
+	calType_msi	other		5
+	fixation_msi	fresh frozen		0
+	fixation_msi	formalin		1
+	fixation_msi	alcohol		2
+	fixation_msi	heat inactivation		3
+	fixation_msi	dehydration		4
+	fixation_msi	paxgene		5
+	fixation_msi	PFA		6
+	fixation_msi	other		7
+	embedding_msi	none		0
+	embedding_msi	OCT		1
+	embedding_msi	CMC		2
+	embedding_msi	gelatin		3
+	embedding_msi	paraffin		4
+	embedding_msi	HPMC-PVP		5
+	embedding_msi	other		6
+	scan_msi	yes		0
+	scan_msi	no		1
+	matrixType_msi	2.5-DHB		0
+	matrixType_msi	DAN		1
+	matrixType_msi	THAP		2
+	matrixType_msi	HCCA		3
+	matrixType_msi	CLCCA		4
+	matrixType_msi	SDHB		5
+	matrixType_msi	DHAP		6
+	matrixType_msi	9AA		7
+	matrixType_msi	SA		8
+	matrixType_msi	BNDM		9
+	matrixType_msi	DMCA		10
+	matrixType_msi	Norharmane		11
+	matrixType_msi	ZSA		12
+	matrixType_msi	other		13
+	matrixInstrument_msi	manual sprayer		0
+	matrixInstrument_msi	ImagePrep		1
+	matrixInstrument_msi	sublimation chamber		2
+	matrixInstrument_msi	iMatrixSpray		3
+	matrixInstrument_msi	TM-sprayer		4
+	matrixInstrument_msi	sunChrome		5
+	matrixInstrument_msi	HTX-M3		6
+	matrixInstrument_msi	HTX-M5		7
+	matrixInstrument_msi	subliMATE		8
+	matrixInstrument_msi	other		9
+	sampleSource_msi	animal		0
+	sampleSource_msi	human		1
+	sampleSource_msi	cell line		2
+	sampleSource_msi	plant		3
+	sampleSource_msi	multiple		4
+	sampleSource_msi	geological		5
+	sampleSource_msi	microbial		6
+	sampleSource_msi	other		7
+	multipleSampleTypesInFile_msi	yes		0
+	multipleSampleTypesInFile_msi	no		1

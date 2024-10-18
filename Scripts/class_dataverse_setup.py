@@ -500,7 +500,180 @@ class dataverse_setuper():
         self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
 
     def setup_hyperspec(self):
-        pass
+        attributes = ["description", "affiliation", "name", "alias"]
+
+        # setup root as HyperSpec-FDM
+        hyperspec_conf = {"description": "The root dataverse.", "affiliation": "", "name": "HyperSpec-FDM", "alias": "HyperSpec-FDM"}
+        for attribute in attributes:
+            value = hyperspec_conf[attribute]
+            curl_command = f"curl -X PUT -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/root/attribute/{attribute}?value={value}\""
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # publish HyperSpec-FDM
+        curl_command = f"curl -X POST -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/HyperSpec-FDM/actions/:publish\""
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # create dir for dataverse configs
+        create_dir_command = "mkdir /opt/docroot/setup"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, create_dir_command)
+
+        # create CeMOS Dataverse
+        copy_command = f"kubectl cp ../docker/dataverse-setuper-k8s/setup/CeMOS.json {self.namespace}/{self.pod_name}:/opt/docroot/setup/CeMOS.json -c {self.container_name}"
+        os.system(copy_command)
+
+        curl_command = f"curl -X POST -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/HyperSpec-FDM\" --upload-file /opt/docroot/setup/CeMOS.json"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        curl_command = f"curl -X POST -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/CeMOS/actions/:publish\""
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # create CeMOS Group Dataverses
+        groups = ["Hopf", "Rädle", "Reichwald", "Rudolf", "Wasenmüller"]
+        for group in groups:
+            print(group)
+            copy_command = f"kubectl cp ../docker/dataverse-setuper-k8s/setup/{group}.json {self.namespace}/{self.pod_name}:/opt/docroot/setup/{group}.json -c {self.container_name}"
+            os.system(copy_command)
+
+            curl_command = f"curl -X POST -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/CeMOS\" --upload-file /opt/docroot/setup/{group}.json"
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+            with open(f"../docker/dataverse-setuper-k8s/setup/{group}.json", "r") as file:
+                data = json.load(file)
+                alias = data["alias"]
+            curl_command = f"curl -X POST -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/{alias}/actions/:publish\""
+            self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # clean up conf dir
+        delete_command = "rm -rf /opt/docroot/setup"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
+
+        options = Options()
+        options.add_argument('--headless=new')
+        driver = webdriver.Chrome(options=options)
+
+        try:
+            # Open the target website
+            # print("Opening the website...")
+            base_url = 'http://127.0.0.1:8080'
+            driver.get(f'{base_url}/loginpage.xhtml?redirectPage=%2Fdataverse.xhtml')
+
+            # Wait for the page to load (implicit wait)
+            driver.implicitly_wait(5)
+
+            # Debugging: Print the current URL to verify the page loaded
+            print("Current URL:", driver.current_url)
+
+            # Find the username and password fields
+            username = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, 'loginForm:credentialsContainer:0:credValue'))
+            )
+            password = driver.find_element(By.ID, 'loginForm:credentialsContainer:1:sCredValue')
+
+            username.send_keys('dataverseAdmin')
+            password.send_keys('test123')
+            password.send_keys(Keys.RETURN)  # This will simulate pressing Enter
+
+            # Wait for the next page to load and the element to be clickable
+            element = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.btn.btn-default.btn-access.dropdown-toggle'))
+            )
+            element.click()
+
+            # Wait for the "Featured Dataverses" link and click it
+            featured_dataverses_field = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//a[contains(text(), "Featured Dataverses")]'))
+            )
+            featured_dataverses_field.click()
+            time.sleep(2)
+
+            # Wait for the "Add all" button and click it
+            add_all_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[@title="Add all"]'))
+            )
+            add_all_button.click()
+            time.sleep(2)
+
+            # Wait for the "Save Changes" link and click it
+            save_changes_link = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="dataverseForm:j_idt441"]'))
+            )
+
+            save_changes_link.click()
+            time.sleep(2)
+
+            driver.refresh()
+            time.sleep(2)
+
+            # Switch to CeMOS dataverse
+            driver.get(f'{base_url}/loginpage.xhtml?redirectPage=%2Fdataverse.xhtml%3Falias%3DCeMOS')
+            time.sleep(2)
+
+            username = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.ID, 'loginForm:credentialsContainer:0:credValue'))
+            )
+            password = driver.find_element(By.ID, 'loginForm:credentialsContainer:1:sCredValue')
+
+            username.send_keys('dataverseAdmin')
+            password.send_keys('test123')
+            password.send_keys(Keys.RETURN)
+            time.sleep(2)
+            element = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="actionButtonBlock"]/div/div/div[2]/div[2]/button'))
+            )
+            element.click()
+            time.sleep(2)
+
+            # Wait for the "Featured Dataverses" link and click it
+            featured_dataverses_field = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//a[contains(text(), "Featured Dataverses")]'))
+            )
+            featured_dataverses_field.click()
+            time.sleep(2)
+
+            # Wait for the "Add all" button and click it
+            add_all_button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//button[@title="Add all"]'))
+            )
+            add_all_button.click()
+            time.sleep(2)
+
+            # Wait for the "Save Changes" link and click it
+            save_changes_link = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable((By.XPATH, '//*[@id="dataverseForm:j_idt441"]'))
+            )
+            save_changes_link.click()
+            time.sleep(2)
+
+            # Wait for some time to observe the action (optional)
+            time.sleep(2)
+
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+        finally:
+            # Close the browser
+            driver.quit()
+
+        # Update Schema
+        update_schema_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' | bash ./dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, update_schema_command)
+
+        update_schema_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' > /opt/payara/dvinstall/schema_changes.xml"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, update_schema_command)
+
+        # Copy the schema from dataverse to solr
+        solr_pod_name, solr_container_id = self.get_pod_name_by_deployment("solr", self.namespace, "solr")
+        copy_command = f"kubectl cp {self.namespace}/{self.pod_name}:dvinstall/schema.xml -c {self.container_name} ../metadata/exchange/schema.xml"
+        os.system(copy_command)
+        copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/opt/solr-9.3.0/server/solr/collection1/conf/schema.xml -c solr"
+        os.system(copy_command)
+        # Attention this is the right file, the one above is just for all of them to be the same!!!
+        copy_command = f"kubectl cp ../metadata/exchange/schema.xml {self.namespace}/{solr_pod_name}:/var/solr/data/collection1/conf/schema.xml -c solr"
+        os.system(copy_command)
+
+        # Reload solr collection to make
+        reload_collection_command = f"curl \"http://localhost:8983/solr/admin/cores?action=RELOAD&core=collection1\""
+        self.pod_exec(solr_pod_name, "solr", self.namespace, reload_collection_command)
 
 
 deployment_name = "dataverse"
@@ -511,7 +684,7 @@ imagename = "TransparentLogo.svg"
 metadata_file = "optical_measurements.tsv" #"addition_citation.tsv"  #"citation.tsv"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "21d306cf-2a50-4d43-8a87-7556bec11d18"
+api_key = "https://141.19.44.18/"
 persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
 host = "mail.hs-mannheim.de"
 mail = "t.haeussermann@hs-mannheim.de"
@@ -520,7 +693,7 @@ password = "B#7pdwt+nFiuksz5!q5L"
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
-tt.change_logo(imagename)
+# tt.change_logo(imagename)
 # tt.add_custom_metadata(metadata_file)
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
@@ -530,7 +703,10 @@ tt.change_logo(imagename)
 # tt.curl_dataverse(api_key, "KI-Nachwuchs")
 # tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
 # tt.delete_dataset(api_key, persistent_id)
+# tt.delete_dataset("b7a5e97b-e84b-4cbc-ac2e-b77b5a785fdb", "doi:10.12345/EXAMPLE/FV5H3N")
+tt.add_custom_metadata("optical_spectroscopy_imaging_V2.tsv")
+tt.add_custom_metadata("mass_spectrometry_imaging_V2.tsv")
+# tt.setup_hyperspec()
 
-# tt.delete_dataverse(api_key, "")
 
 

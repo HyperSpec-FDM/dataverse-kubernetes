@@ -40,8 +40,8 @@ dataverse = False
 solr = False
 shibboleth = False
 deleter = False
-dataversesetuper = True
-keycloakidp = False
+dataversesetuper = False
+keycloakidp = True
 pushonly = False
 
 # Change working directory
