@@ -7,7 +7,7 @@ COPY docker/shibboleth-k8s/shibboleth.repo /etc/yum.repos.d/shibboleth.repo
 RUN yum -y install httpd mod_ssl shibboleth vim
 
 # Add startup script
-COPY docker/shibboleth/run-httpd.sh /usr/local/bin/run-httpd.sh
+COPY docker/shibboleth-k8s/run-httpd.sh /usr/local/bin/run-httpd.sh
 
 # Add your Shibboleth and Apache configurations here (e.g., shibboleth2.xml, httpd.conf)
 COPY docker/shibboleth-k8s/conf/dataverse.conf /etc/httpd/conf.d/dataverse.conf

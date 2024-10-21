@@ -15,6 +15,11 @@ dockerfileShibboleth = "./docker/shibboleth-k8s/Dockerfile"
 versionShibboleth = "1.0"
 tagShibboleth = "shibboleth:" + versionShibboleth
 
+# Define Apache Dockerfile, Version and Tag
+dockerfileApache = "./docker/apache-k8s/Dockerfile"
+versionApache = "1.0"
+tagApache = "apache:" + versionApache
+
 # Define Deleter Dockerfile, Version and Tag
 dockerfileDeleter = "./docker/deleter-k8s/Dockerfile"
 versionDeleter = "1.0"
@@ -39,9 +44,10 @@ password = "changeme"
 dataverse = False
 solr = False
 shibboleth = False
+apache = True
 deleter = False
 dataversesetuper = False
-keycloakidp = True
+keycloakidp = False
 pushonly = False
 
 # Change working directory
@@ -78,6 +84,10 @@ if shibboleth == True:
     if not pushonly:
         buildImage(dockerfileShibboleth, tagShibboleth)
     pushToRegistry(tagShibboleth, registry)
+if apache == True:
+    if not pushonly:
+        buildImage(dockerfileApache, tagApache)
+    pushToRegistry(tagApache, registry)
 if deleter == True:
     if not pushonly:
         buildImage(dockerfileDeleter, tagDeleter)
