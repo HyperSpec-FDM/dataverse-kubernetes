@@ -1,0 +1,70 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI
+	optical_spectroscopy_imaging		Optical Spectroscopy (Imaging) 	https://dataverse.org/schema/optical_spectroscopy_imaging/
+#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	instrument_osi	Instrument	Instrument		none	0		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		optical_spectroscopy_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	sample_preparation_osi	Sample preparation	Sample preparation		none	1		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		optical_spectroscopy_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	sample_osi	Sample	Sample		none	2		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		optical_spectroscopy_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	equipment_osi	Equipment	choose one of ('Lumos','Hyperion','Spotlight','other')		text	3		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_equipment_osi	Other Equipment	Description of other equipment used.		textbox	4		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	scan_osi	Scan 	Was sample / section scanned prior to analysis for co-registration?		text	5		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging
+	type_osi	Acquisition type	choose one of ('Reflection','Transmission',ATR','other')		text	6		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/dc/terms/isReferencedBy
+	other_type_osi	Other Acquisition type	Description of other acquisition used.		textbox	7		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/dc/terms/isReferencedBy
+	mode_osi	Acquisition mode	choose one of ('Sweep scan','Discret scan', 'Single wavenumber', 'FTIR', 'other')		text	8		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/dc/terms/bibliographicCitation
+	other_mode_osi	Other Acquisition mode	Description of other acquisition mode used.		textbox	9		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/dc/terms/bibliographicCitation
+	minWavenumber_osi	Minimum Wavenumber	Minimum Wavenumber		text	10		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifierScheme
+	maxWavenumber_osi	Maximum Wavenumber	Maximum Wavenumber		text	11		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	spectral_resolution_osi	Spectral resolution	choose one of ('0.5x','1x',2x','4x','8x','other')		text	12		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	other_spectral_resolution_osi	Other Spectral resolution	Description of other spectral resolution used.		textbox	13		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	objective_osi	Objective	choose one of ('4x','15x',20x','other')		text	14		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	other_objective_osi	Other Objective	Description of other objective used.		textbox	15		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	numerical_aperture_osi	Numerical Aperture	choose one of ('0.6', 'other')		text	16		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	other_numerical_aperture_osi	Other Numerical Aperture	Description of other numerical aperture used.		textbox	17		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	pixel_size_osi	Pixel size [µm]	choose one of ('4.25µm','other')		text	18		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	other_pixel_size_osi	Other Pixel size	Description of other pixel size used.		textbox	19		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	samplePreparationNotes_osi	Sample preparation notes	Additional information about the sample preparation		textbox	20		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	sampleSource_osi	Sample Source	The source of sample (animal, clinical, geological)		text	21		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	other_sampleSource_osi	Other Sample Source	Description of other sample source used.		textbox	22		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	multipleSampleTypesInFile_osi	Multiple Sample Types in File	whether the slide contains multipe tissue types (ex. liver and kidney â€¦) 		text	23		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	sampleType_osi	Sample Type	The name of the organ the tissue was taken from (liver, kidney, brain, stomach, intestine, skin lung, colon, abdomen, thoraxwall, peritoneum, pelvis, pancreas). For multiple entries use a comman for separation		text	24		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	condition_osi	Condition	pathological condition: ex. diseased, wildtype, mutant, control, tumor, gist, glioblastoma, â€¦		text	25		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	sampleNotes_osi	Sample Notes	optional - additional info about the tissue		textbox	26		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_osi	optical_spectroscopy_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder
+	equipment_osi	Bruker QCL - Lumos		0
+	equipment_osi	Bruker QCL - Hyperion		1
+	equipment_osi	PerkinElmar - Spotlight		2
+	equipment_osi	other		3
+	scan_osi	yes		0
+	scan_osi	no		1
+	type_osi	Reflection		0
+	type_osi	Transmission		1
+	type_osi	ATR		2
+	type_osi	other		3
+	mode_osi	Sweep scan		0
+	mode_osi	Discret scan		1
+	mode_osi	Single wavenumber		2
+	mode_osi	FTIR		3
+	mode_osi	other		4
+	spectral_resolution_osi	0.5x		0
+	spectral_resolution_osi	1x		1
+	spectral_resolution_osi	2x		2
+	spectral_resolution_osi	4x		3
+	spectral_resolution_osi	8x		4
+	spectral_resolution_osi	other		5
+	objective_osi	4x		0
+	objective_osi	15x		1
+	objective_osi	20x		2
+	objective_osi	other		3
+	numerical_aperture_osi	0.6		0
+	numerical_aperture_osi	other		1
+	pixel_size_osi	4.25 µm		0
+	pixel_size_osi	other		1
+	sampleSource_osi	animal		0
+	sampleSource_osi	human		1
+	sampleSource_osi	cell line		2
+	sampleSource_osi	plant		3
+	sampleSource_osi	multiple		4
+	sampleSource_osi	geological		5
+	sampleSource_osi	microbial		6
+	sampleSource_osi	other		7
+	multipleSampleTypesInFile_osi	yes		0
+	multipleSampleTypesInFile_osi	no		1

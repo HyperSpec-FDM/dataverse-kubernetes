@@ -1,3 +1,4 @@
+import json
 import os
 import csv
 import subprocess
@@ -8,6 +9,12 @@ import time
 import zipfile
 from PIL import Image
 from xml.etree import ElementTree as ET
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from pyDataverse.utils import read_csv_as_dicts
+from pyDataverse.models import Dataset
+from pyDataverse.api import NativeApi, DataAccessApi
+
 class dataverse_setuper():
     def __init__(self, deployment_name, namespace, container_name, url):
         self.deployment_name = deployment_name
@@ -210,6 +217,10 @@ class dataverse_setuper():
 
     def add_custom_metadata(self, metadataFile):
         if self.pod_name:
+            # Create directory if not present to store information for every added storage
+            command = f"mkdir /opt/docroot/metadata"
+            self.pod_exec(self.pod_name, container_name, namespace, command)
+
             # Custom metadata
             metadataFile_path = "../metadata/" + metadataFile
             properties_file = os.path.splitext(os.path.basename(metadataFile))[0] + ".properties"
@@ -369,6 +380,7 @@ class dataverse_setuper():
         script_path = "/opt/payara/scripts/newS3Storage.sh"
 
         # Create variables for jvm-options and enviroment variables
+        # append if needed: f"-Ddataverse.files.{lable}.chunked-encoding=false",
         variables = [
             f"-Ddataverse.files.{lable}.type=s3",
             f"-Ddataverse.files.{lable}.label={lable}",
@@ -382,6 +394,7 @@ class dataverse_setuper():
             f"-Ddataverse.files.{lable}.access-key={accessKey}",
             f"-Ddataverse.files.{lable}.secret-key={secretKey}"
         ]
+        # append if needed: {'name': f'dataverse_files_{lable}_chunked__encoding', 'value': 'false'},
         env_vars = [
             {'name': f'dataverse_files_{lable}_type', 'value': 's3'},
             {'name': f'dataverse_files_{lable}_label', 'value': f'{lable}'},
@@ -479,6 +492,10 @@ class dataverse_setuper():
         save_command = f"echo {mail_command} > /opt/docroot/mail/add_mail.txt"
         self.pod_exec(self.pod_name, self.container_name, self.namespace, save_command)
 
+    def update_solr_index(self):
+        update_schema_command = f"curl 'http://localhost:8080/api/admin/index/solr/schema' | bash ./dvinstall/update-fields.sh /opt/payara/dvinstall/schema.xml"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, update_schema_command)
+
     def setup_shibboleth(self, api_key, persistent_id):
         delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/datasets/:persistentId/destroy/?persistentId={persistent_id}\""
         self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
@@ -497,7 +514,65 @@ class dataverse_setuper():
 
     def curl_dataset(self, api_key, dataset_pid):
         curl_command = f"curl -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/datasets/:persistentId/versions/:draft?persistentId={dataset_pid}\""
+        print(curl_command)
         self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+    def dataset_from_json(self, api_key, filen_name, dataverse_id):
+        # read json and create exchange json from it
+        with open(f"../import/{filen_name}", "r") as file:
+            content = json.load(file)
+        content = content["datasetVersion"]["metadataBlocks"]
+        content = {"datasetVersion": {"metadataBlocks": content}}
+
+        with open(f"{filen_name}_exchange", "w") as file:
+            json.dump(content, file)
+
+        # Copy the dataset exchange json to the container in persistent directory
+        copy_command = f"kubectl cp {filen_name}_exchange {self.namespace}/{self.pod_name}:/opt/payara/{filen_name} -c {self.container_name}"
+        os.system(copy_command)
+
+        # import dataset into dataverse
+        curl_command = f"curl -H \"X-Dataverse-key:{api_key}\" -X POST \"http://localhost:8080/api/dataverses/{dataverse_id}/datasets?doNotValidate=true\" --upload-file {filen_name} -H 'Content-type:application/json'"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # clean up json file
+        clean_command = f"rm {filen_name}"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, clean_command)
+
+    def curl_dataset_metadata(self, api_key, dataverse_id, dataset_pid, format):
+        # curl_command = f"curl -H 'X-Dataverse-key: {api_key}' -X POST \"http://localhost:8080/api/dataverses/{dataverse_id}/datasets/:startmigration\" --upload-file dataset-migrate.jsonld"
+        curl_command = f"curl -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/datasets/:persistentId/metadata?persistentId={dataset_pid}\""
+        curl_command = f"curl -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/datasets/export?exporter={format}&?persistentId={dataset_pid}\""
+        print(curl_command)
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+    def migrate_dataset_from_remote(self, url, api_key, remote_api_key, dataverse_id, dataset_pid):
+        # write json data to dataverse pod
+        curl_command = f"curl --insecure -H \"X-Dataverse-key:{remote_api_key}\" \"{url}/api/datasets/export?exporter=dataverse_json&persistentId={dataset_pid}\" > pid.json"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # import dataset into dataverse
+        curl_command = f"curl -H \"X-Dataverse-key:{api_key}\" -X POST \"http://localhost:8080/api/dataverses/{dataverse_id}/datasets/:import?pid={dataset_pid}&release=yes\" --upload-file pid.json"
+        # "curl -H "X-Dataverse-key:$API_TOKEN" -X POST "$SERVER_URL/api/dataverses/ {$DATAVERSE_ID}/datasets/:import?pid= {$PERSISTENT_IDENTIFIER}&release=yes\" --upload-file pid.json"
+        print(curl_command)
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # clean up json file
+        clean_command = f"rm pid.json"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, clean_command)
+
+    def migrate_dataset_from_file(self, api_key, dataverse_id, dataset_pid, filen_name):
+        # Copy the dataset json to the container in persistent directory
+        copy_command = f"kubectl cp {filen_name} {self.namespace}/{self.pod_name}:/opt/payara/{filen_name} -c {self.container_name}"
+        os.system(copy_command)
+
+        # import dataset into dataverse
+        curl_command = f"curl -H \"X-Dataverse-key:{api_key}\" -X POST \"http://localhost:8080/api/dataverses/{dataverse_id}/datasets/:import?pid={dataset_pid}&release=yes\" --upload-file {filen_name}"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, curl_command)
+
+        # clean up json file
+        clean_command = f"rm {filen_name}"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, clean_command)
 
     def setup_hyperspec(self):
         attributes = ["description", "affiliation", "name", "alias"]
@@ -681,10 +756,9 @@ namespace = "dv-test"  # Replace with the appropriate namespace
 container_name = "dataverse"
 url = "http://192.168.100.11:30000" + "/robots.txt"
 imagename = "TransparentLogo.svg"
-metadata_file = "optical_measurements.tsv" #"addition_citation.tsv"  #"citation.tsv"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "https://141.19.44.18/"
+api_key = "5244c4d4-4c86-4d10-9d40-1c2966f5dd10"
 persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
 host = "mail.hs-mannheim.de"
 mail = "t.haeussermann@hs-mannheim.de"
@@ -698,15 +772,40 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
 # tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+# tt.add_s3_storage("hyperspec-fdm-hopf", "hyperspec-fdm-hopf", "minio_profile_2", "N3vdyv7V7MGdhEFvOZEq", "2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD", "http\:\/\/141.19.124.205\:9000")
+# {"url":"http://141.19.124.205:9001/api/v1/service-account-credentials","accessKey":"N3vdyv7V7MGdhEFvOZEq","secretKey":"2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD","api":"s3v4","path":"auto"}
+
 # tt.add_mail(host, mail, password)
 
 # tt.curl_dataverse(api_key, "KI-Nachwuchs")
 # tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
 # tt.delete_dataset(api_key, persistent_id)
-# tt.delete_dataset("b7a5e97b-e84b-4cbc-ac2e-b77b5a785fdb", "doi:10.12345/EXAMPLE/FV5H3N")
-tt.add_custom_metadata("optical_spectroscopy_imaging_V2.tsv")
-tt.add_custom_metadata("mass_spectrometry_imaging_V2.tsv")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/BBTSA0")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/CWMOUA")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/IQIVKC")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/D0TQ0P")
+
+# time.sleep(30)
 # tt.setup_hyperspec()
+# time.sleep(30)
+tt.update_solr_index()
+time.sleep(30)
+tt.add_custom_metadata("mass_spectrometry_imaging_V4.tsv")
+time.sleep(30)
+tt.add_custom_metadata("optical_spectroscopy_imaging_V4.tsv")
+time.sleep(30)
+tt.add_custom_metadata("sample_information.tsv")
+
+# tt.dataset_from_json(api_key, "Test_Dataset.json", "KI-Nachwuchs")
+# tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline.json", "KI-Nachwuchs")
+# tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline2.json", "KI-Nachwuchs")
+# tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline3.json", "KI-Nachwuchs")
+
+
+# tt.curl_dataverse(api_key, "CeMOS")
+# tt.curl_dataset_metadata(api_key, "KI-Nachwuchs")
+
+tt.update_solr_index()
 
 
 
