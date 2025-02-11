@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: data-copy-pod
+spec:
+  containers:
+  - name: data-copy
+    image: alpine
+    command:
+      - "sh"
+      - "-c"
+      - |
+        # Install rsync (Alpine uses apk package manager)
+        apk add --no-cache rsync
+        rsync -av /mnt/old-pv/ /mnt/new-pv/
+    volumeMounts:
+    - name: old-pv
+      mountPath: /mnt/old-pv  # Mount point for old PV
+    - name: new-pv
+      mountPath: /mnt/new-pv  # Mount point for new PVC
+  volumes:
+  - name: old-pv
+    # PVC bound to the old PV (old StorageClass)
+    persistentVolumeClaim:
+      claimName: old-solr-pvc
+  - name: new-pv
+    persistentVolumeClaim:
+      # PVC bound to the new PV (new StorageClass)
+      claimName: solr
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: old-postgresql-pvc
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 30Gi  # Match the size of the unbound PV
+  volumeName: pvc-0cfd3b45-15c7-4160-90a3-2e8eb1474c78  # Directly reference the unbound PV
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: old-postgresql-pvc
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 30Gi  # Match the size of the unbound PV
+  volumeName: pvc-0cfd3b45-15c7-4160-90a3-2e8eb1474c78  # Directly reference the unbound PV
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: old-solr-pvc
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 60Gi  # Match the size of the unbound PV
+  volumeName: pvc-33a24292-680b-4351-ac7f-44105742efc2  # Directly reference the unbound PV
+

@@ -767,15 +767,16 @@ password = "B#7pdwt+nFiuksz5!q5L"
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
-# tt.change_logo(imagename)
 # tt.add_custom_metadata(metadata_file)
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 # tt.add_s3_storage("hyperspec-fdm-hopf", "hyperspec-fdm-hopf", "minio_profile_2", "N3vdyv7V7MGdhEFvOZEq", "2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD", "http\:\/\/141.19.124.205\:9000")
 # {"url":"http://141.19.124.205:9001/api/v1/service-account-credentials","accessKey":"N3vdyv7V7MGdhEFvOZEq","secretKey":"2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD","api":"s3v4","path":"auto"}
 
-# tt.add_mail(host, mail, password)
+
+tt.change_logo(imagename)
+tt.add_mail(host, mail, password)
+tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
 # tt.curl_dataverse(api_key, "KI-Nachwuchs")
 # tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
@@ -790,11 +791,11 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 # time.sleep(30)
 tt.update_solr_index()
 time.sleep(30)
+# tt.add_custom_metadata("sample_information.tsv")
+# time.sleep(30)
 tt.add_custom_metadata("mass_spectrometry_imaging_V4.tsv")
 time.sleep(30)
 tt.add_custom_metadata("optical_spectroscopy_imaging_V4.tsv")
-time.sleep(30)
-tt.add_custom_metadata("sample_information.tsv")
 
 # tt.dataset_from_json(api_key, "Test_Dataset.json", "KI-Nachwuchs")
 # tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline.json", "KI-Nachwuchs")

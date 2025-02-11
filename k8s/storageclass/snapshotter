@@ -1,0 +1,33 @@
+📌 Step 1: Install CSI Snapshot CRDs (if not already installed)
+Kubernetes needs the CSI snapshot feature enabled. Run the following to check if the necessary CRDs are installed:
+kubectl get volumesnapshotclasses
+
+If no results appear, install the CSI Snapshot CRDs:
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/release-6.2/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+
+Verify the CRDs are installed:
+kubectl get crds | grep snapshot
+
+
+📌 Step 2: Set Up a CSI VolumeSnapshotClass for NFS
+Now, create a CSI VolumeSnapshotClass to define snapshot behavior for your NFS StorageClass.
+Create a file csi-nfs-snapshotclass.yaml:
+
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: csi-nfs-snapshotclass
+driver: nfs.csi.k8s.io
+deletionPolicy: Delete
+
+Apply the file:
+kubectl apply -f csi-nfs-snapshotclass.yaml
+
+Now, check if it's properly created:
+kubectl get volumesnapshotclass
+
+Expected output:
+NAME                     DRIVER           DELETIONPOLICY
+csi-nfs-snapshotclass    nfs.csi.k8s.io   Delete
