@@ -1,0 +1,15 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI												
+	additional_citation		Additional Citation Metadata	https://dataverse.org/schema/citation/
+#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	keywords	Keywords	Key terms that describes an important aspect of the Dataset		text	0		TRUE	TRUE	TRUE	TRUE	TRUE	TRUE		additional_citation
+	dateOfDeletion	Deletion Date	The date when the Dataset is deleted	YYYY-MM-DD	date	1		TRUE	FALSE	FALSE	TRUE	TRUE	FALSE		additional_citation	http://purl.org/dc/terms/dateSubmitted
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder
+	keywords	Material development		0
+	keywords	Biomedicine		1
+	keywords	Optical device technology		2
+	keywords	Biopharma analytical solutions		3
+	keywords	Image Analysis		4
+	keywords	Bioinformatics		5
+	keywords	Data Science		6
+	keywords	Digital Transformation		7
+	keywords	Artificial Intelligence		8
