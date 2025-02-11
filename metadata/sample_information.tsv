@@ -1,5 +1,5 @@
-#metadataBlock	name	dataverseAlias	displayName	blockURI
-	sample_information		Sample Information (Imaging) 	https://dataverse.org/schema/sample_information/
+#metadataBlock	name	dataverseAlias	displayName	blockURI												
+	sample_information		Sample Information (Imaging) 	https://dataverse.org/schema/sample_information/												
 #datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
 	acquisitionType	Acquisition Type	choose one of ('whole tissue', 'TMA', 'Biopsy', 'single cells', '3D cells' or 'other')		text	0		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
 	other_acquisitionType	Other Acquisition Type	Description of other acquisition type used.		textbox	1		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
@@ -17,44 +17,44 @@
 	other_scannerType	Other Scannertype	Description of other Scannertype used.		textbox	13		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/AgentIdentifier
 	scannerDevice	Scanner device 	choose one of ('None', 'Aperio ScanScope Model CS2', 'TissueScout reflecta MF5000 ','other')		text	14		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/AgentIdentifier
 	other_scannerDevice	Other Scanner device 	Description of other Scannertype used.		textbox	15		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/AgentIdentifier
-#controlledVocabulary	DatasetField	Value	identifier	displayOrder
-	acquisitionType	whole tissue		0
-	acquisitionType	TMA		1
-	acquisitionType	Biopsy		2
-	acquisitionType	single cells		3
-	acquisitionType	3D cells		4
-	acquisitionType	other		5
-	surfaceType	ITO		0
-	surfaceType	glass		1
-	surfaceType	metal		2
-	surfaceType	Au		3
-	surfaceType	PEN slide		4
-	surfaceType	other		5
-	fixation	fresh frozen		0
-	fixation	formalin		1
-	fixation	alcohol		2
-	fixation	heat inactivation		3
-	fixation	dehydration		4
-	fixation	paxgene		5
-	fixation	PFA		6
-	fixation	other		7
-	embedding	none		0
-	embedding	OCT		1
-	embedding	CMC		2
-	embedding	gelatin		3
-	embedding	paraffin		4
-	embedding	HPMC-PVP		5
-	embedding	other		6
-	sectioning_device	Cryostat Leica CM 1860UV		0
-	sectioning_device	Microtome Leica RM2235		1
-	sectioning_device	other		2
-	scannerType	none		0
-	scannerType	Slide scanner		1
-	scannerType	confocal		2
-	scannerType	MIR		3
-	scannerType	other		4
-	scannerDevice	none		0
-	scannerDevice	Aperio ScanScope Model CS2		1
-	scannerDevice	TissueScout reflecta MF5000		2
-	scannerDevice	Scanner Cannon CanoScan 8800F		3
-	scannerDevice	other		4
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder												
+	acquisitionType	whole tissue		0												
+	acquisitionType	TMA		1												
+	acquisitionType	Biopsy		2												
+	acquisitionType	single cells		3												
+	acquisitionType	3D cells		4												
+	acquisitionType	other		5												
+	surfaceType	ITO		0												
+	surfaceType	glass		1												
+	surfaceType	metal		2												
+	surfaceType	Au		3												
+	surfaceType	PEN slide		4												
+	surfaceType	other		5												
+	fixation	fresh frozen		0												
+	fixation	formalin		1												
+	fixation	alcohol		2												
+	fixation	heat inactivation		3												
+	fixation	dehydration		4												
+	fixation	paxgene		5												
+	fixation	PFA		6												
+	fixation	other		7												
+	embedding	none		0												
+	embedding	OCT		1												
+	embedding	CMC		2												
+	embedding	gelatin		3												
+	embedding	paraffin		4												
+	embedding	HPMC-PVP		5												
+	embedding	other		6												
+	sectioning_device	Cryostat Leica CM 1860UV		0												
+	sectioning_device	Microtome Leica RM2235		1												
+	sectioning_device	other		2												
+	scannerType	none		0												
+	scannerType	Slide scanner		1												
+	scannerType	confocal		2												
+	scannerType	MIR		3												
+	scannerType	other		4												
+	scannerDevice	none		0												
+	scannerDevice	Aperio ScanScope Model CS2		1												
+	scannerDevice	TissueScout reflecta MF5000		2												
+	scannerDevice	Scanner Cannon CanoScan 8800F		3												
+	scannerDevice	other		4												
