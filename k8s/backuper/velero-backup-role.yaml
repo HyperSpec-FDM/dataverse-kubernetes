@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: velero  # Velero namespace where the backup resource resides
+  name: velero-backup-role
+rules:
+- apiGroups: ["velero.io"]
+  resources: ["backups", "deletebackuprequests"]
+  verbs: ["create", "get", "list", "delete"]

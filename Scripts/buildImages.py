@@ -20,20 +20,25 @@ dockerfileApache = "./docker/apache-k8s/Dockerfile"
 versionApache = "1.0"
 tagApache = "apache:" + versionApache
 
+# Define keycloak-idp Dockerfile, Version and Tag
+dockerfileKeycloakIdP = "./docker/keycloak-idp-k8s/Dockerfile"
+versionKeycloakIdP = "1.0"
+tagKeycloakIdP = "keycloak-idp-k8s:" + versionKeycloakIdP
+
 # Define Deleter Dockerfile, Version and Tag
 dockerfileDeleter = "./docker/deleter-k8s/Dockerfile"
 versionDeleter = "1.0"
 tagDeleter = "dataverse_deleter:" + versionDeleter
 
+# Define Deleter Dockerfile, Version and Tag
+dockerfileBackuper = "./docker/backuper/Dockerfile"
+versionBackuper = "1.0"
+tagBackuper = "dataverse_backuper:" + versionDeleter
+
 # Define Dataverse Setuper Dockerfile, Version and Tag
 dockerfileDataverseSetuper = "./docker/dataverse-setuper-k8s/Dockerfile"
 versionDataverseSetuper = "1.0"
 tagDataverseSetuper = "dataverse-setuper-k8s:" + versionDataverseSetuper
-
-# Define keycloak-idp Dockerfile, Version and Tag
-dockerfileKeycloakIdP = "./docker/keycloak-idp-k8s/Dockerfile"
-versionKeycloakIdP = "1.0"
-tagKeycloakIdP = "keycloak-idp-k8s:" + versionKeycloakIdP
 
 # Define privat registry endpoint
 registry = "192.168.100.11:31000"
@@ -44,10 +49,11 @@ password = "changeme"
 dataverse = False
 solr = False
 shibboleth = False
-apache = True
-deleter = False
-dataversesetuper = False
+apache = False
 keycloakidp = False
+deleter = False
+backuper = True
+dataversesetuper = False
 pushonly = False
 
 # Change working directory
@@ -88,17 +94,21 @@ if apache == True:
     if not pushonly:
         buildImage(dockerfileApache, tagApache)
     pushToRegistry(tagApache, registry)
-if deleter == True:
-    if not pushonly:
-        buildImage(dockerfileDeleter, tagDeleter)
-    pushToRegistry(tagDeleter, registry)
-if dataversesetuper == True:
-    if not pushonly:
-        buildImage(dockerfileDataverseSetuper, tagDataverseSetuper)
-    pushToRegistry(tagDataverseSetuper, registry)
 if keycloakidp == True:
     if not pushonly:
         buildImage(dockerfileKeycloakIdP, tagKeycloakIdP)
     pushToRegistry(tagKeycloakIdP, registry)
+if deleter == True:
+    if not pushonly:
+        buildImage(dockerfileDeleter, tagDeleter)
+    pushToRegistry(tagDeleter, registry)
+if backuper == True:
+    if not pushonly:
+        buildImage(dockerfileBackuper, tagBackuper)
+    pushToRegistry(tagBackuper, registry)
+if dataversesetuper == True:
+    if not pushonly:
+        buildImage(dockerfileDataverseSetuper, tagDataverseSetuper)
+    pushToRegistry(tagDataverseSetuper, registry)
 
 

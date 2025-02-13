@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: velero-backup-job
+spec:
+  schedule: "0 2 * * *"  # Runs every day at 2 AM
+#  schedule: "*/2 * * * *" #Runs every two minutes for testing
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: velero-backup-sa
+          restartPolicy: OnFailure
+          containers:
+          - name: velero-backup
+            image: 192.168.100.11:31000/dataverse_backuper:1.0
+            imagePullPolicy: Always
+            env:
+              - name: BACKUP_COUNT_TO_KEEP
+                value: "4"  # Set the number of backups you want to keep
+          imagePullSecrets:
+          - name: registry-auth

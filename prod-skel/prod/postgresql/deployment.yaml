@@ -20,6 +20,8 @@ spec:
   revisionHistoryLimit: 1
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: postgresql
       labels:
         app.kubernetes.io/name: postgresql
         app.kubernetes.io/part-of: dataverse

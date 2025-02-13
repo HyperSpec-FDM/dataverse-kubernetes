@@ -20,6 +20,8 @@ spec:
   revisionHistoryLimit: 1
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: "solr"
       labels:
         app.kubernetes.io/name: solr
         app.kubernetes.io/part-of: dataverse

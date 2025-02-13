@@ -19,6 +19,8 @@ spec:
   revisionHistoryLimit: 1
   template:
     metadata:
+      annotations:
+        backup.velero.io/backup-volumes: "docroot,files"
       labels:
         app.kubernetes.io/name: dataverse
         app.kubernetes.io/part-of: dataverse

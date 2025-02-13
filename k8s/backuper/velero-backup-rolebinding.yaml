@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: velero-backup-rolebinding
+  namespace: velero
+subjects:
+- kind: ServiceAccount
+  name: velero-backup-sa
+  namespace: dv-test  # Service account is in the dv-test namespace
+roleRef:
+  kind: Role
+  name: velero-backup-role
+  apiGroup: rbac.authorization.k8s.io
