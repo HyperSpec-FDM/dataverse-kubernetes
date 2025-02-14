@@ -80,9 +80,11 @@ echo "create-jdbc-connection-pool --restype=javax.sql.DataSource --datasourcecla
 echo 'set resources.jdbc-connection-pool.dvnDbPool.property.password=${ALIAS=db_password_alias}' >> ${DV_POSTBOOT}
 echo "create-jdbc-resource --connectionpoolid=dvnDbPool jdbc/VDCNetDS" >> ${DV_POSTBOOT}
 
+
+# Deprecated from V6.1
 # JavaMail
-echo "INFO: Defining JavaMail."
-echo "create-javamail-resource --mailhost=${MAIL_SERVER} --mailuser=dataversenotify --fromaddress=${MAIL_FROMADDRESS} mail/notifyMailSession" >> ${DV_POSTBOOT}
+#echo "INFO: Defining JavaMail."
+#echo "create-javamail-resource --mailhost ${DATAVERSE_MAIL_MTA_HOST} --mailuser ${DATAVERSE_MAIL_MTA_USER} --fromaddress ${MAIL_FROMADDRESS} --property mail.smtp.auth=true:mail.smtp.password=${DATAVERSE_MAIL_MTA_PASSWORD}:mail.smtp.port=${DATAVERSE_MAIL_MTA_PORT}:mail.smtp.socketFactory.port=465:mail.smtp.socketFactory.fallback=false:mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory mail/notifyMailSession" >> ${DV_POSTBOOT}
 
 echo "INFO: defining miscellaneous configuration options."
 

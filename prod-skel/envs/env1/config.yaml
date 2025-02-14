@@ -30,15 +30,14 @@ data:
   MAIL_FROMADDRESS: t.haeussermann@hs-mannheim.de
   DATAVERSE_MAIL_SYSTEM_EMAIL: t.haeussermann@hs-mannheim.de
   DATAVERSE_MAIL_SUPPORT_EMAI: t.haeussermann@hs-mannheim.de
-  DATAVERSE_MAIL_DEBUG: "true"
   MAIL_SERVER: mail.hs-mannheim.de
-  dataverse_mail_system-email: HyperSpecFDM <t.haeussermann@hs-mannheim.de>
-  dataverse_mail_mta_host: mail.hs-mannheim.de
-  dataverse_mail_mta_port: "465"
-  dataverse_mail_mta_ssl_enable: "true"
-  dataverse_mail_mta_auth: "true"
-  dataverse_mail_mta_user: t.haeussermann@hs-mannheim.de
-#  dataverse_mail_mta_password: "EUr,G-GMWQdNnX#,P3+n"
+
+  DATAVERSE_MAIL_SYSTEM__EMAIL: HyperSpecFDM <t.haeussermann@hs-mannheim.de>
+  DATAVERSE_MAIL_MTA_HOST: mail.hs-mannheim.de
+  DATAVERSE_MAIL_MTA_PORT: "465"
+  DATAVERSE_MAIL_MTA_SSL_ENABLED: "true"
+  DATAVERSE_MAIL_MTA_AUTH: "true"
+  DATAVERSE_MAIL_MTA_USER: t.haeussermann@hs-mannheim.de
 
   ### DOI SETTINGS OLD
 #  db_DoiProvider: FAKE

@@ -14,12 +14,7 @@ os.system('kubectl get secret registry-auth -n docker-registry -o yaml | sed s/"
 os.system("kubectl apply -f prod-skel/secrets/secrets.yaml")
 os.system("kubectl apply -k prod-skel/envs/env1")
 # os.system("kubectl apply -f prod-skel/prod/mailcatcher.yaml")
-os.system("kubectl apply -f k8s/shibboleth/deployment.yaml")
-os.system("kubectl apply -f k8s/shibboleth/svc.yaml")
-# os.system("kubectl apply -f k8s/dataverse-setuper/svc-acc.yaml")
-# os.system("kubectl apply -f k8s/dataverse-setuper/svc.yaml")
-# os.system("kubectl apply -f k8s/dataverse-setuper/deployment.yaml")
-os.system("kubectl apply -f k8s/dataverse-setuper/svc.yaml")
+os.system("kubectl apply -f k8s/backuper/")
 os.system("kubectl apply -f k8s/keycloak-idp/deployment.yaml")
 os.system("kubectl apply -f k8s/keycloak-idp/svc.yaml")
 

@@ -2,7 +2,7 @@ import os
 
 # Define Dataverse Dockerfile, Version and Tag
 dockerfileDataverse = "./docker/dataverse-k8s/payara/Dockerfile"
-versionDataverse = "6.2"
+versionDataverse = "6.5"
 tagDataverse = "iqss/dataverse-k8s:" + versionDataverse
 
 # Define Solr Dockerfile, Version and Tag
@@ -46,13 +46,13 @@ user = "tim"
 password = "changeme"
 
 # Define which image to build and push
-dataverse = False
+dataverse = True
 solr = False
 shibboleth = False
 apache = False
 keycloakidp = False
 deleter = False
-backuper = True
+backuper = False
 dataversesetuper = False
 pushonly = False
 

@@ -488,6 +488,7 @@ class dataverse_setuper():
         command = f"mkdir /opt/docroot/mail/"
         self.pod_exec(self.pod_name, self.container_name, self.namespace, command)
         mail_command = f"asadmin --user=admin --passwordfile=/secrets/asadmin/passwordFile create-javamail-resource --mailhost {host} --mailuser {mail} --fromaddress {mail} --property mail.smtp.auth=true:mail.smtp.password={password}:mail.smtp.port=465:mail.smtp.socketFactory.port=465:mail.smtp.socketFactory.fallback=false:mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory mail/notifyMailSession"
+        print(mail_command)
         self.pod_exec(self.pod_name, self.container_name, self.namespace, mail_command)
         save_command = f"echo {mail_command} > /opt/docroot/mail/add_mail.txt"
         self.pod_exec(self.pod_name, self.container_name, self.namespace, save_command)
@@ -774,9 +775,9 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 # {"url":"http://141.19.124.205:9001/api/v1/service-account-credentials","accessKey":"N3vdyv7V7MGdhEFvOZEq","secretKey":"2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD","api":"s3v4","path":"auto"}
 
 
-tt.change_logo(imagename)
+# tt.change_logo(imagename)
 tt.add_mail(host, mail, password)
-tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
 # tt.curl_dataverse(api_key, "KI-Nachwuchs")
 # tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
@@ -789,13 +790,13 @@ tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byf
 # time.sleep(30)
 # tt.setup_hyperspec()
 # time.sleep(30)
-tt.update_solr_index()
-time.sleep(30)
+# tt.update_solr_index()
+# time.sleep(30)
 # tt.add_custom_metadata("sample_information.tsv")
 # time.sleep(30)
-tt.add_custom_metadata("mass_spectrometry_imaging_V4.tsv")
-time.sleep(30)
-tt.add_custom_metadata("optical_spectroscopy_imaging_V4.tsv")
+# tt.add_custom_metadata("mass_spectrometry_imaging_V4.tsv")
+# time.sleep(30)
+# tt.add_custom_metadata("optical_spectroscopy_imaging_V4.tsv")
 
 # tt.dataset_from_json(api_key, "Test_Dataset.json", "KI-Nachwuchs")
 # tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline.json", "KI-Nachwuchs")
