@@ -4,7 +4,7 @@
 # You may obtain a copy of the License at
 # http://www.apache.org/licenses/LICENSE-2.0
 
-FROM payara/server-full:6.2023.9-jdk17
+FROM payara/server-full:6.2024.6-jdk17
 # must use payara/server-full:6.2023.9-jdk17 instead of payara/server-full:6.2023.8-jdk17
 # due to fix for payara/Payara#6337
 LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"

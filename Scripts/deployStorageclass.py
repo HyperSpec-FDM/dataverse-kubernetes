@@ -17,4 +17,7 @@ os.system("""helm install csi-driver-nfs csi-driver-nfs/csi-driver-nfs \
               --set storageClass.parameters.server=141.19.44.16 \
               --set storageClass.parameters.share=/export/dataverse-pvs
             """)
-os.system("kubectl apply -f k8s/storageclass/storageclass.yaml")
+# os.system("kubectl apply -f ../k8s/storageclass/storageclass.yaml")
+
+
+os.system("kubectl apply -f ../prod-skel/storageclass.yaml")

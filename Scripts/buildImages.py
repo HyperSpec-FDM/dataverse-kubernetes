@@ -65,13 +65,13 @@ def buildImage(dockerfile, tag):
     os.system(buildCommand)
 
 def pushToRegistry(imageTag, registry):
-    loginCommand = f"docker login -u {user} -p {password} 192.168.100.11:31000"
-    os.system(loginCommand)
+    # loginCommand = f"docker login -u {user} -p {password} 192.168.100.11:31000"
+    # os.system(loginCommand)
     tagCommand = f"docker tag {imageTag} {registry}/{imageTag}"
     os.system(tagCommand)
-    pushCommand =f"docker push {registry}/{imageTag}"
-    print(pushCommand)
-    os.system(pushCommand)
+    # pushCommand =f"docker push {registry}/{imageTag}"
+    # print(pushCommand)
+    # os.system(pushCommand)
 
 # Clean up system to prevent full storage
 cleancommand = "docker system prune -f"

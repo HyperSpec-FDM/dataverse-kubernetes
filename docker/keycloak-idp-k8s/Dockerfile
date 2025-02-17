@@ -8,6 +8,13 @@ COPY /docker/keycloak-idp-k8s/conf/client.json  /opt/keycloak/data/client.json
 COPY /docker/keycloak-idp-k8s/bin/configure_keycloak.sh /opt/keycloak/configure_keycloak.sh
 COPY /docker/keycloak-idp-k8s/bin/start_up.sh /opt/keycloak/start_up.sh
 
+# Make scripts executable
+USER root
+RUN chmod +x /opt/keycloak/configure_keycloak.sh
+RUN chmod +x /opt/keycloak/start_up.sh
+RUN sed -i -e 's/\r$//' /opt/keycloak/configure_keycloak.sh
+RUN sed -i -e 's/\r$//' /opt/keycloak/start_up.sh
+
 # Set the working directory
 WORKDIR /opt/keycloak
 

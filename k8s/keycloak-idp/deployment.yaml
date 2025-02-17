@@ -18,10 +18,12 @@ spec:
       containers:
         - name: keycloak-idp
           image: 192.168.100.11:31000/keycloak-idp-k8s:1.0
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
             - containerPort: 8443
+#          command: [ "/bin/bash", "-c", "--" ]
+#          args: [ "while true; do sleep 3600; done;" ]
           env:
             - name: KEYCLOAK_USER
               value: admin
