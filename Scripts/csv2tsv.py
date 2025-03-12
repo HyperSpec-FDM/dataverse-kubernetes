@@ -38,6 +38,9 @@ def convert_to_tsv(input_file):
     print(f'Converted {input_file} to {output_file}')
 
 
-input_file = "../metadata/mass_spectrometry_imaging_V4.xlsx"
+input_file = "../metadata/mass_spectrometry_imaging_V5.xlsx"
 convert_to_tsv(input_file)
+
+# input_file = "../metadata/optical_spectroscopy_imaging_V4.xlsx"
+# convert_to_tsv(input_file)
 

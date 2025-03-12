@@ -46,11 +46,11 @@ user = "tim"
 password = "changeme"
 
 # Define which image to build and push
-dataverse = True
+dataverse = False
 solr = False
 shibboleth = False
 apache = False
-keycloakidp = False
+keycloakidp = True
 deleter = False
 backuper = False
 dataversesetuper = False
@@ -65,13 +65,13 @@ def buildImage(dockerfile, tag):
     os.system(buildCommand)
 
 def pushToRegistry(imageTag, registry):
-    # loginCommand = f"docker login -u {user} -p {password} 192.168.100.11:31000"
-    # os.system(loginCommand)
+    loginCommand = f"docker login -u {user} -p {password} 192.168.100.11:31000"
+    os.system(loginCommand)
     tagCommand = f"docker tag {imageTag} {registry}/{imageTag}"
     os.system(tagCommand)
-    # pushCommand =f"docker push {registry}/{imageTag}"
+    pushCommand =f"docker push {registry}/{imageTag}"
     # print(pushCommand)
-    # os.system(pushCommand)
+    os.system(pushCommand)
 
 # Clean up system to prevent full storage
 cleancommand = "docker system prune -f"

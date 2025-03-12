@@ -8,8 +8,9 @@ spec:
     spec:
       containers:
         - name: dataverse
-          resources:
-            requests:
-              memory: "4Gi"
-            limits:
-              memory: "8Gi"
+# removed for testing
+#          resources:
+#            requests:
+#              memory: "4Gi"
+#            limits:
+#              memory: "8Gi"

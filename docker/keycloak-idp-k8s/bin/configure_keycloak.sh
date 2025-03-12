@@ -11,7 +11,6 @@ done
 
 # Disable ssl
 /opt/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE
-#/opt/keycloak/bin/kcadm.sh update realms/master -s sslRequired=external
 
 # Import client scope
 /opt/keycloak/bin/kcadm.sh create clients -r master -f /opt/keycloak/data/client.json

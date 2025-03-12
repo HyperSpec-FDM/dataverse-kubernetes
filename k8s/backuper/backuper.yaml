@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: velero-backup-job
 spec:
-  schedule: "0 2 * * *"  # Runs every day at 2 AM
+  schedule: "0 1 * * *"  # Runs every day at 1 AM
 #  schedule: "*/2 * * * *" #Runs every two minutes for testing
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 1

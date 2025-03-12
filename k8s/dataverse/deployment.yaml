@@ -31,11 +31,12 @@ spec:
         - name: dataverse
           image: 192.168.100.11:31000/iqss/dataverse-k8s:6.5
           imagePullPolicy: Always
-          resources:
-            requests:
-              memory: "2Gi"
-            limits:
-              memory: "4Gi"
+# removed for testing
+#          resources:
+#            requests:
+#              memory: "2Gi"
+#            limits:
+#              memory: "4Gi"
           ports:
             - containerPort: 8080
             - containerPort: 4848

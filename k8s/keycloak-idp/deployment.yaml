@@ -22,39 +22,25 @@ spec:
           ports:
             - containerPort: 8080
             - containerPort: 8443
-#          command: [ "/bin/bash", "-c", "--" ]
-#          args: [ "while true; do sleep 3600; done;" ]
           env:
             - name: KEYCLOAK_USER
               value: admin
             - name: KEYCLOAK_PASSWORD
               value: admin
-            - name: KC_PROXY
-              value: edge
-            - name: KEYCLOAK_HOSTNAME
-              value: 141.19.44.18:8443
-            - name: KC_HOSTNAME_URL
-              value: https://141.19.44.18:8443
-            - name: KC_HOSTNAME_ADMIN_URL
-              value: https://141.19.44.18:8443
-            - name: PROXY_ADDRESS_FORWARDING
-              value: "true"
             - name: KEYCLOAK_ADMIN
               value: admin
             - name: KEYCLOAK_ADMIN_PASSWORD
               value: admin
             - name: KC_HOSTNAME_STRICT
               value: "false"
-            - name: KC_HOSTNAME_STRICT_HTTPS
-              value: "false"
-            - name: KC_HOSTNAME_STRICT_BACKCHANNEL
-              value: "true"
-#            - name: KC_HTTP_ENABLED
-#              value: "true"
             - name: KC_HOSTNAME_DEBUG
               value: "true"
             - name: KC_LOG_LEVEL
               value: debug
+            - name: KC_PROXY_HEADERS
+              value: "xforwarded"
+            - name: KC_HTTP_ENABLED
+              value: "true"
       imagePullSecrets:
         - name: registry-auth
 

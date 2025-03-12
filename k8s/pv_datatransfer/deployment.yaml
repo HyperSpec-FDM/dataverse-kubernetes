@@ -22,11 +22,10 @@ spec:
   - name: old-pv
     # PVC bound to the old PV (old StorageClass)
     persistentVolumeClaim:
-      claimName: old-solr-pvc
+      claimName: old-postgresql-pvc
   - name: new-pv
     persistentVolumeClaim:
-      # PVC bound to the new PV (new StorageClass)
-      claimName: solr
+      claimName: postgresql
 
 ---
 apiVersion: v1
@@ -46,15 +45,15 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: old-postgresql-pvc
+  name: postgresql
 spec:
-  storageClassName: nfs-client
+  storageClassName: csi-nfs
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 30Gi  # Match the size of the unbound PV
-  volumeName: pvc-0cfd3b45-15c7-4160-90a3-2e8eb1474c78  # Directly reference the unbound PV
+  volumeName: pvc-cbd8cbea-5c21-4b5c-983c-16176670a8ad  # Directly reference the unbound PV
 
 ---
 apiVersion: v1
@@ -69,4 +68,18 @@ spec:
     requests:
       storage: 60Gi  # Match the size of the unbound PV
   volumeName: pvc-33a24292-680b-4351-ac7f-44105742efc2  # Directly reference the unbound PV
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: solr
+spec:
+  storageClassName: csi-nfs
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 60Gi  # Match the size of the unbound PV
+  volumeName: pvc-86d16101-c709-441e-9d65-b52dccc34f78  # Directly reference the unbound PV
 

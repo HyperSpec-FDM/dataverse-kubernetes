@@ -90,7 +90,7 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-# Enable keycloak in dataver
+# Enable keycloak in dataverse
 1. Add to Dataverse Dockerfile:
 ```
 COPY docker/dataverse-k8s/payara/oidc-provider.crt /tmp/my-oidc-provider.crt

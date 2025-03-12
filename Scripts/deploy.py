@@ -16,6 +16,9 @@ os.system("kubectl apply -k prod-skel/envs/env1")
 os.system("kubectl apply -f k8s/backuper/")
 os.system("kubectl apply -f k8s/keycloak-idp/deployment.yaml")
 os.system("kubectl apply -f k8s/keycloak-idp/svc.yaml")
+# os.system("kubectl apply -f k8s/apache/")
+os.system("kubectl apply -f k8s/backuper/")
+os.system("kubectl apply -f k8s/dataverse-setuper/")
 
 # os.system("kubectl create -f k8s/dataverse/jobs/bootstrap.yaml")
 

@@ -12,8 +12,8 @@ metadata:
     app.kubernetes.io/managed-by: kubectl
 data:
   ### GENERAL SETTINGS
-  dataverse_fqdn: "141.19.44.18"
-  dataverse_siteUrl: "https://141.19.44.18"
+  dataverse_fqdn: "141.19.44.18:8080"
+  dataverse_siteUrl: "http://141.19.44.18:8080"
 
   ### database
   POSTGRES_ONLY: "true"

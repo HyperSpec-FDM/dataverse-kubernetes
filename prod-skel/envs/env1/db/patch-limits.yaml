@@ -8,10 +8,11 @@ spec:
     spec:
       containers:
         - name: postgresql
-          resources:
-            requests:
-              memory: "1Gi"
-              cpu: "0.5"
-            limits:
-              memory: "4Gi"
-              cpu: "2"
+# removed for testing
+#          resources:
+#            requests:
+#              memory: "1Gi"
+#              cpu: "0.5"
+#            limits:
+#              memory: "4Gi"
+#              cpu: "2"

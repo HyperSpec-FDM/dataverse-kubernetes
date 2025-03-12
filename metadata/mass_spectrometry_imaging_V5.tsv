@@ -1,0 +1,160 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI	Unnamed: 5	Unnamed: 6	Unnamed: 7	Unnamed: 8	Unnamed: 9	Unnamed: 10	Unnamed: 11	Unnamed: 12	Unnamed: 13	Unnamed: 14	Unnamed: 15	Unnamed: 16
+	mass_spectrometry_imaging		Mass Spectrometry (Imaging)	https://dataverse.org/schema/mass_spectrometry_imaging/												
+#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	instrument_msi	Instrument			none	0		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	sample_preparation_msi	Sample preparation			none	1		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	sample_msi	Sample			none	2		FALSE	FALSE	FALSE	FALSE	TRUE	FALSE		mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	ionization_msi	Ionization	choose one of ('MALDI', 'ESI', 'DESI', 'SIMS' or 'Other')		text	3		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_ionization_msi	Other ionization	Description of other ionization used.		textbox	4		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	analyzer_msi	Analyzer	Mass analyzer used (see drop down menu)		text	5		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_analyzer_msi	Other analyzer	Description of other analyzer used.		textbox	6		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	polarity_msi	Polarity	Polarity (see drop down menu)		text	7		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	equipment_msi	Equipment	choose one of ('autoflex', 'ultraflex', 'rapiflex', 'solarix','other')		text	8		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_equipment_msi	Other equipment	Description of other equipment used.		textbox	9		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	dataType_msi	Data Type	choose one of ('centroid', 'continuous', '%reduced', 'other')		text	10		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_dataType_msi	Other data type	Description of other data type used.		textbox	11		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	data_reduction_msi	Data reduction	choose one of ('yes', 'no')		text	12		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	data_reduction_value_msi	%Reduction	Value of %Reduction.		textbox	13		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	analyte_msi	Analyte	analytes being imaged (small molecules, peptides, proteins, glycans, other)		text	14		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_analyte_msi	Other Analyte	Description of other Analyte used.		textbox	15		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	lowerMassRange_msi	Lower Mass Range	Minimum m/z for the acquired mass range.		text	16		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	upperMassRange_msi	Upper Mass Range	Maximum m/z for the acquired mass range.		text	17		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	calType_msi	Calibration Type	Type of calibration employed (external, internal, lock mass).		text	18		TRUE	TRUE	TRUE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_calType_msi	Other Calibration Type	Description of other Calibration Type used.		textbox	19		TRUE	FALSE	TRUE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	calStandard_msi	Calibration Standard	Calibration standard or standard mixture(s) used.		text	20		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	laserSpotSize_msi	Laser spot size	Laser spot size, or measured area (µm).		text	21		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	laserPower_msi	Laser Power	Laser power attenuation in range of 0 to 100 %		text	22		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	laserRepRate_msi	Laser Repetition Rate	Laser repetition rate (kHz)		text	23		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	rasterStepSize_msi	 Raster step size	The distance between laser spots (µm).		text	24		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	smoothing_msi	Smoothing	choose one of ('Sawitzky-Golay', 'Moving Average', 'Other', 'none')		text	25		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_smoothing_msi	Other Smoothing	Description of other Smoothing used.		textbox	26		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	normalization_msi	Normalization 	choose one of ('TIC', 'RMS', 'Median', 'Peak (please indicate mz and tolerance)', 'Other', 'none')		text	27		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	peak_normalization_msi	Peak Normalization 	Please indicate mz and tolerance		textbox	28		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_normalization_msi	Other Normalization 	Description of other Normalization used.		textbox	29		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	peakDetection_msi	Peak Detection (only for centroid data)	choose one of ('Vendor (Meaning: done in instrument)', 'Mean-Spectrum-based', 'Pixel-wise', 'Other', 'none')		text	30		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_peakDetection_msi	Other Peak Detection	Description of other Peak Detection used.		textbox	31		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_preprocessing_msi	Other Preprocessing	Description of other Preprocessing used.		textbox	32		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	instrument_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	tissue_treatment_msi	Tissue treatment 	choose one of ('yes', 'no')		text	33		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	wash_msi	Wash 	Wash or solution treatment for section(s) and/or surface(s) (fixation, re-hydration).		text	34		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	on_tissue_digestion_msi	On-tissue digestion	choose one of ('yes', 'no', 'trypsin', 'PNGase', 'other')		text	35		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_on_tissue_digestion_msi	Other on-tissue digestion 	Description of other on-tissue digestion used.		textbox	36		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	incubation_msi	Incubation	choose one of ('yes', 'no')		text	37		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	incubation_description_msi	Incubation description 	Description of incubation used.		textbox	38		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	staining_msi	Staining 	choose one of ('yes', 'no')		text	39		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	staining_antibodies_msi	Staining antibodies	Selected antibodies.		textbox	40		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	derivatization_msi	Derivatization 	choose one of ('yes', 'no')		text	41		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	derivatization_reagent_msi	Derivatization reagent	Used derivatization reagent.		textbox	42		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	matrixType_msi	Matrix Type 	What compound or material was used to mediate ionization (2.5-DHB, DAN, THAP, HCCA, CLCCA, SDHB, DHAP, 9AA, other)?		text	43		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_matrixType_msi	Other Matrix Type 	Description of other Matrix Type used.		textbox	44		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	matrixInstrument_msi	Matrix Instrument	Instrument used for matrix preparation (manual sprayer, ImagePrep, sublimation chamber, iMatrixSpray, TM-sprayer, sunChrome, M3, M5, other).		text	45		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_matrixInstrument_msi	Other Matrix Instrument	Description of other Matrix Instrument used.		textbox	46		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	samplePreparationNotes_msi	Sample preparation notes	Additional information about the sample preparation		textbox	47		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_preparation_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/ResourceIdentifier
+	sampleSource_msi	Sample Source	The source of sample (animal, clinical, geological)		text	48		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	other_sampleSource_msi	Other Sample Source	Description of other Sample Source used.		textbox	49		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	multipleSampleTypesInFile_msi	Multiple Sample Types in File	whether the slide contains multipe tissue types (ex. liver and kidney â€¦) 		text	50		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE	sample_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	sampleType_msi	Sample Type	The name of the organ the tissue was taken from (liver, kidney, brain, stomach, intestine, skin lung, colon, abdomen, thoraxwall, peritoneum, pelvis, pancreas). For multiple entries use a comman for separation		text	51		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	condition_msi	Condition	pathological condition: ex. diseased, wildtype, mutant, control, tumor, gist, glioblastoma, â€¦		text	52		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+	sampleNotes_msi	Sample Notes	optional - additional info about the tissue		textbox	53		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	sample_msi	mass_spectrometry_imaging	http://purl.org/spar/datacite/AgentIdentifier
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder												
+	ionization_msi	MALDI		0												
+	ionization_msi	ESI		1												
+	ionization_msi	DESI		2												
+	ionization_msi	SIMS		3												
+	ionization_msi	Other		4												
+	analyzer_msi	ToF reflector		0												
+	analyzer_msi	ToF linear		1												
+	analyzer_msi	Q-ToF		2												
+	analyzer_msi	LTQ		3												
+	analyzer_msi	Ion Trap		4												
+	analyzer_msi	Orbitrap		5												
+	analyzer_msi	FTICR		6												
+	analyzer_msi	other		7												
+	polarity_msi	positive		0												
+	polarity_msi	negative		1												
+	equipment_msi	Bruker - autoflex		0												
+	equipment_msi	Bruker - ultraflex		1												
+	equipment_msi	Bruker - rapiflex		2												
+	equipment_msi	Bruker - solarix		3												
+	equipment_msi	Bruker -  timsTOFfleX		4												
+	equipment_msi	Bruker - timsTOFpro		5												
+	equipment_msi	Bruker - NeofleX		6												
+	equipment_msi	other		7												
+	dataType_msi	centroid		0												
+	dataType_msi	continuous		1												
+	dataType_msi	%reduced		2												
+	dataType_msi	other		3												
+	data_reduction_msi	yes		0												
+	data_reduction_msi	no		1												
+	smoothing_msi	Sawitzky-Golay		0												
+	smoothing_msi	Moving Average		1												
+	smoothing_msi	Other		2												
+	smoothing_msi	none		3												
+	normalization_msi	TIC		0												
+	normalization_msi	RMS		1												
+	normalization_msi	Median		2												
+	normalization_msi	Peak (please indicate mz and tolerance)		3												
+	normalization_msi	Other		4												
+	normalization_msi	none		5												
+	peakDetection_msi	Vendor (Meaning: done in instrument)		0												
+	peakDetection_msi	Mean-Spectrum-based		1												
+	peakDetection_msi	Pixel-wise		2												
+	peakDetection_msi	Other		3												
+	peakDetection_msi	none		4												
+	tissue_treatment_msi	yes		0												
+	tissue_treatment_msi	no		1												
+	on_tissue_digestion_msi	yes		0												
+	on_tissue_digestion_msi	no		1												
+	on_tissue_digestion_msi	trypsin		2												
+	on_tissue_digestion_msi	PNGase		3												
+	on_tissue_digestion_msi	other		4												
+	incubation_msi	yes		0												
+	incubation_msi	no		1												
+	staining_msi	yes		0												
+	staining_msi	no		1												
+	derivatization_msi	yes		0												
+	derivatization_msi	no		1												
+	analyte_msi	small molecules		0												
+	analyte_msi	peptides		1												
+	analyte_msi	proteins		2												
+	analyte_msi	glycans		3												
+	analyte_msi	other		4												
+	calType_msi	none		0												
+	calType_msi	external		1												
+	calType_msi	internal		2												
+	calType_msi	lock mass		3												
+	calType_msi	online		4												
+	calType_msi	other		5												
+	matrixType_msi	2.5-DHB		0												
+	matrixType_msi	DAN		1												
+	matrixType_msi	THAP		2												
+	matrixType_msi	HCCA		3												
+	matrixType_msi	CLCCA		4												
+	matrixType_msi	SDHB		5												
+	matrixType_msi	DHAP		6												
+	matrixType_msi	9AA		7												
+	matrixType_msi	SA		8												
+	matrixType_msi	BNDM		9												
+	matrixType_msi	DMCA		10												
+	matrixType_msi	Norharmane		11												
+	matrixType_msi	ZSA		12												
+	matrixType_msi	other		13												
+	matrixInstrument_msi	manual sprayer		0												
+	matrixInstrument_msi	ImagePrep		1												
+	matrixInstrument_msi	sublimation chamber		2												
+	matrixInstrument_msi	iMatrixSpray		3												
+	matrixInstrument_msi	TM-sprayer		4												
+	matrixInstrument_msi	sunChrome		5												
+	matrixInstrument_msi	HTX-M3		6												
+	matrixInstrument_msi	HTX-M5		7												
+	matrixInstrument_msi	subliMATE		8												
+	matrixInstrument_msi	other		9												
+	sampleSource_msi	animal		0												
+	sampleSource_msi	human		1												
+	sampleSource_msi	cell line		2												
+	sampleSource_msi	plant		3												
+	sampleSource_msi	multiple		4												
+	sampleSource_msi	geological		5												
+	sampleSource_msi	microbial		6												
+	sampleSource_msi	other		7												
+	multipleSampleTypesInFile_msi	yes		0												
+	multipleSampleTypesInFile_msi	no		1												

@@ -33,11 +33,12 @@ spec:
           command: ["bash", "-c", "$SCRIPT_DIR/schema/boot.sh"]
 #          command: ["bash", "-c", "mkdir -p /var/solr/data/collection1 && precreate-core collection1 && solr -f -a \"-Dlog4j.configurationFile=/opt/solr-9.3.0/server/resources/log4j2.xml\""]
 #          command: ["bash", "-c", "$SCRIPT_DIR/schema/createCollection.sh"]
-          resources:
-            requests:
-              memory: "2Gi"
-            limits:
-              memory: "4Gi"
+# removed for testing
+#          resources:
+#            requests:
+#              memory: "2Gi"
+#            limits:
+#              memory: "4Gi"
           ports:
             - name: index
               containerPort: 8983

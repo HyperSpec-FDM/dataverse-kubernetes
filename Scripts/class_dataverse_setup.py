@@ -385,7 +385,8 @@ class dataverse_setuper():
             f"-Ddataverse.files.{lable}.type=s3",
             f"-Ddataverse.files.{lable}.label={lable}",
             f"-Ddataverse.files.{lable}.bucket-name={bucketname}",
-            f"-Ddataverse.files.{lable}.download-redirect=false",
+            f"-Ddataverse.files.{lable}.download-redirect=true",
+            f"-Ddataverse.files.{lable}.upload-redirect=true",
             f"-Ddataverse.files.{lable}.url-expiration-minutes=120",
             f"-Ddataverse.files.{lable}.connection-pool-size=4096",
             f"-Ddataverse.files.{lable}.profile={profile}",
@@ -399,7 +400,8 @@ class dataverse_setuper():
             {'name': f'dataverse_files_{lable}_type', 'value': 's3'},
             {'name': f'dataverse_files_{lable}_label', 'value': f'{lable}'},
             {'name': f'dataverse_files_{lable}_bucket__name', 'value': f'{bucketname}'},
-            {'name': f'dataverse_files_{lable}_download__redirect', 'value': 'false'},
+            {'name': f'dataverse_files_{lable}_download__redirect', 'value': 'true'},
+            {'name': f'dataverse_files_{lable}_upload__redirect', 'value': 'true'},
             {'name': f'dataverse_files_{lable}_url__expiration__minutes', 'value': '120'},
             {'name': f'dataverse_files_{lable}_connection__pool__size', 'value': '4096'},
             {'name': f'dataverse_files_{lable}_profile', 'value': f'{profile}'},
@@ -501,6 +503,22 @@ class dataverse_setuper():
         delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/datasets/:persistentId/destroy/?persistentId={persistent_id}\""
         self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
 
+    def add_keycloak(self):
+        # copy keycloakAuthProvider.json to dataverse container
+        copy_command = f"kubectl cp ../authenticationProviders/keycloakAuthProvider.json {self.namespace}/{self.pod_name}:/opt/docroot/keycloakAuthProvider.json -c {self.container_name}"
+        os.system(copy_command)
+
+        enable_command = f"curl -X POST -H 'Content-type: application/json' --upload-file /opt/docroot/keycloakAuthProvider.json http://localhost:8080/api/admin/authenticationProviders"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, enable_command)
+
+        delete_command = f"rm /opt/docroot/keycloakAuthProvider.json"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
+
+    def remove_keycloak(self):
+        remove_command = f"curl -X DELETE http://localhost:8080/api/admin/authenticationProviders/keycloak"
+        self.pod_exec(self.pod_name, self.container_name, self.namespace, remove_command)
+
+
     def delete_dataverse(self, api_key, persistent_id):
         delete_command = f"curl -I -H 'X-Dataverse-key: {api_key}' -X DELETE \"http://localhost:8080/api/dataverses/{persistent_id}\""
         self.pod_exec(self.pod_name, self.container_name, self.namespace, delete_command)
@@ -579,7 +597,7 @@ class dataverse_setuper():
         attributes = ["description", "affiliation", "name", "alias"]
 
         # setup root as HyperSpec-FDM
-        hyperspec_conf = {"description": "The root dataverse.", "affiliation": "", "name": "HyperSpec-FDM", "alias": "HyperSpec-FDM"}
+        hyperspec_conf = {"description": "The root dataverse.", "affiliation": "", "name": "HyperSpec-FDM", "alias": "HyperSpec-FDM",  "dataverseContacts": '[{"contactEmail": "t.haeussermann@hs-mannheim.de"}'}
         for attribute in attributes:
             value = hyperspec_conf[attribute]
             curl_command = f"curl -X PUT -H 'X-Dataverse-key: {api_key}' \"http://localhost:8080/api/dataverses/root/attribute/{attribute}?value={value}\""
@@ -776,25 +794,31 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 
 
 # tt.change_logo(imagename)
-tt.add_mail(host, mail, password)
-# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
+# time.sleep(20)
+# tt.add_mail(host, mail, password)
+# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "https\:\/\/141.19.44.16\:9090")
+# tt.add_s3_storage("https", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "https\:\/\/141.19.44.16\:9090")
 
-# tt.curl_dataverse(api_key, "KI-Nachwuchs")
+# tt.curl_dataverse(api_key, "CeMOS-Hopf")
 # tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
 # tt.delete_dataset(api_key, persistent_id)
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/BBTSA0")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/CWMOUA")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/IQIVKC")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/D0TQ0P")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/W7ATZP")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/MX9CIQ")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/VG0PFV")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/GNJ6XR")
+#tt.delete_dataset(api_key, "doi:10.5072/FK2/MX9CIQ")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/SFYELB")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/0FGSIU")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/UP5P53")
 
-# time.sleep(30)
+# tt.update_solr_index()
 # tt.setup_hyperspec()
 # time.sleep(30)
 # tt.update_solr_index()
 # time.sleep(30)
 # tt.add_custom_metadata("sample_information.tsv")
 # time.sleep(30)
-# tt.add_custom_metadata("mass_spectrometry_imaging_V4.tsv")
+# tt.add_custom_metadata("mass_spectrometry_imaging_V5.tsv")
 # time.sleep(30)
 # tt.add_custom_metadata("optical_spectroscopy_imaging_V4.tsv")
 
@@ -807,7 +831,5 @@ tt.add_mail(host, mail, password)
 # tt.curl_dataverse(api_key, "CeMOS")
 # tt.curl_dataset_metadata(api_key, "KI-Nachwuchs")
 
-tt.update_solr_index()
-
-
-
+# tt.remove_keycloak()
+tt.add_keycloak()
