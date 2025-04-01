@@ -780,11 +780,11 @@ url = "http://192.168.100.11:30000" + "/robots.txt"
 imagename = "TransparentLogo.svg"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "ed904494-c21d-4967-aaa3-720ed3d32791"
+api_key = "api_key"
 persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
-host = "mail.hs-mannheim.de"
-mail = "t.haeussermann@hs-mannheim.de"
-password = "B#7pdwt+nFiuksz5!q5L"
+host = "mail_host"
+mail = "mail"
+password = "password"
 # password = "EUr,G-GMWQdNnX#,P3+n"
 
 tt = dataverse_setuper(deployment_name, namespace, container_name, url)
@@ -792,25 +792,9 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 # tt.add_custom_metadata(metadata_file)
 # tt.add_languages(languages)
 # tt.set_superuser("dataverseAdmin", True)
-# tt.add_s3_storage("hyperspec-fdm-hopf", "hyperspec-fdm-hopf", "minio_profile_2", "N3vdyv7V7MGdhEFvOZEq", "2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD", "http\:\/\/141.19.124.205\:9000")
-# {"url":"http://141.19.124.205:9001/api/v1/service-account-credentials","accessKey":"N3vdyv7V7MGdhEFvOZEq","secretKey":"2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD","api":"s3v4","path":"auto"}
-
 
 # time.sleep(20)
 # tt.add_mail(host, mail, password)
-
-# tt.curl_dataverse(api_key, "CeMOS-Hopf")
-# tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
-# tt.delete_dataset(api_key, persistent_id)
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/W7ATZP")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/MX9CIQ")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/VG0PFV")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/GNJ6XR")
-#tt.delete_dataset(api_key, "doi:10.5072/FK2/MX9CIQ")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/SFYELB")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/0FGSIU")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/FLID61")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/CFZPCP")
 
 tt.add_mail(host, mail, password)
 # tt.setup_hyperspec()
@@ -823,13 +807,7 @@ tt.add_mail(host, mail, password)
 # time.sleep(30)
 # tt.change_logo(imagename)
 # time.sleep(300)
-# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
-
-# tt.dataset_from_json(api_key, "Test_Dataset.json", "KI-Nachwuchs")
-# tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline.json", "KI-Nachwuchs")
-# tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline2.json", "KI-Nachwuchs")
-# tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline3.json", "KI-Nachwuchs")
-
+# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "accessKey", "secretKey", "http\:\/\/141.19.44.16\:9000")
 
 # tt.curl_dataverse(api_key, "CeMOS")
 # tt.curl_dataset_metadata(api_key, "KI-Nachwuchs")

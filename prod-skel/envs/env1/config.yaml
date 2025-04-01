@@ -21,30 +21,25 @@ data:
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: "mydataverse"
   POSTGRES_USER: "dataverse"
-  POSTGRES_PASSWORD: "TqnXXPCi^+wO=q9MHv.t"
-  dataverse_db_password: "TqnXXPCi^+wO=q9MHv.t"
-#  POSTGRES_ADMIN_PASSWORD: aZn5~mZ){SjAd@F-
+  POSTGRES_PASSWORD: "POSTGRES_PASSWORD"
+  dataverse_db_password: "dataverse_db_password"
+
 
   ### CONTACT SETTINGS
-  CONTACT_MAIL: t.haeussermann@hs-mannheim.de
-  MAIL_FROMADDRESS: t.haeussermann@hs-mannheim.de
-  DATAVERSE_MAIL_SYSTEM_EMAIL: t.haeussermann@hs-mannheim.de
-  DATAVERSE_MAIL_SUPPORT_EMAI: t.haeussermann@hs-mannheim.de
-  MAIL_SERVER: mail.hs-mannheim.de
+  CONTACT_MAIL: CONTACT_MAIL
+  MAIL_FROMADDRESS: MAIL_FROMADDRESS
+  DATAVERSE_MAIL_SYSTEM_EMAIL: DATAVERSE_MAIL_SYSTEM_EMAIL
+  DATAVERSE_MAIL_SYSTEM_EMAIL: DATAVERSE_MAIL_SYSTEM_EMAIL
+  MAIL_SERVER: MAIL_SERVER
 
-  DATAVERSE_MAIL_SYSTEM__EMAIL: HyperSpecFDM <t.haeussermann@hs-mannheim.de>
-  DATAVERSE_MAIL_MTA_HOST: mail.hs-mannheim.de
+  DATAVERSE_MAIL_SYSTEM__EMAIL: HyperSpecFDM <DATAVERSE_MAIL_SYSTEM__EMAIL>
+  DATAVERSE_MAIL_MTA_HOST: DATAVERSE_MAIL_MTA_HOST
   DATAVERSE_MAIL_MTA_PORT: "465"
   DATAVERSE_MAIL_MTA_SSL_ENABLE: "true"
   DATAVERSE_MAIL_MTA_AUTH: "true"
-  DATAVERSE_MAIL_MTA_USER: t.haeussermann@hs-mannheim.de
+  DATAVERSE_MAIL_MTA_USER: DATAVERSE_MAIL_MTA_USER
   DATAVERSE_MAIL_MTA_ALLOW_UTD__8__ADDRESSES: "true"
 
-  ### DOI SETTINGS OLD
-#  db_DoiProvider: FAKE
-#  db_Protocol: doi
-#  db_Authority: "10.12345"
-#  db_Shoulder: EXAMPLE/
   ## Updated DOI SETTINGS due to Dataverse Version 6.2
   dataverse_pid_providers: "fake"
   dataverse_pid_default__provider: "fake"
@@ -54,27 +49,9 @@ data:
   dataverse_pid_fake_shoulder: "FK2/"
 
 
-  ### FILE STORAGE Local
-#  dataverse_files_file_label: file
-#  dataverse_files_file_type: file
-#  dataverse_files_file_directory: /data
-#  dataverse_files_storage__driver__id: file
-
-  ## FILE STORAGE S3
-#  dataverse_files_hsma_label: hsma
-#  dataverse_files_hsma_type: s3
-#  dataverse_files_hsma__custom__endpoint__url: http://minio:9000
-#  dataverse_files_hsma__bucket__name: dataverse
-#  # required for Minio!
-#  dataverse_files_hsma__path__style__access: "true"
-
   ### INGEST
   # deactivate ingest for tabular files
   db_TabularIngestSizeLimit: "0"
   # allow uploads only < 2GB
   db_MaxFileUploadSizeInBytes: "2147483648"
   db_FileFixityChecksumAlgorithm: SHA-256
-
-  ### CUSTOMIZATION
-#  db_StatusMessageHeader: "Test Environment"
-#  db_StatusMessageText: "<br />This instance is meant for testing, training and experiments. DOIs minted here are not citeable!"

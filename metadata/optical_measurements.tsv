@@ -1,8 +1,0 @@
-#metadataBlock	name	dataverseAlias	displayName	blockURI
-	optical_measurements		Optical Measurements	https://dataverse.org/schema/optical_measurements/
-#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
-	process_parameters	Process parameters	Procedure and wavelength boundaries		none	0		FALSE	FALSE	TRUE	FALSE	TRUE	FALSE		optical_measurements
-	procedure	Procedure	The measurement procedure used		text	1		TRUE	FALSE	TRUE	FALSE	TRUE	FALSE	process_parameters	optical_measurements
-	wavelength_from	Wavelength from [nm]	Wavelength lower boundary		text	2		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	process_parameters	optical_measurements
-	wavelength_to	Wavelength  to [nm]	Wavelength upper boundary		text	3		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE	process_parameters	optical_measurements
-#controlledVocabulary	DatasetField	Value	identifier	displayOrder

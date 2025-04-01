@@ -15,13 +15,6 @@ os.system("kubectl delete -f prod/secrets/secrets.yaml")
 print("Undeploy Dataverse")
 
 
-# undeploy s3
-# os.system("kubectl delete -f prod-skel/bases/minio-standalone/job.yaml")
-# os.system("kubectl delete -f prod-skel/bases/minio-standalone/deployment.yaml")
-# os.system("kubectl delete -f prod-skel/bases/minio-standalone/svc.yaml")
-# os.system("kubectl delete -f prod-skel/bases/minio-standalone/config.yaml")
-# os.system("kubectl delete -f prod-skel/bases/minio-standalone/pvc.yaml")
-
 
 
 
