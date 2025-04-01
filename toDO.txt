@@ -1,7 +1,0 @@
-change solr version by adapting the Dockerfile. See release note 5.8
-ith [Release 5.5](https://github.com/IQSS/dataverse/releases/tag/v5.5), the `<copyField>` definitions had been
-reincluded into `schema.xml` to fix searching for datasets.
-This release includes a final update to `schema.xml` and a new script `update-fields.sh` to manage your custom metadata
-fields, and to provide opportunities for other future improvements. The broken script `updateSchemaMDB.sh` has been removed.
-You will need to replace your schema.xml with the one provided in order to make sure that the new script can function.
-If you do not use any custom metadata blocks in your installation, this is the only change to be made. If you do use custom metadata blocks you will need to take a few extra steps, enumerated in the step-by-step instructions below.

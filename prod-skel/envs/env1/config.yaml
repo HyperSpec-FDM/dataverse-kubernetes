@@ -35,9 +35,10 @@ data:
   DATAVERSE_MAIL_SYSTEM__EMAIL: HyperSpecFDM <t.haeussermann@hs-mannheim.de>
   DATAVERSE_MAIL_MTA_HOST: mail.hs-mannheim.de
   DATAVERSE_MAIL_MTA_PORT: "465"
-  DATAVERSE_MAIL_MTA_SSL_ENABLED: "true"
+  DATAVERSE_MAIL_MTA_SSL_ENABLE: "true"
   DATAVERSE_MAIL_MTA_AUTH: "true"
   DATAVERSE_MAIL_MTA_USER: t.haeussermann@hs-mannheim.de
+  DATAVERSE_MAIL_MTA_ALLOW_UTD__8__ADDRESSES: "true"
 
   ### DOI SETTINGS OLD
 #  db_DoiProvider: FAKE

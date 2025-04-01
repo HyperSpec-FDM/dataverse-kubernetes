@@ -393,7 +393,8 @@ class dataverse_setuper():
             f'"-Ddataverse.files.{lable}.custom-endpoint-url\={endpoint}"',
             f"-Ddataverse.files.{lable}.path-style-access=true",
             f"-Ddataverse.files.{lable}.access-key={accessKey}",
-            f"-Ddataverse.files.{lable}.secret-key={secretKey}"
+            f"-Ddataverse.files.{lable}.secret-key={secretKey}",
+            f"-Ddataverse.files.{lable}.custom-endpoint-region=eu-central-1",
         ]
         # append if needed: {'name': f'dataverse_files_{lable}_chunked__encoding', 'value': 'false'},
         env_vars = [
@@ -408,7 +409,9 @@ class dataverse_setuper():
             {'name': f'dataverse_files_{lable}_custom__endpoint__url', 'value': f'{endpoint}'},
             {'name': f'dataverse_files_{lable}_path__style__access', 'value': 'true'},
             {'name': f'dataverse_files_{lable}_access__key', 'value': f'{accessKey}'},
-            {'name': f'dataverse_files_{lable}_secret__key', 'value': f'{secretKey}'}]
+            {'name': f'dataverse_files_{lable}_secret__key', 'value': f'{secretKey}'},
+            {'name': f'dataverse_files_{lable}_custom__endpoint__region', 'value': f'eu-central-1'}
+        ]
 
         # Set variables for later usage
         status = None
@@ -777,7 +780,7 @@ url = "http://192.168.100.11:30000" + "/robots.txt"
 imagename = "TransparentLogo.svg"
 # languages = ['de_AT', 'de_DE', 'en_US', 'es_ES', 'fr_CA', 'fr_FR', 'hu_HU', 'it_IT', 'pl_PL', 'pt_BR', 'pt_PT', 'ru_RU', 'se_SE', 'sl_SI', 'ua_UA']
 languages = ['en_US', 'de_DE']
-api_key = "5244c4d4-4c86-4d10-9d40-1c2966f5dd10"
+api_key = "ed904494-c21d-4967-aaa3-720ed3d32791"
 persistent_id = "doi:10.12345/EXAMPLE/OP9H5M"
 host = "mail.hs-mannheim.de"
 mail = "t.haeussermann@hs-mannheim.de"
@@ -793,11 +796,8 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 # {"url":"http://141.19.124.205:9001/api/v1/service-account-credentials","accessKey":"N3vdyv7V7MGdhEFvOZEq","secretKey":"2ZGuoxAvJbzm36A6UchzGs8fla1lHxGX2lc48mlD","api":"s3v4","path":"auto"}
 
 
-# tt.change_logo(imagename)
 # time.sleep(20)
 # tt.add_mail(host, mail, password)
-# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "https\:\/\/141.19.44.16\:9090")
-# tt.add_s3_storage("https", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "https\:\/\/141.19.44.16\:9090")
 
 # tt.curl_dataverse(api_key, "CeMOS-Hopf")
 # tt.curl_dataset(api_key, "doi:10.12345/EXAMPLE/GIDNA1")
@@ -809,18 +809,21 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 #tt.delete_dataset(api_key, "doi:10.5072/FK2/MX9CIQ")
 # tt.delete_dataset(api_key, "doi:10.5072/FK2/SFYELB")
 # tt.delete_dataset(api_key, "doi:10.5072/FK2/0FGSIU")
-# tt.delete_dataset(api_key, "doi:10.5072/FK2/UP5P53")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/FLID61")
+# tt.delete_dataset(api_key, "doi:10.5072/FK2/CFZPCP")
 
-# tt.update_solr_index()
+tt.add_mail(host, mail, password)
 # tt.setup_hyperspec()
 # time.sleep(30)
-# tt.update_solr_index()
+# tt.add_custom_metadata("sample_information_V2.tsv")
 # time.sleep(30)
-# tt.add_custom_metadata("sample_information.tsv")
+# tt.add_custom_metadata("mass_spectrometry_imaging_V6.tsv")
 # time.sleep(30)
-# tt.add_custom_metadata("mass_spectrometry_imaging_V5.tsv")
+# tt.add_custom_metadata("optical_spectroscopy_imaging_V6.tsv")
 # time.sleep(30)
-# tt.add_custom_metadata("optical_spectroscopy_imaging_V4.tsv")
+# tt.change_logo(imagename)
+# time.sleep(300)
+# tt.add_s3_storage("hyperspec-fdm", "hyperspec-fdm", "minio_profile_1", "Vfzf1byfPPLRyNTF0Lzn", "9yPhiXscdVhIwrWO3oIVrqAOpIFeUt1gqmnFAWUR", "http\:\/\/141.19.44.16\:9000")
 
 # tt.dataset_from_json(api_key, "Test_Dataset.json", "KI-Nachwuchs")
 # tt.dataset_from_json(api_key, "KI-Nachwuchs-Pipeline.json", "KI-Nachwuchs")
@@ -832,4 +835,4 @@ tt = dataverse_setuper(deployment_name, namespace, container_name, url)
 # tt.curl_dataset_metadata(api_key, "KI-Nachwuchs")
 
 # tt.remove_keycloak()
-tt.add_keycloak()
+# tt.add_keycloak()

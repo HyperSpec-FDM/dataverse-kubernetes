@@ -11,6 +11,16 @@
 # Fix line endings in default.config
 sed -i 's/\r$//' /opt/payara/scripts/default.config
 
+# Function to check if directory is empty
+is_directory_empty() {
+    local dir="$1"
+    if [ -d "$dir" ] && [ "$(ls -A "$dir")" == "" ]; then
+        return 0  # Directory is empty
+    else
+        return 1  # Directory is not empty
+    fi
+}
+
 # Run init scripts (credits go to MySQL Docker entrypoint script)
 for f in ${SCRIPT_DIR}/init_* ${SCRIPT_DIR}/init.d/*; do
     case "$f" in
@@ -25,10 +35,19 @@ for f in ${SCRIPT_DIR}/init_* ${SCRIPT_DIR}/init.d/*; do
     echo
 done
 
-# Runs first script in background for postboot tasks
-${SCRIPT_DIR}/check_boot.sh &
-exec ${SCRIPT_DIR}/startInForeground.sh $PAYARA_ARGS
 
+# Check if /opt/doroot/ is empty (indicating initial boot)
+if is_directory_empty "/opt/docroot/"; then
+    echo "[Init] Detected initial boot"
+    exec ${SCRIPT_DIR}/startInForeground.sh $PAYARA_ARGS
+
+else
+    echo "[Init] Detected content in /opt/docroot/"
+    # Runs first script in background for postboot tasks
+    ${SCRIPT_DIR}/check_boot.sh &
+    exec ${SCRIPT_DIR}/startInForeground.sh $PAYARA_ARGS
+
+fi
 
 #if [ "${GIT_CVM_TEMPLATES}" ]; then
 #    #echo "Clone dataverse templates from ${GIT_CVM_TEMPLATES}" >> /tmp/status.log;

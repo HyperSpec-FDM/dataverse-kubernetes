@@ -46,11 +46,11 @@ user = "tim"
 password = "changeme"
 
 # Define which image to build and push
-dataverse = False
+dataverse = True
 solr = False
 shibboleth = False
 apache = False
-keycloakidp = True
+keycloakidp = False
 deleter = False
 backuper = False
 dataversesetuper = False

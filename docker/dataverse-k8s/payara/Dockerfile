@@ -41,7 +41,7 @@ RUN mkdir -p ${HOME_DIR} ${SCRIPT_DIR} ${SECRETS_DIR} && \
 #RUN sed -rz -i 's/http/https/g' /etc/apt/sources.list
 RUN cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d #fixing error W:
 RUN apt-get -qq update &&\
-    apt-get -qqy install postgresql-client jq imagemagick curl wget unzip vim python3.10 python3-distutils python3-apt  python3-psycopg2 ed bc original-awk python3-pandas lsb-release patch cron git zip dos2unix
+    apt-get -qqy install postgresql-client jq imagemagick curl wget unzip vim python3.10 python3-distutils python3-apt  python3-psycopg2 ed bc original-awk python3-pandas lsb-release patch cron git zip dos2unix dnsutils telnet
 RUN wget --no-verbose  https://bootstrap.pypa.io/get-pip.py -O -|/usr/bin/python3.10
 
 # Install kubectl

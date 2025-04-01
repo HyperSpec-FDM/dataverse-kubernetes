@@ -1,0 +1,60 @@
+#metadataBlock	name	dataverseAlias	displayName	blockURI	Unnamed: 5	Unnamed: 6	Unnamed: 7	Unnamed: 8	Unnamed: 9	Unnamed: 10	Unnamed: 11	Unnamed: 12	Unnamed: 13	Unnamed: 14	Unnamed: 15	Unnamed: 16
+	sample_information		Sample Information (Imaging) 	https://dataverse.org/schema/sample_information/												
+#datasetField	name	title	description	watermark	 fieldType	displayOrder	displayFormat	advancedSearchField	allowControlledVocabulary	allowmultiples	facetable	displayoncreate	required	parent	metadatablock_id	termURI
+	acquisitionType	Acquisition Type	choose one of ('whole tissue', 'TMA', 'Biopsy', 'single cells', '3D cells' or 'other')		text	0		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	other_acquisitionType	Other Acquisition Type	Description if Otheracquisition type type was specified.		textbox	1		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	surfaceType	Surface Type	Surface analyzed or used as an underlying substrate for analysis (ITO, glass, metal)		text	2		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	other_surfaceType	Other Surface Type	Description if Othersurface type type was specified.		textbox	3		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	surfaceMods	Surface Mods	Was the surface analyzed modified in any way (functionalized, coated)?		text	4		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	fixation	Fixation	What stabilization method was used (dehydration, heat inactivation, alcohol/cross-linking fixation, freezing)?		text	5		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	other_fixation	Other Fixation	Description if Otherfixation type was specified.		textbox	6		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	embedding	Embedding method	Embedding method for sample (OCT, CMC, gelatin, paraffin, none).		text	7		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	other_embedding	Other Embedding method	Description if Otherembedding method type was specified.		textbox	8		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	sectioning_device	Sectioning device 	(Cryo)-microtome instrument used to section material.		text	9		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	other_sectioning_device	Other sectioning device	Description if Other sectioning device type was specified.		textbox	10		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	thickness	Thickness 	Tissue section thickness (µm)		text	11		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/ResourceIdentifier
+	scannerType	Scanner Type	choose one of ('none', 'slide scanner', 'confocal', 'MIR','other')		text	12		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/AgentIdentifier
+	other_scannerType	Other Scannertype	Description if OtherScannertype type was specified.		textbox	13		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/AgentIdentifier
+	scannerDevice	Scanner device 	choose one of ('none', 'Aperio ScanScope Model CS2', 'TissueScout reflecta MF5000 ','other')		text	14		TRUE	TRUE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/AgentIdentifier
+	other_scannerDevice	Other Scanner device 	Description if OtherScannertype type was specified.		textbox	15		TRUE	FALSE	FALSE	FALSE	TRUE	FALSE		sample_information	http://purl.org/spar/datacite/AgentIdentifier
+#controlledVocabulary	DatasetField	Value	identifier	displayOrder												
+	acquisitionType	whole tissue		0												
+	acquisitionType	TMA		1												
+	acquisitionType	Biopsy		2												
+	acquisitionType	single cells		3												
+	acquisitionType	3D cells		4												
+	acquisitionType	other		5												
+	surfaceType	ITO		0												
+	surfaceType	glass		1												
+	surfaceType	metal		2												
+	surfaceType	Au		3												
+	surfaceType	PEN slide		4												
+	surfaceType	other		5												
+	fixation	fresh frozen		0												
+	fixation	formalin		1												
+	fixation	alcohol		2												
+	fixation	heat inactivation		3												
+	fixation	dehydration		4												
+	fixation	paxgene		5												
+	fixation	PFA		6												
+	fixation	other		7												
+	embedding	none		0												
+	embedding	OCT		1												
+	embedding	CMC		2												
+	embedding	gelatin		3												
+	embedding	paraffin		4												
+	embedding	HPMC-PVP		5												
+	embedding	other		6												
+	sectioning_device	Cryostat Leica CM 1860UV		0												
+	sectioning_device	Microtome Leica RM2235		1												
+	sectioning_device	other		2												
+	scannerType	none		0												
+	scannerType	Slide scanner		1												
+	scannerType	confocal		2												
+	scannerType	MIR		3												
+	scannerType	other		4												
+	scannerDevice	none		0												
+	scannerDevice	Aperio ScanScope Model CS2		1												
+	scannerDevice	TissueScout reflecta MF5000		2												
+	scannerDevice	Scanner Cannon CanoScan 8800F		3												
+	scannerDevice	other		4												

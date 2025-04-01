@@ -11,7 +11,7 @@ LABEL maintainer="FDM FZJ <forschungsdaten@fz-juelich.de>"
 
 ARG WEBHOOK_VERSION=2.6.11
 ARG TINI_VERSION=v0.18.0
-ARG VERSION=6.0
+ARG VERSION=6.5
 ARG SOLR_VERSION=9.3.0
 ARG COLLECTION=collection1
 ENV SOLR_OPTS="-Dsolr.jetty.request.header.size=102400"\
@@ -85,9 +85,9 @@ RUN wget --no-verbose -O dvinstall.zip ${DATAVERSE_PKG} && \
 
 USER ${SOLR_USER}
 # Edit schema.xml to include /schema located files, but fallback to default
-RUN ln -s /schema ${COLLECTION_DIR}/conf/schema && \
-    sed -i -e "s#^.*:include href=\"schema_dv_mdb_fields.*\$#    <xi:include href=\"schema/schema_dv_mdb_fields.xml\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n      <xi:fallback><xi:include href=\"schema_dv_mdb_fields.xml\"/></xi:fallback>\n    </xi:include>#" ${COLLECTION_DIR}/conf/schema.xml && \
-    sed -i -e "s#^.*:include href=\"schema_dv_mdb_copies.*\$#    <xi:include href=\"schema/schema_dv_mdb_copies.xml\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n      <xi:fallback><xi:include href=\"schema_dv_mdb_copies.xml\"/></xi:fallback>\n    </xi:include>#" ${COLLECTION_DIR}/conf/schema.xml
+#RUN ln -s /schema ${COLLECTION_DIR}/conf/schema && \
+#    sed -i -e "s#^.*:include href=\"schema_dv_mdb_fields.*\$#    <xi:include href=\"schema/schema_dv_mdb_fields.xml\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n      <xi:fallback><xi:include href=\"schema_dv_mdb_fields.xml\"/></xi:fallback>\n    </xi:include>#" ${COLLECTION_DIR}/conf/schema.xml && \
+#    sed -i -e "s#^.*:include href=\"schema_dv_mdb_copies.*\$#    <xi:include href=\"schema/schema_dv_mdb_copies.xml\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n      <xi:fallback><xi:include href=\"schema_dv_mdb_copies.xml\"/></xi:fallback>\n    </xi:include>#" ${COLLECTION_DIR}/conf/schema.xml
 
 ### SIDECAR BELONGINGS
 
